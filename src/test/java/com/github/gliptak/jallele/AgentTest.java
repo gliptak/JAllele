@@ -5,20 +5,11 @@ package com.github.gliptak.jallele;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-
-import javassist.CannotCompileException;
-import javassist.NotFoundException;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.sun.tools.attach.AgentInitializationException;
-import com.sun.tools.attach.AgentLoadException;
-import com.sun.tools.attach.AttachNotSupportedException;
 
 /**
  * @author gliptak
@@ -56,17 +47,20 @@ public class AgentTest {
 
 	/**
 	 * Test method for {@link com.github.gliptak.jallele.Agent#attach()}.
-	 * @throws AttachNotSupportedException 
-	 * @throws AgentInitializationException 
-	 * @throws AgentLoadException 
-	 * @throws CannotCompileException 
-	 * @throws NotFoundException 
-	 * @throws IOException 
+	 * @throws Exception 
 	 */
 	@Test
 	public void testAttach() throws Exception {
 		Agent.attach();
 		Agent.attach();
+	}
+	
+	@Test
+	public void testAddRemoveTransformer() throws Exception {
+		Agent.attach();
+		ClassRandomizer cr = new ClassRandomizer();
+		Agent.addTransformer(cr, true);
+		Agent.removeTransformer(cr);
 	}
 
 }
