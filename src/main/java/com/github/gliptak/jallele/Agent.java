@@ -94,7 +94,7 @@ public class Agent {
 	 * @param canRefactor TODO
 	 */
 	public static void addTransformer(ClassFileTransformer cft, boolean canRefactor){
-		inst.addTransformer(cft);
+		inst.addTransformer(cft, canRefactor);
 	}
 
 	/**
@@ -112,9 +112,9 @@ public class Agent {
 	 */
 	public static void restransform(Class<?> ... classes) throws UnmodifiableClassException {
 		//System.out.println("retransform: "+inst.isRetransformClassesSupported());
-		for (Class<?> clazz: classes){
-			System.out.println(clazz.toString()+" modifiable "+inst.isModifiableClass(clazz));			
-		}
-		inst.retransformClasses(classes);			
+		//for (Class<?> clazz: classes){
+		//	System.out.println(clazz.toString()+" modifiable "+inst.isModifiableClass(clazz));			
+		//}
+		inst.retransformClasses(classes);
 	}
 }

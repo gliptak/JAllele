@@ -51,17 +51,11 @@ public class SimpleClassTest {
 	public void testTwoTimes() {
 		SimpleClass sc=new SimpleClass();
 		int result=sc.twoTimes(4);
-		System.out.println(result);
+		assertThat(result, Is.is(8));
 	}
-	
-	/**
-	 * Test method for {@link junit_test.SimpleClass#twoTimes(int)}.
-	 */
-	@Ignore
-	@Test
-	public void testTwoTimesFail() {
-		SimpleClass sc=new SimpleClass();
-		int result=sc.twoTimes(4);
-		assertThat(7, Is.is(result));
+
+	@Test(expected=ArithmeticException.class)
+	public void testRuntimeException() {
+		int i=5/0;
 	}
 }

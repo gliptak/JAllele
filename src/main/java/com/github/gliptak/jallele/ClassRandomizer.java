@@ -19,7 +19,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 	@Override
 	public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
 			ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-    	System.out.println("Transforming new " + className);
+    	//System.out.println("Transforming all " + className);
 	    byte[] transformed = null;
 
 	    if (Pattern.matches(regex, className)){
