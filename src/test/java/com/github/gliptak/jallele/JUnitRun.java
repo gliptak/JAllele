@@ -3,6 +3,7 @@ package com.github.gliptak.jallele;
 import java.io.PrintStream;
 import java.security.Permission;
 
+import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -11,6 +12,8 @@ import org.junit.Test;
 import org.junit.internal.JUnitSystem;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
+
+import static org.junit.Assert.*;
 
 import com.github.gliptak.jallele.testA.SimpleClass;
 
@@ -38,18 +41,31 @@ public class JUnitRun {
 
 	@Test
 	public void runJUnit() throws Exception{
+		MockSystem system=runSimpleClassTest();
+		assertThat(0, Is.is(system.getExitCode()));
 		for (int i=0;i<2;i++){
 			ClassRandomizer cr=new ClassRandomizer();
 			cr.setFilter("com.github.gliptak.jallele.testA.*");
 			Agent.addTransformer(cr, true);
 			Agent.restransform(SimpleClass.class);
-			MockSystem system=new MockSystem();
-			String[] args={"com.github.gliptak.jallele.testA.SimpleClassTest"};
-			Result result= new JUnitCore().runMain(system, args);
-			System.out.println("exit code: "+system.getExitCode());
-			System.out.println(result);
+			system=runSimpleClassTest();
+			assertThat(0, Is.is(system.getExitCode()));
 			Agent.removeTransformer(cr);
 		}
+		system=runSimpleClassTest();
+		assertThat(0, Is.is(system.getExitCode()));
+	}
+
+	/**
+	 * 
+	 */
+	protected MockSystem runSimpleClassTest() {
+		MockSystem system=new MockSystem();
+		String[] args={"com.github.gliptak.jallele.testA.SimpleClassTest"};
+		Result result= new JUnitCore().runMain(system, args);
+		System.out.println("exit code: "+system.getExitCode());
+		System.out.println(result);
+		return system;
 	}
 
 	public class MockSystem implements JUnitSystem {
