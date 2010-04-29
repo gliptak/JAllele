@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.security.Permission;
 
 import org.hamcrest.core.Is;
+import org.hamcrest.core.IsNot;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,31 +42,32 @@ public class JUnitRun {
 
 	@Test
 	public void runJUnit() throws Exception{
-		MockSystem system=runSimpleClassTest();
-		assertThat(0, Is.is(system.getExitCode()));
+		Result result=runSimpleClassTest();
+		assertThat(0, Is.is(result.getFailureCount()));
 		for (int i=0;i<2;i++){
 			ClassRandomizer cr=new ClassRandomizer();
 			cr.setFilter("com.github.gliptak.jallele.testA.*");
 			Agent.addTransformer(cr, true);
 			Agent.restransform(SimpleClass.class);
-			system=runSimpleClassTest();
-			assertThat(0, Is.is(system.getExitCode()));
+			result=runSimpleClassTest();
+			assertThat(0, IsNot.not(result.getFailureCount()));
 			Agent.removeTransformer(cr);
 		}
-		system=runSimpleClassTest();
-		assertThat(0, Is.is(system.getExitCode()));
+		Agent.restransform(SimpleClass.class);
+		result=runSimpleClassTest();
+		assertThat(0, Is.is(result.getFailureCount()));
 	}
 
 	/**
 	 * 
 	 */
-	protected MockSystem runSimpleClassTest() {
+	protected Result runSimpleClassTest() {
 		MockSystem system=new MockSystem();
 		String[] args={"com.github.gliptak.jallele.testA.SimpleClassTest"};
 		Result result= new JUnitCore().runMain(system, args);
 		System.out.println("exit code: "+system.getExitCode());
 		System.out.println(result);
-		return system;
+		return result;
 	}
 
 	public class MockSystem implements JUnitSystem {

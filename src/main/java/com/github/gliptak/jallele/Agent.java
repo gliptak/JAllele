@@ -1,7 +1,10 @@
 package com.github.gliptak.jallele;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
@@ -12,9 +15,6 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import com.sun.tools.attach.VirtualMachine;
-
-import javassist.ClassPool;
-import javassist.CtClass;
 
 public class Agent {
 	/**
@@ -69,9 +69,7 @@ public class Agent {
 		JarEntry agent = new JarEntry(Agent.class.getName().replace('.', '/')
 				+ ".class");
 		jos.putNextEntry(agent);
-		ClassPool pool = ClassPool.getDefault();
-		CtClass ctClass = pool.get(Agent.class.getName());
-		jos.write(ctClass.toBytecode());
+		jos.write(getClassBytes(Agent.class));
 		jos.closeEntry();
 		jos.close();
 
@@ -117,4 +115,24 @@ public class Agent {
 		//}
 		inst.retransformClasses(classes);
 	}
+	
+	   protected static byte[] getClassBytes(Class clazz) throws IOException {
+	        String name = clazz.getName().replace('.', '/') + ".class";
+	        InputStream iStream = clazz.getClassLoader().getResourceAsStream(name);
+	        try {
+	            ByteArrayOutputStream oStream = new ByteArrayOutputStream();
+	            byte[] buffer = new byte[1024];
+	            while (true) {
+	                int len = iStream.read(buffer);
+	                if (len < 0) {
+	                    break;
+	                }
+	                oStream.write(buffer, 0, len);
+	            }
+	            return oStream.toByteArray();
+	        } finally {
+	            iStream.close();
+	        }
+	    }
+
 }

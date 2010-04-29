@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.instrument.IllegalClassFormatException;
 
-import javassist.CannotCompileException;
-import javassist.NotFoundException;
-
+import org.hamcrest.core.IsNot;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -59,6 +57,8 @@ public class ClassRandomizerTest {
 	 * Test method for
 	 * {@link com.github.gliptak.jallele.ClassRandomizer#transform(java.lang.ClassLoader, java.lang.String, java.lang.Class, java.security.ProtectionDomain, byte[])}
 	 * .
+	 * @throws IOException 
+	 * @throws IllegalClassFormatException 
 	 * 
 	 * @throws NotFoundException
 	 * @throws CannotCompileException
@@ -66,30 +66,12 @@ public class ClassRandomizerTest {
 	 * @throws IllegalClassFormatException
 	 */
 	@Test
-	public final void testTransform() throws NotFoundException,
-			IllegalClassFormatException, IOException, CannotCompileException {
+	public final void testTransform() throws IllegalClassFormatException, IOException {
+		byte[] in=Agent.getClassBytes(SimpleClass.class);
 		ClassRandomizer cr = new ClassRandomizer();
 		cr.setFilter(SimpleClass.class.getName());
-		cr.transform(null, SimpleClass.class.getName(), SimpleClass.class,
-				null, getClassBytes(SimpleClass.class));
-	}
-
-	protected byte[] getClassBytes(Class clazz) throws IOException {
-		String name = clazz.getName().replace('.', '/') + ".class";
-		InputStream iStream = clazz.getClassLoader().getResourceAsStream(name);
-		try {
-			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
-			byte[] buffer = new byte[1024];
-			while (true) {
-				int len = iStream.read(buffer);
-				if (len < 0) {
-					break;
-				}
-				oStream.write(buffer, 0, len);
-			}
-			return oStream.toByteArray();
-		} finally {
-			iStream.close();
-		}
+		byte[] out=cr.transform(null, SimpleClass.class.getName(), SimpleClass.class,
+				null, in);
+		assertThat(out, IsNot.not(in));
 	}
 }

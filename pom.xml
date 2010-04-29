@@ -54,13 +54,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>asm</groupId>
-			<artifactId>asm</artifactId>
+			<artifactId>asm-all</artifactId>
 			<version>3.2</version>
-		</dependency>
-		<dependency>
-			<groupId>javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.8.0.GA</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
