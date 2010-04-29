@@ -116,7 +116,7 @@ public class Agent {
 		inst.retransformClasses(classes);
 	}
 	
-	   protected static byte[] getClassBytes(Class clazz) throws IOException {
+	   protected static byte[] getClassBytes(Class<?> clazz) throws IOException {
 	        String name = clazz.getName().replace('.', '/') + ".class";
 	        InputStream iStream = clazz.getClassLoader().getResourceAsStream(name);
 	        try {

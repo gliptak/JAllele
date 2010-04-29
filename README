@@ -1,0 +1,7 @@
+Notes:
+
+Distribution of the mutation will be based on the number of occurrences
+for the various mutators. An initial run will be used to gather those
+statistics.
+
+What is the best way to specify classes to mutate?

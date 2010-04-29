@@ -3,6 +3,7 @@
  */
 package com.github.gliptak.jallele;
 
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -13,8 +14,11 @@ import org.objectweb.asm.Opcodes;
  */
 public class MethodRandomizerVisitor extends MethodAdapter {
 
-	public MethodRandomizerVisitor(MethodVisitor mv) {
+	private String className;
+
+	public MethodRandomizerVisitor(String className, MethodVisitor mv) {
 		super(mv);
+		this.className=className;
 	}
 
 	/* (non-Javadoc)

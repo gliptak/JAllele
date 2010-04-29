@@ -5,9 +5,7 @@ package com.github.gliptak.jallele;
 
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.instrument.IllegalClassFormatException;
 
 import org.hamcrest.core.IsNot;

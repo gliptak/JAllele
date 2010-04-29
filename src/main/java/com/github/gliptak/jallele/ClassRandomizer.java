@@ -29,7 +29,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 
 		if (Pattern.matches(regex, className)) {
 			try {
-				transformed = randomize(classfileBuffer);
+				transformed = randomize(className, classfileBuffer);
 			} catch (Exception e) {
 				throw new IllegalClassFormatException(e.getMessage());
 			}
@@ -38,30 +38,17 @@ public class ClassRandomizer implements ClassFileTransformer {
 		return transformed;
 	}
 
-	private byte[] randomize(byte[] classfileBuffer) {
-		// TraceClassVisitor tcv=new TraceClassVisitor(new
-		// PrintWriter(System.out));
-		// ClassReader cr1=new ClassReader(classfileBuffer);
-		// cr1.accept(tcv, 0);
-		// MethodRandomizerVisitor rv=new MethodRandomizerVisitor();
+	private byte[] randomize(String className, byte[] classfileBuffer) {
+	    final String className1=className;
 		ClassWriter cw = new ClassWriter(0) {
-
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.objectweb.asm.ClassWriter#visitMethod(int,
-			 * java.lang.String, java.lang.String, java.lang.String,
-			 * java.lang.String[])
-			 */
 			@Override
 			public MethodVisitor visitMethod(final int access,
 					final String name, final String desc,
 					final String signature, final String[] exceptions) {
 				MethodVisitor mv=super.visitMethod(access, name, desc, signature,
 						exceptions);
-				return new MethodRandomizerVisitor(mv);
+				return new MethodRandomizerVisitor(className1, mv);
 			};
-
 		};
 		ClassReader cr = new ClassReader(classfileBuffer);
 		cr.accept(cw, 0);
