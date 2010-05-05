@@ -2,6 +2,7 @@ package com.github.gliptak.jallele;
 
 import java.io.PrintStream;
 import java.security.Permission;
+import java.util.logging.Logger;
 
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsNot;
@@ -20,7 +21,9 @@ import com.github.gliptak.jallele.testA.SimpleClass;
 
 public class JUnitRun {
 
-	@BeforeClass
+    private static Logger logger = Logger.getLogger(JUnitRun.class.getName());
+
+    @BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Agent.attach();
 	}
@@ -65,8 +68,8 @@ public class JUnitRun {
 		MockSystem system=new MockSystem();
 		String[] args={"com.github.gliptak.jallele.testA.SimpleClassTest"};
 		Result result= new JUnitCore().runMain(system, args);
-		System.out.println("exit code: "+system.getExitCode());
-		System.out.println(result);
+		logger.fine("exit code: "+system.getExitCode());
+		logger.fine(result.toString());
 		return result;
 	}
 

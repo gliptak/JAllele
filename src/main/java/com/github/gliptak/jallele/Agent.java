@@ -13,11 +13,16 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.tools.attach.VirtualMachine;
 
 public class Agent {
-	/**
+    
+	private static Logger logger = Logger.getLogger(Agent.class.getName());
+
+    /**
 	 * A reference to the {@link java.lang.instrument.Instrumentation} instance
 	 * passed to this agent's {@link #premain} method. This way we can keep
 	 * using the Instrumentation functionality!
@@ -29,12 +34,12 @@ public class Agent {
 	 * when this agent is specified to the Java VM.
 	 **/
 	public static void premain(String agentArgs, Instrumentation _inst) {
-		//System.out.println("Agent.premain() was called.");
+		logger.fine("Agent.premain() was called.");
 		start(agentArgs, _inst);
 	}
 
 	public static void agentmain(String agentArgs, Instrumentation _inst) {
-		//System.out.println("Agent.agentmain() was called.");
+		logger.fine("Agent.agentmain() was called.");
 		start(agentArgs, _inst);
 	}
 
@@ -109,10 +114,11 @@ public class Agent {
 	 * @throws UnmodifiableClassException
 	 */
 	public static void restransform(Class<?> ... classes) throws UnmodifiableClassException {
-		//System.out.println("retransform: "+inst.isRetransformClassesSupported());
-		//for (Class<?> clazz: classes){
-		//	System.out.println(clazz.toString()+" modifiable "+inst.isModifiableClass(clazz));			
-		//}
+		if (logger.isLoggable(Level.FINE)){
+	        for (Class<?> clazz: classes){
+	            logger.fine(clazz.toString()+" modifiable "+inst.isModifiableClass(clazz));          
+	        }			
+		}
 		inst.retransformClasses(classes);
 	}
 	
