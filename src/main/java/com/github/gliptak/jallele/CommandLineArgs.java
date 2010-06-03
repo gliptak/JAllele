@@ -1,6 +1,7 @@
 package com.github.gliptak.jallele;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.kohsuke.args4j.Argument;
@@ -11,8 +12,13 @@ public class CommandLineArgs {
 	
 	@SuppressWarnings("unchecked")
 	@Option(name="-sources",aliases={"--sources"},required=true,
-			handler=StringArrayOptionHandler.class, usage="list source files")
-	private List<String> sources=new ArrayList<String>();
+			handler=StringArrayOptionHandler.class, usage="list of source files")
+	private String[] sources=new String[0];
+	
+	@SuppressWarnings("unchecked")
+	@Option(name="-tests",aliases={"--tests"},required=true,
+			handler=StringArrayOptionHandler.class, usage="list of test files")
+	private String[] tests=new String[0];
 	
 	@Option(name="-count", aliases={"--count"}, required=true,
 			usage="number of test runs")
@@ -26,7 +32,14 @@ public class CommandLineArgs {
 	 * @return the sources
 	 */
 	public List<String> getSources() {
-		return sources;
+		return Arrays.asList(sources);
+	}
+
+	/**
+	 * @return the tests
+	 */
+	public List<String> getTests() {
+		return Arrays.asList(tests);
 	}
 
 	/**

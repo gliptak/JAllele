@@ -1,5 +1,8 @@
 package com.github.gliptak.jallele;
 
+import static org.junit.Assert.*;
+
+import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,8 +28,62 @@ public class MainTest {
 	}
 
 	@Test
-	public final void testMain() {
-		System.out.println("just a test"); // TODO
+	public final void testParseArgumentsNone() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(2));
 	}
 
+	@Test
+	public final void testParseArgumentsWrong() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"-wrong"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(2));
+	}
+
+	@Test
+	public final void testParseArgumentsMoreArgs() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"stuff"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(2));
+	}
+
+	@Test
+	public final void testParseArgumentsEach() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--sources", "Main", "--tests", "MainTest Main1Test"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+		assertThat(bean.getCount(), Is.is(1));
+		assertThat(bean.getSources().size(), Is.is(1));
+		assertThat(bean.getTests().size(), Is.is(2));
+	}
+
+	@Test
+	public final void testParseArgumentsEachMoreArgs() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--sources", "Main", "--tests", "MainTest Main1Test", "--count", "1", "stuff"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(2));
+	}
+
+	@Test
+	public final void testParseArgumentsTwice() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "2", "--sources", "Main Main1", "--tests", "MainTest"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+		assertThat(bean.getCount(), Is.is(2));
+		assertThat(bean.getSources().size(), Is.is(2));
+		assertThat(bean.getTests().size(), Is.is(1));
+	}
 }
