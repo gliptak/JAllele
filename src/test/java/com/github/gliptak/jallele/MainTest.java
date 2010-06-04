@@ -8,6 +8,12 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+
+import com.github.gliptak.jallele.Main.ExitException;
+import com.github.gliptak.jallele.Main.MockSystem;
+import com.github.gliptak.jallele.Main.NoExitSecurityManager;
 
 public class MainTest {
 
@@ -25,6 +31,21 @@ public class MainTest {
 
 	@After
 	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public final void testMain() throws Exception {
+		CommandLineArgs bean = new CommandLineArgs();
+		String[] args={"--count", "10", "--sources", "com.github.gliptak.jallele.testA.SimpleClass",
+				"--tests", "com.github.gliptak.jallele.testA.SimpleClassTest"};
+		SecurityManager securityManager = System.getSecurityManager();
+	    System.setSecurityManager(new NoExitSecurityManager());
+	    try {
+			Main.main(args);	    	
+	    } catch (ExitException ee) {
+			assertThat(ee.status, Is.is(0));
+		}
+	    System.setSecurityManager(securityManager);
 	}
 
 	@Test

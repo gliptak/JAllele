@@ -42,10 +42,7 @@ public class Main {
 	    int successful=0;
 	    for (int current=0; current<count; current++){
 			MockSystem system=new MockSystem();
-			Class.forName("com.github.gliptak.jallele.testA.SimpleClassTest");
-			String[] args={"com.github.gliptak.jallele.testA.SimpleClassTest"};
-//			Result result= new JUnitCore().runMain(system, tests.toArray(new String[0]));
-			Result result= new JUnitCore().runMain(system, args);
+			Result result= new JUnitCore().runMain(system, (String[])tests.toArray(new String[tests.size()]));
 			if (result.getFailureCount()==0){
 				successful++;
 			}
