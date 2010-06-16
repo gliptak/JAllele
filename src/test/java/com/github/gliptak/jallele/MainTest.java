@@ -1,6 +1,6 @@
 package com.github.gliptak.jallele;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import org.hamcrest.core.Is;
 import org.junit.After;
@@ -8,11 +8,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
 
 import com.github.gliptak.jallele.Main.ExitException;
-import com.github.gliptak.jallele.Main.MockSystem;
 import com.github.gliptak.jallele.Main.NoExitSecurityManager;
 
 public class MainTest {

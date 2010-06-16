@@ -6,6 +6,7 @@ package com.github.gliptak.jallele;
 import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -20,9 +21,21 @@ public class MethodRandomizerVisitor extends MethodAdapter {
 
 	private String className;
 
-	public MethodRandomizerVisitor(String className, MethodVisitor mv) {
+	private ClassRandomizer cr;
+
+	private int count=0;
+
+	private String methodName;
+
+	private String methodDesc;
+
+	public MethodRandomizerVisitor(String className, String methodName, String methodDesc,
+			MethodVisitor mv, ClassRandomizer cr) {
 		super(mv);
 		this.className=className;
+		this.methodName=methodName;
+		this.methodDesc=methodDesc;
+		this.cr=cr;
 	}
 
 	/* (non-Javadoc)
@@ -30,10 +43,11 @@ public class MethodRandomizerVisitor extends MethodAdapter {
 	 */
 	@Override
 	public void visitInsn(int opCode) {
-		logger.finer("opCode: "+opCode);
-		if (opCode == Opcodes.ICONST_2){
-			opCode=Opcodes.ICONST_3;
-		}
-		super.visitInsn(opCode);
+		logger.finer("count: "+count+" opCode: "+opCode);
+		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count);
+		vs.setOpCode(opCode);
+		VisitStatus newVs=cr.visit(vs);
+		count++;
+		super.visitInsn(newVs.getOpCode());			
 	}
 }

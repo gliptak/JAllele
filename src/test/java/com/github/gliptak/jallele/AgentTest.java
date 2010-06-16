@@ -5,6 +5,8 @@ package com.github.gliptak.jallele;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -58,7 +60,7 @@ public class AgentTest {
 	@Test
 	public void testAddRemoveTransformer() throws Exception {
 		Agent.attach();
-		ClassRandomizer cr = new ClassRandomizer();
+		ClassRandomizer cr = new ClassRandomizer(new ArrayList<String>());
 		Agent.addTransformer(cr, true);
 		Agent.removeTransformer(cr);
 	}

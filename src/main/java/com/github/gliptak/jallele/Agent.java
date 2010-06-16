@@ -19,10 +19,10 @@ import java.util.logging.Logger;
 import com.sun.tools.attach.VirtualMachine;
 
 public class Agent {
-    
+
 	private static Logger logger = Logger.getLogger(Agent.class.getName());
 
-    /**
+	/**
 	 * A reference to the {@link java.lang.instrument.Instrumentation} instance
 	 * passed to this agent's {@link #premain} method. This way we can keep
 	 * using the Instrumentation functionality!
@@ -47,7 +47,7 @@ public class Agent {
 		// Initialize the static variables we use to track information.
 		inst = _inst;
 	}
-	
+
 	/**
 	 * Dynamically attach this agent
 	 * 
@@ -55,7 +55,7 @@ public class Agent {
 	 */
 	public static void attach() throws Exception {
 		// prevent duplicate loading ...
-		if (inst!=null){
+		if (inst != null) {
 			return;
 		}
 		File jarFile = File.createTempFile("agent", ".jar");
@@ -64,9 +64,12 @@ public class Agent {
 		Manifest manifest = new Manifest();
 		Attributes mainAttributes = manifest.getMainAttributes();
 		mainAttributes.put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		mainAttributes.put(new Attributes.Name("Agent-Class"), Agent.class.getName());
-		//mainAttributes.put(new Attributes.Name("Premain-Class"), Agent.class.getName());
-		mainAttributes.put(new Attributes.Name("Can-Retransform-Classes"), "true");
+		mainAttributes.put(new Attributes.Name("Agent-Class"), Agent.class
+				.getName());
+		// mainAttributes.put(new Attributes.Name("Premain-Class"),
+		// Agent.class.getName());
+		mainAttributes.put(new Attributes.Name("Can-Retransform-Classes"),
+				"true");
 		mainAttributes.put(new Attributes.Name("Can-Redefine-Classes"), "true");
 
 		JarOutputStream jos = new JarOutputStream(
@@ -93,52 +96,57 @@ public class Agent {
 
 	/**
 	 * Add transformer
+	 * 
 	 * @param cft
-	 * @param canRefactor TODO
+	 * @param canRefactor
 	 */
-	public static void addTransformer(ClassFileTransformer cft, boolean canRefactor){
+	public static void addTransformer(ClassFileTransformer cft,	boolean canRefactor) {
 		inst.addTransformer(cft, canRefactor);
 	}
 
 	/**
 	 * Remove transformer
+	 * 
 	 * @param cft
 	 */
 	public static void removeTransformer(ClassFileTransformer cft) {
 		inst.removeTransformer(cft);
 	}
-	
+
 	/**
 	 * Force retransform of classes
+	 * 
 	 * @param classes
 	 * @throws UnmodifiableClassException
 	 */
-	public static void restransform(Class<?> ... classes) throws UnmodifiableClassException {
-		if (logger.isLoggable(Level.FINE)){
-	        for (Class<?> clazz: classes){
-	            logger.fine(clazz.toString()+" modifiable "+inst.isModifiableClass(clazz));          
-	        }			
+	public static void restransform(Class<?>... classes)
+			throws UnmodifiableClassException {
+		if (logger.isLoggable(Level.FINE)) {
+			for (Class<?> clazz : classes) {
+				logger.fine(clazz.toString() + " modifiable "
+						+ inst.isModifiableClass(clazz));
+			}
 		}
 		inst.retransformClasses(classes);
 	}
-	
-	   protected static byte[] getClassBytes(Class<?> clazz) throws IOException {
-	        String name = clazz.getName().replace('.', '/') + ".class";
-	        InputStream iStream = clazz.getClassLoader().getResourceAsStream(name);
-	        try {
-	            ByteArrayOutputStream oStream = new ByteArrayOutputStream();
-	            byte[] buffer = new byte[1024];
-	            while (true) {
-	                int len = iStream.read(buffer);
-	                if (len < 0) {
-	                    break;
-	                }
-	                oStream.write(buffer, 0, len);
-	            }
-	            return oStream.toByteArray();
-	        } finally {
-	            iStream.close();
-	        }
-	    }
+
+	protected static byte[] getClassBytes(Class<?> clazz) throws IOException {
+		String name = clazz.getName().replace('.', '/') + ".class";
+		InputStream iStream = clazz.getClassLoader().getResourceAsStream(name);
+		try {
+			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+			while (true) {
+				int len = iStream.read(buffer);
+				if (len < 0) {
+					break;
+				}
+				oStream.write(buffer, 0, len);
+			}
+			return oStream.toByteArray();
+		} finally {
+			iStream.close();
+		}
+	}
 
 }

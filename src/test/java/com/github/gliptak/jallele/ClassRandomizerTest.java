@@ -6,14 +6,23 @@ package com.github.gliptak.jallele;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.instrument.IllegalClassFormatException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
 
+import org.hamcrest.core.Is;
 import org.hamcrest.core.IsNot;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.internal.JUnitSystem;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 
 import com.github.gliptak.jallele.testA.SimpleClass;
 
@@ -22,6 +31,8 @@ import com.github.gliptak.jallele.testA.SimpleClass;
  * 
  */
 public class ClassRandomizerTest {
+
+	private static Logger logger = Logger.getLogger(ClassRandomizerTest.class.getName());
 
 	/**
 	 * @throws java.lang.Exception
@@ -66,10 +77,59 @@ public class ClassRandomizerTest {
 	@Test
 	public final void testTransform() throws IllegalClassFormatException, IOException {
 		byte[] in=Agent.getClassBytes(SimpleClass.class);
-		ClassRandomizer cr = new ClassRandomizer();
-		cr.setFilter(SimpleClass.class.getName());
-		byte[] out=cr.transform(null, SimpleClass.class.getName(), SimpleClass.class,
-				null, in);
-		assertThat(out, IsNot.not(in));
+		List<String> sources=new ArrayList<String>();
+		sources.add(SimpleClass.class.getName());
+		ClassRandomizer cr = new ClassRandomizer(sources);
+//		byte[] out=cr.transform(null, SimpleClass.class.getName(), SimpleClass.class, null, in);
+//		assertThat(out, IsNot.not(in));
+	}
+	
+	@Test
+	public void runJUnit() throws Exception{
+		String[] tests={"com.github.gliptak.jallele.testA.SimpleClassTest"};
+		MockSystem system=new MockSystem();
+		Result result=runSimpleClassTest(system, tests);
+		assertThat(0, Is.is(result.getFailureCount()));
+		for (int i=0;i<10;i++){
+			List<String> sources=new ArrayList<String>();
+			sources.add("com.github.gliptak.jallele.testA.SimpleClass");
+			Agent.attach();
+			ClassRandomizer cr=new ClassRandomizer(sources);
+			cr.recordMatches();
+	    	result=cr.randomizeRun(system, Arrays.asList(tests));
+			assertThat(0, IsNot.not(result.getFailureCount()));
+			Agent.removeTransformer(cr);
+		}
+		Agent.restransform(SimpleClass.class);
+		result=runSimpleClassTest(system, tests);
+		assertThat(0, Is.is(result.getFailureCount()));
+	}
+	
+	/**
+	 * 
+	 */
+	protected Result runSimpleClassTest(MockSystem system, String[] tests) {
+		Result result= new JUnitCore().runMain(system, tests);
+		logger.fine("exit code: "+system.getExitCode());
+		logger.fine(result.toString());
+		return result;
+	}
+
+	public class MockSystem implements JUnitSystem {
+		
+		protected int exitCode=0;
+
+		public int getExitCode() {
+			return exitCode;
+		}
+
+		public void exit(int code) {
+			exitCode=code;
+		}
+
+		public PrintStream out() {
+			return System.out;
+		}
+
 	}
 }

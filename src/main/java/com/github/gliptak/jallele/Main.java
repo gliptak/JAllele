@@ -31,25 +31,45 @@ public class Main {
 	    if (rc!=0){
 	    	return rc;
 	    }
-	    rc=runTests(bean.getCount(), bean.getSources(), bean.getArguments());
+	    rc=runTests(bean.getCount(), bean.getSources(), bean.getTests());
 	    return rc;
 	}
 
 	protected int runTests(int count, List<String> sources, List<String> tests) throws Exception {
-		Agent.attach();
 		SecurityManager securityManager = System.getSecurityManager();
 	    System.setSecurityManager(new NoExitSecurityManager());
-	    int successful=0;
+	    
+        // first run to succeed
+		MockSystem system=new MockSystem();
+		Result firstResult= new JUnitCore().runMain(system, (String[])tests.toArray(new String[tests.size()]));
+		if (firstResult.getFailureCount()!=0){
+			System.out.println("first run failed");
+			return 1;
+		}
+		
+		Agent.attach();
+		ClassRandomizer cr=new ClassRandomizer(sources);
+		cr.recordMatches();
+
+        // second run to succeed
+		Result secondResult= new JUnitCore().runMain(system, (String[])tests.toArray(new String[tests.size()]));
+		if (secondResult.getFailureCount()!=0){
+			System.out.println("second run failed");
+			return 1;
+		}
+		
+		
+		int expectedFailure=0;
 	    for (int current=0; current<count; current++){
-			MockSystem system=new MockSystem();
-			Result result= new JUnitCore().runMain(system, (String[])tests.toArray(new String[tests.size()]));
+	    	Result result=cr.randomizeRun(system, tests);
 			if (result.getFailureCount()==0){
-				successful++;
+				expectedFailure++;
 			}
 	    	count--;   	
 	    }
+	    
 	    System.setSecurityManager(securityManager);
-	    System.out.println("results "+successful+"/"+count+" ("+((float)successful/count)+")");
+	    System.out.println("results "+expectedFailure+"/"+count+" ("+((float)expectedFailure/count)+")");
 		return 0;
 	}
 

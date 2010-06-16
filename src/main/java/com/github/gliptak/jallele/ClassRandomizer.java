@@ -6,12 +6,23 @@ package com.github.gliptak.jallele;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
+import org.junit.internal.JUnitSystem;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
+import com.github.gliptak.jallele.Main.MockSystem;
+import com.github.gliptak.jallele.spi.IConstInstructionVisitor;
+import com.github.gliptak.jallele.spi.InstructionVisitor;
 
 /**
  * @author gliptak
@@ -21,28 +32,67 @@ public class ClassRandomizer implements ClassFileTransformer {
 
 	private static Logger logger = Logger.getLogger(ClassRandomizer.class.getName());
 
-	private String regex;
+	private List<String> sources=new ArrayList<String>();
+	
+	private List<InstructionVisitor> visitors=new ArrayList<InstructionVisitor>();
 
+	private boolean recording=false;
+
+	private List<VisitStatus[]> matches=new ArrayList<VisitStatus[]>();
+
+	private VisitStatus[] currentStatusPair=null;
+	
+	public ClassRandomizer(List<String> sources){
+		this.sources=sources;
+		initVisitors();
+	}
+
+	protected void initVisitors() {
+		visitors.add(new IConstInstructionVisitor());
+	}
+
+	public void recordMatches() throws Exception {
+		recording=true;
+		Agent.addTransformer(this, true);
+		for (String source: sources){
+			Agent.restransform(Class.forName(source));
+		}
+		recording=false;
+	}
+	
+	public Result randomizeRun(JUnitSystem system, List<String> tests) throws Exception {
+		int selected=(int)Math.floor(Math.random()*matches.size());
+		currentStatusPair=matches.get(selected);
+		String classNameWithDots=currentStatusPair[selected].getClassName().replaceAll("/", ".");
+		Agent.restransform(Class.forName(classNameWithDots));
+		Result result=new JUnitCore().runMain(system, (String[])tests.toArray(new String[tests.size()]));
+		currentStatusPair=null;
+		Agent.restransform(Class.forName(classNameWithDots));
+		return result;
+	}
+	
 	@Override
 	public byte[] transform(ClassLoader loader, String className,
 			Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
 			byte[] classfileBuffer) throws IllegalClassFormatException {
 		logger.fine("Transform called for " + className);
 		byte[] transformed = null;
-
-		if (Pattern.matches(regex, className)) {
+		
+		String classNameWithDots=className.replaceAll("/", ".");
+		if (sources.contains(classNameWithDots)){
 			try {
-				transformed = randomize(className, classfileBuffer);
+			    transformed = process(className, classfileBuffer);
 			} catch (Exception e) {
 				throw new IllegalClassFormatException(e.getMessage());
-			}
+			}			
 		}
 
 		return transformed;
 	}
 
-	private byte[] randomize(String className, byte[] classfileBuffer) {
+	protected byte[] process(String className, byte[] classfileBuffer) {
 	    final String className1=className;
+	    final ClassRandomizer cr1=this;
 		ClassWriter cw = new ClassWriter(0) {
 			@Override
 			public MethodVisitor visitMethod(final int access,
@@ -50,7 +100,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 					final String signature, final String[] exceptions) {
 				MethodVisitor mv=super.visitMethod(access, name, desc, signature,
 						exceptions);
-				return new MethodRandomizerVisitor(className1, mv);
+				return new MethodRandomizerVisitor(className1, name, desc, mv, cr1);
 			};
 		};
 		ClassReader cr = new ClassReader(classfileBuffer);
@@ -58,7 +108,33 @@ public class ClassRandomizer implements ClassFileTransformer {
 		return cw.toByteArray();
 	}
 
-	public void setFilter(String regex) {
-		this.regex = regex;
+	public VisitStatus visit(VisitStatus vs) {
+		if (recording){
+			for (InstructionVisitor visitor: visitors){
+				VisitStatus newVs=visitor.isMatch(vs);
+				if (!vs.equals(newVs)){
+					recordMatch(vs, newVs);
+				}
+			}
+			return vs;
+		} else {
+			if (currentStatusPair==null){
+				return vs;				
+			} else {
+				if (vs.equals(currentStatusPair[0])){
+					return currentStatusPair[1];					
+				} else {
+					return vs;
+				}
+			}
+		}
 	}
+
+	protected void recordMatch(VisitStatus vs, VisitStatus newVs) {
+		VisitStatus[] pair=new VisitStatus[2];
+		pair[0]=vs;
+		pair[1]=newVs;
+		matches.add(pair);
+	}
+
 }
