@@ -52,6 +52,8 @@ public class ClassRandomizer implements ClassFileTransformer {
 	}
 
 	public void recordMatches() throws Exception {
+		// reset ...
+		matches=new ArrayList<VisitStatus[]>();
 		recording=true;
 		Agent.addTransformer(this, true);
 		for (String source: sources){
@@ -61,13 +63,18 @@ public class ClassRandomizer implements ClassFileTransformer {
 	}
 	
 	public Result randomizeRun(JUnitSystem system, List<String> tests) throws Exception {
-		int selected=(int)Math.floor(Math.random()*matches.size());
-		currentStatusPair=matches.get(selected);
-		String classNameWithDots=currentStatusPair[selected].getClassName().replaceAll("/", ".");
-		Agent.restransform(Class.forName(classNameWithDots));
+		String classNameWithDots=null;
+		if (matches.size()>0){
+			int selected=(int)Math.floor(Math.random()*matches.size());
+			currentStatusPair=matches.get(selected);			
+			classNameWithDots=currentStatusPair[selected].getClassName().replaceAll("/", ".");
+			Agent.restransform(Class.forName(classNameWithDots));
+		}
 		Result result=new JUnitCore().runMain(system, (String[])tests.toArray(new String[tests.size()]));
-		currentStatusPair=null;
-		Agent.restransform(Class.forName(classNameWithDots));
+		if (matches.size()>0){
+			currentStatusPair=null;
+			Agent.restransform(Class.forName(classNameWithDots));			
+		}
 		return result;
 	}
 	

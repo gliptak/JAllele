@@ -105,6 +105,19 @@ public class ClassRandomizerTest {
 		assertThat(0, Is.is(result.getFailureCount()));
 	}
 	
+	@Test
+	public void runJUnitNoMatch() throws Exception{
+		MockSystem system=new MockSystem();
+		String[] tests={"com.github.gliptak.jallele.testA.SimpleClassTest"};
+		List<String> sources=new ArrayList<String>();
+		sources.add("com.github.gliptak.jallele.testA.SimpleClass");
+		Agent.attach();
+		ClassRandomizer cr=new ClassRandomizer(sources);
+    	Result result=cr.randomizeRun(system, Arrays.asList(tests));
+		assertThat(0, Is.is(result.getFailureCount()));
+		Agent.removeTransformer(cr);
+	}
+	
 	/**
 	 * 
 	 */

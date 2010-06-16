@@ -62,7 +62,7 @@ public class Main {
 		int expectedFailure=0;
 	    for (int current=0; current<count; current++){
 	    	Result result=cr.randomizeRun(system, tests);
-			if (result.getFailureCount()==0){
+			if (result.getFailureCount()>0){
 				expectedFailure++;
 			}
 	    	count--;   	

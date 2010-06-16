@@ -1,17 +1,27 @@
 package com.github.gliptak.jallele.spi;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.objectweb.asm.Opcodes;
 
 import com.github.gliptak.jallele.VisitStatus;
 
 public class IConstInstructionVisitor implements InstructionVisitor {
 
+	protected int[] values={Opcodes.ICONST_0, Opcodes.ICONST_1, Opcodes.ICONST_2,
+			Opcodes.ICONST_3, Opcodes.ICONST_4, Opcodes.ICONST_5, Opcodes.ICONST_M1};
+	
 	@Override
 	public VisitStatus isMatch(VisitStatus vs) {
 		VisitStatus newVs=new VisitStatus(vs);
-		if (vs.getOpCode() == Opcodes.ICONST_2){
-			newVs.setOpCode(Opcodes.ICONST_3);
+		if (ArrayUtils.contains(values, vs.getOpCode())){
+			int which=ArrayUtils.indexOf(values, vs.getOpCode());
+			int selected=-1;
+			do {
+				selected=(int)Math.floor(Math.random()*values.length);
+			} while (which==selected);
+			newVs.setOpCode(values[selected]);
 		}
+		
 		return newVs;
 	}
 
