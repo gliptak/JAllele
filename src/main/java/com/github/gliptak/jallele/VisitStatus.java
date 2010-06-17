@@ -3,6 +3,7 @@ package com.github.gliptak.jallele;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.objectweb.asm.Label;
 
 public class VisitStatus {
 
@@ -11,6 +12,7 @@ public class VisitStatus {
 	private String className=null;
 	private String methodDesc=null;
 	private String methodName=null;
+	private Label label=null;
 	
 	public VisitStatus(String className, String methodName, String methodDesc, int count) {
 		this.className=className;
@@ -26,6 +28,7 @@ public class VisitStatus {
 		this.methodDesc=vs.getMethodDesc();
 		this.count=vs.getCount();
 		this.opCode=vs.getOpCode();
+		this.label=vs.getLabel();
 	}
 
 	public void setOpCode(int opCode) {
@@ -71,5 +74,16 @@ public class VisitStatus {
 	 */
 	public String getMethodName() {
 		return methodName;
+	}
+
+	public void setLabel(Label label) {
+		this.label=label;
+	}
+
+	/**
+	 * @return the label
+	 */
+	public Label getLabel() {
+		return label;
 	}
 }

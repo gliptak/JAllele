@@ -24,7 +24,7 @@ import org.junit.internal.JUnitSystem;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
-import com.github.gliptak.jallele.testA.SimpleClass;
+import com.github.gliptak.jallele.testInsn.SimpleClass;
 
 /**
  * @author gliptak
@@ -85,37 +85,53 @@ public class ClassRandomizerTest {
 	}
 	
 	@Test
-	public void runJUnit() throws Exception{
-		String[] tests={"com.github.gliptak.jallele.testA.SimpleClassTest"};
+	public void testSimple() throws Exception{
+		String[] tests={"com.github.gliptak.jallele.testInsn.SimpleClassTest"};
 		MockSystem system=new MockSystem();
 		Result result=runSimpleClassTest(system, tests);
-		assertThat(0, Is.is(result.getFailureCount()));
+		assertThat(result.getFailureCount(), Is.is(0));
 		for (int i=0;i<10;i++){
 			List<String> sources=new ArrayList<String>();
-			sources.add("com.github.gliptak.jallele.testA.SimpleClass");
+			sources.add("com.github.gliptak.jallele.testInsn.SimpleClass");
 			Agent.attach();
 			ClassRandomizer cr=new ClassRandomizer(sources);
 			cr.recordMatches();
 	    	result=cr.randomizeRun(system, Arrays.asList(tests));
-			assertThat(0, IsNot.not(result.getFailureCount()));
+			assertThat(result.getFailureCount(), IsNot.not(0));
 			Agent.removeTransformer(cr);
 		}
 		Agent.restransform(SimpleClass.class);
 		result=runSimpleClassTest(system, tests);
-		assertThat(0, Is.is(result.getFailureCount()));
+		assertThat(result.getFailureCount(), Is.is(0));
 	}
 	
 	@Test
-	public void runJUnitNoMatch() throws Exception{
+	public void testSimpleNoMatch() throws Exception{
 		MockSystem system=new MockSystem();
-		String[] tests={"com.github.gliptak.jallele.testA.SimpleClassTest"};
+		String[] tests={"com.github.gliptak.jallele.testInsn.SimpleClassTest"};
 		List<String> sources=new ArrayList<String>();
-		sources.add("com.github.gliptak.jallele.testA.SimpleClass");
+		sources.add("com.github.gliptak.jallele.testInsn.SimpleClass");
 		Agent.attach();
 		ClassRandomizer cr=new ClassRandomizer(sources);
     	Result result=cr.randomizeRun(system, Arrays.asList(tests));
-		assertThat(0, Is.is(result.getFailureCount()));
+		assertThat(result.getFailureCount(), Is.is(0));
 		Agent.removeTransformer(cr);
+	}
+	
+	@Test
+	public void runJumpTest() throws Exception{
+		String[] tests={"com.github.gliptak.jallele.testJump.IfNullTest"};
+		List<String> sources=new ArrayList<String>();
+		sources.add("com.github.gliptak.jallele.testJump.IfNull");
+		MockSystem system=new MockSystem();
+		for (int i=0;i<10;i++){
+			Agent.attach();
+			ClassRandomizer cr=new ClassRandomizer(sources);
+			cr.recordMatches();
+			Result result=cr.randomizeRun(system, Arrays.asList(tests));
+			assertThat(result.getFailureCount(), IsNot.not(0));
+			Agent.removeTransformer(cr);
+		}
 	}
 	
 	/**

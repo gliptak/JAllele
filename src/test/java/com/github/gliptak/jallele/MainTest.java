@@ -33,8 +33,8 @@ public class MainTest {
 	@Test
 	public final void testMain() throws Exception {
 		CommandLineArgs bean = new CommandLineArgs();
-		String[] args={"--count", "10", "--sources", "com.github.gliptak.jallele.testA.SimpleClass",
-				"--tests", "com.github.gliptak.jallele.testA.SimpleClassTest"};
+		String[] args={"--count", "10", "--sources", "com.github.gliptak.jallele.testInsn.SimpleClass",
+				"--tests", "com.github.gliptak.jallele.testInsn.SimpleClassTest"};
 		SecurityManager securityManager = System.getSecurityManager();
 	    System.setSecurityManager(new NoExitSecurityManager());
 	    try {

@@ -22,6 +22,7 @@ import org.objectweb.asm.Opcodes;
 
 import com.github.gliptak.jallele.Main.MockSystem;
 import com.github.gliptak.jallele.spi.IConstInstructionVisitor;
+import com.github.gliptak.jallele.spi.IfNullInstructionVisitor;
 import com.github.gliptak.jallele.spi.InstructionVisitor;
 
 /**
@@ -49,6 +50,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 
 	protected void initVisitors() {
 		visitors.add(new IConstInstructionVisitor());
+		visitors.add(new IfNullInstructionVisitor());
 	}
 
 	public void recordMatches() throws Exception {
@@ -67,7 +69,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 		if (matches.size()>0){
 			int selected=(int)Math.floor(Math.random()*matches.size());
 			currentStatusPair=matches.get(selected);			
-			classNameWithDots=currentStatusPair[selected].getClassName().replaceAll("/", ".");
+			classNameWithDots=currentStatusPair[0].getClassName().replaceAll("/", ".");
 			Agent.restransform(Class.forName(classNameWithDots));
 		}
 		Result result=new JUnitCore().runMain(system, (String[])tests.toArray(new String[tests.size()]));
@@ -128,7 +130,9 @@ public class ClassRandomizer implements ClassFileTransformer {
 			if (currentStatusPair==null){
 				return vs;				
 			} else {
+				currentStatusPair[0].setLabel(vs.getLabel());
 				if (vs.equals(currentStatusPair[0])){
+					currentStatusPair[1].setLabel(vs.getLabel());
 					return currentStatusPair[1];					
 				} else {
 					return vs;

@@ -43,11 +43,23 @@ public class MethodRandomizerVisitor extends MethodAdapter {
 	 */
 	@Override
 	public void visitInsn(int opCode) {
-		logger.finer("count: "+count+" opCode: "+opCode);
 		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count);
 		vs.setOpCode(opCode);
 		VisitStatus newVs=cr.visit(vs);
 		count++;
 		super.visitInsn(newVs.getOpCode());			
+	}
+
+	/* (non-Javadoc)
+	 * @see org.objectweb.asm.MethodAdapter#visitJumpInsn(int, org.objectweb.asm.Label)
+	 */
+	@Override
+	public void visitJumpInsn(int opCode, Label label) {
+		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count);
+		vs.setOpCode(opCode);
+		vs.setLabel(label);
+		VisitStatus newVs=cr.visit(vs);
+		count++;
+		super.visitJumpInsn(newVs.getOpCode(), label);
 	}
 }

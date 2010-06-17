@@ -52,13 +52,13 @@ public class AgentTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testAttach() throws Exception {
+	public void testInsnttach() throws Exception {
 		Agent.attach();
 		Agent.attach();
 	}
 	
 	@Test
-	public void testAddRemoveTransformer() throws Exception {
+	public void testInsnddRemoveTransformer() throws Exception {
 		Agent.attach();
 		ClassRandomizer cr = new ClassRandomizer(new ArrayList<String>());
 		Agent.addTransformer(cr, true);
