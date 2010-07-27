@@ -6,6 +6,7 @@ package com.github.gliptak.jallele.spi;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
+import org.hamcrest.core.Is;
 import org.hamcrest.core.IsNot;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -76,6 +77,21 @@ public class IConstInstructionVisitorTest {
 		assertThat(vsNew.getOpCode(), anyOf(equalTo(Opcodes.ICONST_0), equalTo(Opcodes.ICONST_1),
 				equalTo(Opcodes.ICONST_2), equalTo(Opcodes.ICONST_3), equalTo(Opcodes.ICONST_4),
 				equalTo(Opcodes.ICONST_5), equalTo(Opcodes.ICONST_M1)));
+		vsNew.setOpCode(opCode);
+		assertThat(vsNew, equalTo(vs));
+	}
+
+	/**
+	 * Test method for {@link com.github.gliptak.jallele.spi.IConstInstructionVisitor#isMatch(com.github.gliptak.jallele.VisitStatus)}.
+	 */
+	@Test
+	public final void testIsMatchBool() {
+		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10);
+		int opCode=Opcodes.ICONST_1;
+		vs.setOpCode(opCode);
+		IConstInstructionVisitor v=new IConstInstructionVisitor();
+		VisitStatus vsNew=v.isMatch(vs);
+		assertThat(vsNew.getOpCode(), Is.is(Opcodes.ICONST_0));
 		vsNew.setOpCode(opCode);
 		assertThat(vsNew, equalTo(vs));
 	}
