@@ -106,6 +106,27 @@ public class ClassRandomizerTest {
 	}
 	
 	@Test
+	public void testBool() throws Exception{
+		String[] tests={"com.github.gliptak.jallele.testInsn.BoolClassTest"};
+		MockSystem system=new MockSystem();
+		Result result=runSimpleClassTest(system, tests);
+		assertThat(result.getFailureCount(), Is.is(0));
+		for (int i=0;i<10;i++){
+			List<String> sources=new ArrayList<String>();
+			sources.add("com.github.gliptak.jallele.testInsn.BoolClass");
+			Agent.attach();
+			ClassRandomizer cr=new ClassRandomizer(sources);
+			cr.recordMatches();
+            result=cr.randomizeRun(system, Arrays.asList(tests));
+			assertThat(result.getFailureCount(), IsNot.not(0));
+			Agent.removeTransformer(cr);
+		}
+		Agent.restransform(SimpleClass.class);
+		result=runSimpleClassTest(system, tests);
+		assertThat(result.getFailureCount(), Is.is(0));
+	}
+	
+	@Test
 	public void testSimpleNoMatch() throws Exception{
 		MockSystem system=new MockSystem();
 		String[] tests={"com.github.gliptak.jallele.testInsn.SimpleClassTest"};

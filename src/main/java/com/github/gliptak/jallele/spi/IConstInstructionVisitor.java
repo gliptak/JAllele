@@ -14,12 +14,17 @@ public class IConstInstructionVisitor implements InstructionVisitor {
 	public VisitStatus isMatch(VisitStatus vs) {
 		VisitStatus newVs=new VisitStatus(vs);
 		if (ArrayUtils.contains(values, vs.getOpCode())){
-			int which=ArrayUtils.indexOf(values, vs.getOpCode());
-			int selected=-1;
-			do {
-				selected=(int)Math.floor(Math.random()*values.length);
-			} while (which==selected);
-			newVs.setOpCode(values[selected]);
+			if (Opcodes.ICONST_1 == vs.getOpCode()){
+				// TODO: is there a better way to process booleans?
+				newVs.setOpCode(Opcodes.ICONST_0);
+			} else {
+				int which=ArrayUtils.indexOf(values, vs.getOpCode());
+				int selected=-1;
+				do {
+					selected=(int)Math.floor(Math.random()*values.length);
+				} while (which==selected);
+				newVs.setOpCode(values[selected]);				
+			}
 		}
 		
 		return newVs;
