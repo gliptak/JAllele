@@ -24,6 +24,7 @@ import com.github.gliptak.jallele.Main.MockSystem;
 import com.github.gliptak.jallele.spi.IConstInstructionVisitor;
 import com.github.gliptak.jallele.spi.IfNullInstructionVisitor;
 import com.github.gliptak.jallele.spi.InstructionVisitor;
+import com.github.gliptak.jallele.spi.LConstInstructionVisitor;
 
 /**
  * @author gliptak
@@ -51,6 +52,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 	protected void initVisitors() {
 		visitors.add(new IConstInstructionVisitor());
 		visitors.add(new IfNullInstructionVisitor());
+		visitors.add(new LConstInstructionVisitor());
 	}
 
 	public void recordMatches() throws Exception {
