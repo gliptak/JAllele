@@ -2,11 +2,14 @@ Here is the origin for the project's name:
 
 http://en.wikipedia.org/wiki/Allele
 
-Notes:
+Current status of the project is listed at bytecode.html. Currently implemented bytecodes
+display the corresponding handler.
 
-Distribution of the mutation will be based on the number of occurrences
-for the various mutators. An initial run will be used to gather those
-statistics.
+An initial run will determine a list of all possible mutations.
+The actual mutation run will choose one of the "pre-calculated" mutations to validate
+that the unit test bed detects this change. 
+
+Notes:
 
 What is the best way to specify classes to mutate?
 
