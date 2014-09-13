@@ -8,7 +8,6 @@
 		<groupId>com.github.gliptak</groupId>
 		<version>0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.github.gliptak</groupId>
 	<artifactId>jallele-engine</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<name>JAllele Randomizer Engine</name>
@@ -36,7 +35,7 @@
 			<activation>
 				<property>
 					<name>java.vendor</name>
-					<value>Sun Microsystems Inc.</value>
+					<value>Oracle Corporation</value>
 				</property>
 			</activation>
 			<dependencies>
