@@ -1070,12 +1070,20 @@
 </tr> 
 <tr>
 <td>TBD</td> 
+<td>invokedynamic</td> 
+<td align="center">ba</td> 
+<td>indexbyte1, indexbyte2, 0, 0</td> 
+<td>[arg1, [arg2 ...]] →</td> 
+<td>invokes a dynamic method identified by method reference <i>index</i> in constant pool (<i>indexbyte1 &lt;&lt; 8 + indexbyte2</i>)</td> 
+</tr>
+<tr>
+<td>TBD</td> 
 <td>invokeinterface</td> 
 <td align="center">b9</td> 
 <td>indexbyte1, indexbyte2, count, 0</td> 
 <td>objectref, [arg1, arg2, ...] →</td> 
 <td>invokes an interface method on object <i>objectref</i>, where the interface method is identified by method reference <i>index</i> in constant pool (<i>indexbyte1 &lt;&lt; 8 + indexbyte2</i>)</td> 
-</tr> 
+</tr>
 <tr>
 <td>TBD</td> 
 <td>invokespecial</td> 
@@ -1083,7 +1091,7 @@
 <td>indexbyte1, indexbyte2</td> 
 <td>objectref, [arg1, arg2, ...] →</td> 
 <td>invoke instance method on object <i>objectref</i>, where the method is identified by method reference <i>index</i> in constant pool (<i>indexbyte1 &lt;&lt; 8 + indexbyte2</i>)</td> 
-</tr> 
+</tr>
 <tr>
 <td>TBD</td> 
 <td>invokestatic</td> 
