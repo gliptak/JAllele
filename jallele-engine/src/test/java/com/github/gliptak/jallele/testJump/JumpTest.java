@@ -60,4 +60,25 @@ public class JumpTest {
 		assertThat(runner.getFailureCount(), Is.is(0));
 	}
 
+	@Test
+	public void testRunIfIntegerCompare() throws Exception{
+		String[] tests={"com.github.gliptak.jallele.testJump.IfIntegerCompareTest"};
+		List<String> sources=new ArrayList<String>();
+		sources.add("com.github.gliptak.jallele.testJump.IfIntegerCompare");
+		TestRunner runner=new EngineJUnit4Runner(Arrays.asList(tests));
+		runner.runTests();
+		assertThat(runner.getFailureCount(), Is.is(0));
+		for (int i=0;i<10;i++){
+			Agent.attach();
+			ClassRandomizer cr=new ClassRandomizer(sources, runner);
+			cr.recordMatches();
+			cr.randomizeRun();
+			assertThat(runner.getFailureCount(), IsNot.not(0));
+			Agent.removeTransformer(cr);
+		}
+		Agent.restransform(IfNull.class);
+		runner.runTests();
+		assertThat(runner.getFailureCount(), Is.is(0));
+	}
+
 }

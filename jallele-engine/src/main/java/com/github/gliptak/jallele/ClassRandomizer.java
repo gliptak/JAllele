@@ -16,6 +16,7 @@ import org.objectweb.asm.MethodVisitor;
 
 import com.github.gliptak.jallele.spi.IConstInstructionVisitor;
 import com.github.gliptak.jallele.spi.IfACompareInstructionVisitor;
+import com.github.gliptak.jallele.spi.IfICompareInstructionVisitor;
 import com.github.gliptak.jallele.spi.IfNullInstructionVisitor;
 import com.github.gliptak.jallele.spi.InstructionVisitor;
 import com.github.gliptak.jallele.spi.LConstInstructionVisitor;
@@ -51,6 +52,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 		visitors.add(new IfNullInstructionVisitor());
 		visitors.add(new LConstInstructionVisitor());
 		visitors.add(new IfACompareInstructionVisitor());
+		visitors.add(new IfICompareInstructionVisitor());
 	}
 
 	public void recordMatches() throws Exception {
