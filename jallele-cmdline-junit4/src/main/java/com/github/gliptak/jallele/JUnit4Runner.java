@@ -25,7 +25,7 @@ public class JUnit4Runner implements TestRunner {
 
 	public void runTests() {
         try {
-            Class[] argClasses={JUnitSystem.class, String[].class};
+            Class<?>[] argClasses={JUnitSystem.class, String[].class};
             Method method = JUnitCore.class.getDeclaredMethod("runMain", argClasses);
             method.setAccessible(true);
             Object[] args = {system, (String[])tests.toArray(new String[tests.size()])};
