@@ -1,0 +1,4 @@
+include 'jallele-engine'
+include 'jallele-cmdline-junit4'
+
+rootProject.name = 'jallele'

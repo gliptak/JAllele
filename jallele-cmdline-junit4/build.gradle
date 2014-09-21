@@ -1,0 +1,14 @@
+dependencies {
+    compile project(':jallele-engine')
+    compile "args4j:args4j:2.0.12"
+    compile "junit:junit:[4.0,)"
+
+    jar {
+        manifest {
+            attributes 'Premain-Class' : 'com.github.gliptak.jallele.Agent',
+                       'Agent-Class' : 'com.github.gliptak.jallele.Agent',
+                       'Can-Redefine-Classes' : true,
+                       'Can-Retransform-Classes' : true
+        }
+    }
+}

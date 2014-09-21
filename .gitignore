@@ -1,5 +1,7 @@
 .project
 .classpath
 .settings
+.gitignore
+.gradle/
 bin/
-target/
+build/
