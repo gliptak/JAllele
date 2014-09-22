@@ -1,14 +1,29 @@
 dependencies {
     compile project(':jallele-engine')
     compile "args4j:args4j:2.0.12"
-    compile "junit:junit:[4.0,)"
+    compile "junit:junit:4.+"
+}
 
-    jar {
-        manifest {
-            attributes 'Premain-Class' : 'com.github.gliptak.jallele.Agent',
-                       'Agent-Class' : 'com.github.gliptak.jallele.Agent',
-                       'Can-Redefine-Classes' : true,
-                       'Can-Retransform-Classes' : true
-        }
+def attr = ['Premain-Class' : 'com.github.gliptak.jallele.Agent',
+        'Agent-Class' : 'com.github.gliptak.jallele.Agent',
+        'Can-Redefine-Classes' : true,
+        'Can-Retransform-Classes' : true]
+
+task uberjar(type: Jar) {
+	manifest {
+		attributes attr
+	}
+	baseName = project.name + '-all'
+	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	with jar
+}
+
+artifacts {
+    archives uberjar
+}
+
+jar {
+    manifest {
+        attributes attr
     }
 }
