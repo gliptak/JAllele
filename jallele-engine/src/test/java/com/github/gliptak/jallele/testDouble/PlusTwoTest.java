@@ -1,4 +1,4 @@
-package com.github.gliptak.jallele.testInsn;
+package com.github.gliptak.jallele.testDouble;
 
 import static org.junit.Assert.*;
 
@@ -30,20 +30,19 @@ public class PlusTwoTest {
 	@Test
 	public final void testTwoTimes() {
 		PlusTwo sc=new PlusTwo();
-		int result=sc.timesTwo(4);
-		assertThat(result, Is.is(8));
+		double result=sc.timesTwo(4.0);
+		assertThat(result, Is.is(8.0));
 	}
 
 	@Test
 	public final void testPlusTwo() {
 		PlusTwo sc=new PlusTwo();
-		int result=sc.plusTwo(5);
-		assertThat(result, Is.is(7));
+		double result=sc.plusTwo(5.0);
+		assertThat(result, Is.is(7.0));
 	}
 	
-	@Test(expected=ArithmeticException.class)
+	@Test
 	public void testRuntimeException() {
-		@SuppressWarnings("unused")
-		int i=5/0;
+		assertThat(Double.isInfinite(5.0/0.0), Is.is(true));
 	}
 }

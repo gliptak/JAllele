@@ -1,7 +1,7 @@
 package com.github.gliptak.jallele.testInsn;
 
 public class PlusTwo {
-	public int twoTimes(int i){
+	public int timesTwo(int i){
 		return 2*i;
 	}
 	

@@ -14,6 +14,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 
+import com.github.gliptak.jallele.spi.DoubleOpInstructionVisitor;
 import com.github.gliptak.jallele.spi.IConstInstructionVisitor;
 import com.github.gliptak.jallele.spi.IfACompareInstructionVisitor;
 import com.github.gliptak.jallele.spi.IfICompareInstructionVisitor;
@@ -53,6 +54,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 		visitors.add(new LConstInstructionVisitor());
 		visitors.add(new IfACompareInstructionVisitor());
 		visitors.add(new IfICompareInstructionVisitor());
+		visitors.add(new DoubleOpInstructionVisitor());
 	}
 
 	public void recordMatches() throws Exception {
