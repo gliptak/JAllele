@@ -6,14 +6,14 @@ package com.github.gliptak.jallele;
 import java.util.logging.Logger;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * @author gliptak
  * 
  */
-public class MethodRandomizerVisitor extends MethodAdapter {
+public class MethodRandomizerVisitor extends MethodVisitor {
 
 	private static Logger logger = Logger.getLogger(MethodRandomizerVisitor.class.getName());
 
@@ -29,7 +29,7 @@ public class MethodRandomizerVisitor extends MethodAdapter {
 
 	public MethodRandomizerVisitor(String className, String methodName, String methodDesc,
 			MethodVisitor mv, ClassRandomizer cr) {
-		super(mv);
+		super(Opcodes.ASM5, mv);
 		this.className=className;
 		this.methodName=methodName;
 		this.methodDesc=methodDesc;

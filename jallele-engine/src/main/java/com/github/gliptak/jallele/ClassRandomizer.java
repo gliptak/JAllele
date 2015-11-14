@@ -11,8 +11,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 import com.github.gliptak.jallele.spi.DoubleOpInstructionVisitor;
 import com.github.gliptak.jallele.spi.IConstInstructionVisitor;
@@ -104,7 +106,8 @@ public class ClassRandomizer implements ClassFileTransformer {
 	protected byte[] process(String className, byte[] classfileBuffer) {
 	    final String className1=className;
 	    final ClassRandomizer cr1=this;
-		ClassWriter cw = new ClassWriter(0) {
+		ClassWriter cw = new ClassWriter(0);
+		ClassVisitor cv = new ClassVisitor(Opcodes.ASM5, cw) {
 			@Override
 			public MethodVisitor visitMethod(final int access,
 					final String name, final String desc,
@@ -115,7 +118,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 			};
 		};
 		ClassReader cr = new ClassReader(classfileBuffer);
-		cr.accept(cw, 0);
+		cr.accept(cv, 0);
 		return cw.toByteArray();
 	}
 

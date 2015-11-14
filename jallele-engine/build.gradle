@@ -2,7 +2,7 @@ def jdkHome = System.getenv("JAVA_HOME")
 
 dependencies {
     compile files("$jdkHome/lib/tools.jar")
-    compile "asm:asm-all:3.3.1"
+    compile "org.ow2.asm:asm-all:5.0.3"
     compile "org.apache.commons:commons-lang3:3.4"
     testCompile "junit:junit:[4.0,)"
 }
