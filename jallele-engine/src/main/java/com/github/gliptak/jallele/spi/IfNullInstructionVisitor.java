@@ -1,6 +1,6 @@
 package com.github.gliptak.jallele.spi;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.objectweb.asm.Opcodes;
 
 import com.github.gliptak.jallele.VisitStatus;
