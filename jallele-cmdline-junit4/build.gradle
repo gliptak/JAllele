@@ -4,22 +4,37 @@ dependencies {
     compile "junit:junit:4.+"
 }
 
-def attr = ['Premain-Class' : 'com.github.gliptak.jallele.Agent',
+def attr = [
+        'Premain-Class' : 'com.github.gliptak.jallele.Agent',
         'Agent-Class' : 'com.github.gliptak.jallele.Agent',
         'Can-Redefine-Classes' : true,
-        'Can-Retransform-Classes' : true]
+        'Can-Retransform-Classes' : true,
+        'Main-Class' : 'com.github.gliptak.jallele.Main'
+        ]
 
 task uberjar(type: Jar) {
 	manifest {
 		attributes attr
 	}
 	baseName = project.name + '-all'
+    from files(sourceSets.main.output.classesDir)
 	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-	with jar
+}
+
+task uberjartest(type: Jar) {
+    manifest {
+        attributes attr
+    }
+    baseName = project.name + '-test'
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.test.output.classesDir)
+    from { configurations.testCompile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
 
 artifacts {
     archives uberjar
+    archives uberjartest
 }
 
 jar {
