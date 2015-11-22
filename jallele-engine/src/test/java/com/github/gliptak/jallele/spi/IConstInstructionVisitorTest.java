@@ -66,6 +66,7 @@ public class IConstInstructionVisitorTest {
 	/**
 	 * Test method for {@link com.github.gliptak.jallele.spi.IConstInstructionVisitor#isMatch(com.github.gliptak.jallele.VisitStatus)}.
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public final void testIsMatch() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10);
