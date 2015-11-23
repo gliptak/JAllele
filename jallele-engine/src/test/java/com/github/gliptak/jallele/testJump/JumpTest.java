@@ -1,84 +1,35 @@
 package com.github.gliptak.jallele.testJump;
 
-import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.hamcrest.core.Is;
-import org.hamcrest.core.IsNot;
 import org.junit.Test;
-
-import com.github.gliptak.jallele.Agent;
-import com.github.gliptak.jallele.ClassRandomizer;
-import com.github.gliptak.jallele.EngineJUnit4Runner;
-import com.github.gliptak.jallele.TestRunner;
-
+import com.github.gliptak.jallele.Helper;
 
 public class JumpTest {
 	
 	@Test
 	public void testRunIfNull() throws Exception{
-		String[] tests={"com.github.gliptak.jallele.testJump.IfNullTest"};
-		List<String> sources=new ArrayList<String>();
-		sources.add("com.github.gliptak.jallele.testJump.IfNull");
-		TestRunner runner=new EngineJUnit4Runner(Arrays.asList(tests));
-		runner.runTests();
-		assertThat(runner.getFailureCount(), Is.is(0));
-		for (int i=0;i<10;i++){
-			Agent.attach();
-			ClassRandomizer cr=new ClassRandomizer(sources, runner);
-			cr.recordMatches();
-			cr.randomizeRun();
-			assertThat(runner.getFailureCount(), IsNot.not(0));
-			Agent.removeTransformer(cr);
-		}
-		Agent.restransform(IfNull.class);
-		runner.runTests();
-		assertThat(runner.getFailureCount(), Is.is(0));
+		Helper.runRandomized(
+				"com.github.gliptak.jallele.testJump.IfNullTest",
+				"com.github.gliptak.jallele.testJump.IfNull",
+				10
+				);
 	}
 
 	@Test
-	public void testRunIfReferenceCompare() throws Exception{
-		String[] tests={"com.github.gliptak.jallele.testJump.IfReferenceCompareTest"};
-		List<String> sources=new ArrayList<String>();
-		sources.add("com.github.gliptak.jallele.testJump.IfReferenceCompare");
-		TestRunner runner=new EngineJUnit4Runner(Arrays.asList(tests));
-		runner.runTests();
-		assertThat(runner.getFailureCount(), Is.is(0));
-		for (int i=0;i<10;i++){
-			Agent.attach();
-			ClassRandomizer cr=new ClassRandomizer(sources, runner);
-			cr.recordMatches();
-			cr.randomizeRun();
-			assertThat(runner.getFailureCount(), IsNot.not(0));
-			Agent.removeTransformer(cr);
-		}
-		Agent.restransform(IfNull.class);
-		runner.runTests();
-		assertThat(runner.getFailureCount(), Is.is(0));
+	public void testRunIfReferenceCompare() throws Exception {
+		Helper.runRandomized(
+				"com.github.gliptak.jallele.testJump.IfReferenceCompareTest",
+				"com.github.gliptak.jallele.testJump.IfReferenceCompare",
+				10
+				);
 	}
 
 	@Test
 	public void testRunIfIntegerCompare() throws Exception{
-		String[] tests={"com.github.gliptak.jallele.testJump.IfIntegerCompareTest"};
-		List<String> sources=new ArrayList<String>();
-		sources.add("com.github.gliptak.jallele.testJump.IfIntegerCompare");
-		TestRunner runner=new EngineJUnit4Runner(Arrays.asList(tests));
-		runner.runTests();
-		assertThat(runner.getFailureCount(), Is.is(0));
-		for (int i=0;i<10;i++){
-			Agent.attach();
-			ClassRandomizer cr=new ClassRandomizer(sources, runner);
-			cr.recordMatches();
-			cr.randomizeRun();
-			assertThat(runner.getFailureCount(), IsNot.not(0));
-			Agent.removeTransformer(cr);
-		}
-		Agent.restransform(IfNull.class);
-		runner.runTests();
-		assertThat(runner.getFailureCount(), Is.is(0));
+		Helper.runRandomized(
+				"com.github.gliptak.jallele.testJump.IfIntegerCompareTest",
+				"com.github.gliptak.jallele.testJump.IfIntegerCompare",
+				10
+				);
 	}
 
 }
