@@ -69,7 +69,6 @@ public class Main {
 			if (runner.getFailureCount()>0){
 				expectedFailure++;
 			}
-	    	count--;   	
 	    }
 	    
 	    System.setSecurityManager(securityManager);
