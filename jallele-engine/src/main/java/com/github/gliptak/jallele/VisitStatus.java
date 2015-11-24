@@ -8,17 +8,19 @@ import org.objectweb.asm.Label;
 public class VisitStatus {
 
 	private int count=0;
+	private int lineNumber = 1;
 	private int opCode=-1;
 	private String className=null;
 	private String methodDesc=null;
 	private String methodName=null;
 	private Label label=null;
 	
-	public VisitStatus(String className, String methodName, String methodDesc, int count) {
+	public VisitStatus(String className, String methodName, String methodDesc, int count, int lineNumber) {
 		this.className=className;
 		this.methodName=methodName;
 		this.methodDesc=methodDesc;
 		this.count=count;
+		this.setLineNumber(lineNumber);
 	}
 
 	public VisitStatus(VisitStatus vs) {
@@ -26,9 +28,10 @@ public class VisitStatus {
 		this.className=vs.getClassName();
 		this.methodName=vs.getMethodName();
 		this.methodDesc=vs.getMethodDesc();
-		this.count=vs.getCount();
 		this.opCode=vs.getOpCode();
 		this.label=vs.getLabel();
+		this.count=vs.getCount();
+		this.lineNumber=vs.getLineNumber();
 	}
 
 	public void setOpCode(int opCode) {
@@ -85,5 +88,13 @@ public class VisitStatus {
 	 */
 	public Label getLabel() {
 		return label;
+	}
+
+	public int getLineNumber() {
+		return lineNumber;
+	}
+
+	public void setLineNumber(int lineNumber) {
+		this.lineNumber = lineNumber;
 	}
 }

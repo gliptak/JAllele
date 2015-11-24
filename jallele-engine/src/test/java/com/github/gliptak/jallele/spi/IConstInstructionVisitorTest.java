@@ -56,7 +56,7 @@ public class IConstInstructionVisitorTest {
 	 */
 	@Test
 	public final void testIsMatchNot() {
-		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10);
+		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10, 1);
 		vs.setOpCode(Opcodes.RETURN);
 		IConstInstructionVisitor v=new IConstInstructionVisitor();
 		VisitStatus vsNew=v.isMatch(vs);
@@ -69,7 +69,7 @@ public class IConstInstructionVisitorTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public final void testIsMatch() {
-		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10);
+		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10, 1);
 		int opCode=Opcodes.ICONST_0;
 		vs.setOpCode(opCode);
 		IConstInstructionVisitor v=new IConstInstructionVisitor();
@@ -87,7 +87,7 @@ public class IConstInstructionVisitorTest {
 	 */
 	@Test
 	public final void testIsMatchBool() {
-		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10);
+		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10, 1);
 		int opCode=Opcodes.ICONST_1;
 		vs.setOpCode(opCode);
 		IConstInstructionVisitor v=new IConstInstructionVisitor();

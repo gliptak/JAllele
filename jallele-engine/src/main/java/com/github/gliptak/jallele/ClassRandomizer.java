@@ -72,18 +72,21 @@ public class ClassRandomizer implements ClassFileTransformer {
 		recording=false;
 	}
 	
-	public void randomizeRun() throws Exception {
+	public VisitStatus[] randomizeRun() throws Exception {
 		String classNameWithDots=null;
+		int selected=(int)Math.floor(Math.random()*matches.size());
 		if (matches.size()>0){
-			int selected=(int)Math.floor(Math.random()*matches.size());
-			currentStatusPair=matches.get(selected);			
+			currentStatusPair=matches.get(selected);
 			classNameWithDots=currentStatusPair[0].getClassName().replaceAll("/", ".");
 			Agent.restransform(Class.forName(classNameWithDots));
 		}
 		runner.runTests();
 		if (matches.size()>0){
 			currentStatusPair=null;
-			Agent.restransform(Class.forName(classNameWithDots));			
+			Agent.restransform(Class.forName(classNameWithDots));
+			return matches.get(selected);
+		} else {
+			return new VisitStatus[0];
 		}
 	}
 	

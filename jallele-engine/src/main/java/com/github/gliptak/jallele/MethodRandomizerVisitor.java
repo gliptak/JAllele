@@ -27,6 +27,8 @@ public class MethodRandomizerVisitor extends MethodVisitor {
 
 	private String methodDesc;
 
+	private int currentLine=1;
+
 	public MethodRandomizerVisitor(String className, String methodName, String methodDesc,
 			MethodVisitor mv, ClassRandomizer cr) {
 		super(Opcodes.ASM5, mv);
@@ -42,7 +44,7 @@ public class MethodRandomizerVisitor extends MethodVisitor {
 	@Override
 	public void visitInsn(int opCode) {
 		logger.fine("visitInsn() "+opCode);
-		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count);
+		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count, currentLine);
 		vs.setOpCode(opCode);
 		VisitStatus newVs=cr.visit(vs);
 		count++;
@@ -55,11 +57,17 @@ public class MethodRandomizerVisitor extends MethodVisitor {
 	@Override
 	public void visitJumpInsn(int opCode, Label label) {
 		logger.fine("visitJumpInsn() "+opCode+"/"+label);
-		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count);
+		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count, currentLine);
 		vs.setOpCode(opCode);
 		vs.setLabel(label);
 		VisitStatus newVs=cr.visit(vs);
 		count++;
 		super.visitJumpInsn(newVs.getOpCode(), label);
+	}
+
+	@Override
+	public void visitLineNumber(int line, Label start) {
+		currentLine = line;
+		super.visitLineNumber(line, start);
 	}
 }

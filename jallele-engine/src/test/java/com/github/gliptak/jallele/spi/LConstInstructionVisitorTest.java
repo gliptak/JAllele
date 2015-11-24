@@ -34,7 +34,7 @@ public class LConstInstructionVisitorTest {
 
 	@Test
 	public final void testIsMatch() {
-		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10);
+		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10, 1);
 		int opCode=Opcodes.LCONST_0;
 		vs.setOpCode(opCode);
 		LConstInstructionVisitor v=new LConstInstructionVisitor();
@@ -51,7 +51,7 @@ public class LConstInstructionVisitorTest {
 	 */
 	@Test
 	public final void testIsMatchNot() {
-		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10);
+		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10, 1);
 		vs.setOpCode(Opcodes.RETURN);
 		LConstInstructionVisitor v=new LConstInstructionVisitor();
 		VisitStatus vsNew=v.isMatch(vs);
