@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author gliptak
  *
  */
-public class SimpleClassTest {
+public class SimpleClassJUnitTest {
 
 	/**
 	 * @throws java.lang.Exception

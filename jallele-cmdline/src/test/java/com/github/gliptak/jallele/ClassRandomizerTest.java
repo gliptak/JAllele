@@ -47,7 +47,7 @@ public class ClassRandomizerTest {
 	
 	@Test
 	public void testSimpleNoMatch() throws Exception {
-		String[] tests={"com.github.gliptak.jallele.SimpleClassTest"};
+		String[] tests={"com.github.gliptak.jallele.SimpleClassJUnitTest"};
 		List<String> sources=new ArrayList<String>();
 		sources.add("com.github.gliptak.jallele.SimpleClass");
 		TestRunner runner=new JUnit4Runner(Arrays.asList(tests));

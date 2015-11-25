@@ -33,7 +33,7 @@ public class MainTest {
 	@Test
 	public final void testMain() throws Exception {
 		String[] args={"--count", "10", "--sources", "com.github.gliptak.jallele.SimpleClass",
-				"--tests", "com.github.gliptak.jallele.SimpleClassTest"};
+				"--tests", "com.github.gliptak.jallele.SimpleClassJUnitTest"};
 		SecurityManager securityManager = System.getSecurityManager();
 	    System.setSecurityManager(new NoExitSecurityManager());
 	    try {
