@@ -3,7 +3,9 @@ package com.github.gliptak.jallele;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.objectweb.asm.Label;
+import org.objectweb.asm.util.Printer;
 
 public class VisitStatus {
 
@@ -55,7 +57,7 @@ public class VisitStatus {
     }
 	
 	public String toString() {
-		   return ToStringBuilder.reflectionToString(this);
+		   return ToStringBuilder.reflectionToString(this, new OpcodeFormatter());
     }
 
 	/**
@@ -96,5 +98,16 @@ public class VisitStatus {
 
 	public void setLineNumber(int lineNumber) {
 		this.lineNumber = lineNumber;
+	}
+
+	public class OpcodeFormatter extends ToStringStyle {
+		private static final long serialVersionUID = -1448916649019145034L;
+
+		protected void appendDetail(StringBuffer buffer, String fieldName, Object value) {
+			if ("opCode".equals(fieldName)) {
+				value = Printer.OPCODES[(int)value];
+			}
+			buffer.append(value);
+		}
 	}
 }
