@@ -27,9 +27,16 @@ The libraries have to be built, as they are not yet published to a Maven reposit
 ```
 $ ./gradlew build
 ```
-Run sample (packaged into uberjar):
+Run JUnit sample (packaged into uberjar):
 ```
-$ java -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --count 10 --sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassJUnitTest
+$ java -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --count 10 \
+--sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassJUnitTest
+```
+
+Run TestNG sample (packaged into uberjar):
+```
+$ java -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --count 10 \
+--sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassTestNGTest
 ```
 
 Contributions, issues, pull requests are welcome.

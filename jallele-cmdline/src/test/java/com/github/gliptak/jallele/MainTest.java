@@ -31,9 +31,23 @@ public class MainTest {
 	}
 
 	@Test
-	public final void testMain() throws Exception {
-		String[] args={"--count", "10", "--sources", "com.github.gliptak.jallele.SimpleClass",
-				"--tests", "com.github.gliptak.jallele.SimpleClassJUnitTest"};
+	public final void testMainJUnit() throws Exception {
+		String[] args={"--count", "10", "--junit", "--sources", SimpleClass.class.getName(),
+				"--tests", SimpleClassJUnitTest.class.getName()};
+		SecurityManager securityManager = System.getSecurityManager();
+	    System.setSecurityManager(new NoExitSecurityManager());
+	    try {
+			Main.main(args);	    	
+	    } catch (ExitException ee) {
+			assertThat(ee.status, Is.is(0));
+		}
+	    System.setSecurityManager(securityManager);
+	}
+
+	@Test
+	public final void testMainTestNG() throws Exception {
+		String[] args={"--count", "10", "--testng", "--sources", SimpleClass.class.getName(),
+				"--tests", SimpleClassTestNGTest.class.getName()};
 		SecurityManager securityManager = System.getSecurityManager();
 	    System.setSecurityManager(new NoExitSecurityManager());
 	    try {
@@ -75,10 +89,12 @@ public class MainTest {
 	public final void testParseArgumentsEach() {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--count", "1", "--sources", "Main", "--tests", "MainTest Main1Test"};
+		String[] args={"--count", "1", "--testng", "--sources", "Main", "--tests", "MainTest Main1Test"};
 		int rc=m.parseArguments(args, bean);
 		assertThat(rc, Is.is(0));
 		assertThat(bean.getCount(), Is.is(1));
+		assertThat(bean.isRunJUnit(), Is.is(false));
+		assertThat(bean.isRunTestNG(), Is.is(true));
 		assertThat(bean.getSources().size(), Is.is(1));
 		assertThat(bean.getTests().size(), Is.is(2));
 	}
@@ -96,7 +112,7 @@ public class MainTest {
 	public final void testParseArgumentsTwice() {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--count", "2", "--sources", "Main Main1", "--tests", "MainTest"};
+		String[] args={"--count", "2", "--junit", "--sources", "Main Main1", "--tests", "MainTest"};
 		int rc=m.parseArguments(args, bean);
 		assertThat(rc, Is.is(0));
 		assertThat(bean.getCount(), Is.is(2));

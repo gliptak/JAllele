@@ -29,22 +29,33 @@ public class Main {
 	    if (rc!=0){
 	    	return rc;
 	    }
-	    try {
-	    	Class.forName("org.junit.internal.JUnitSystem");
+	    if (bean.isRunJUnit()) {
 		    rc=runJUnitTests(bean.getCount(), bean.getSources(), bean.getTests());
-	    } catch (ClassNotFoundException cnfe) {
-	    	// IGNORE
+	    }
+	    if (rc!=0){
+	    	return rc;
+	    }
+	    if (bean.isRunTestNG()) {
+		    rc=runTestNGTests(bean.getCount(), bean.getSources(), bean.getTests());
 	    }
 	    return rc;
 	}
 
+	protected int runTestNGTests(int count, List<String> sources, List<String> tests) throws Exception {
+		TestRunner runner=new TestNGRunner(tests);
+		return runTests(count, runner, sources);
+	}
+
 	protected int runJUnitTests(int count, List<String> sources, List<String> tests) throws Exception {
+		TestRunner runner=new JUnit4Runner(tests);
+		return runTests(count, runner, sources);
+	}
+
+	protected int runTests(int count, TestRunner runner, List<String> sources) throws Exception {
 		SecurityManager securityManager = System.getSecurityManager();
 	    System.setSecurityManager(new NoExitSecurityManager());
-	    
-		TestRunner runner=new JUnit4Runner(tests);
 
-		// first run to succeed
+	    // first run to succeed
 	    logger.fine("first run start");
 		runner.runTests();
 		if (runner.getFailureCount()!=0){
@@ -75,7 +86,7 @@ public class Main {
 				expectedFailure++;
 			}
 	    }
-	    
+
 	    System.setSecurityManager(securityManager);
 	    System.out.println("results "+expectedFailure+"/"+count+" ("+((float)expectedFailure/count)+")");
 		return 0;
@@ -91,6 +102,9 @@ public class Main {
 			parser.parseArgument(args);
 			if (bean.getArguments().size()>0){
 				throw new CmdLineException("unparsable arguments: "+bean.getArguments().toString());
+			}
+			if (!bean.isRunJUnit() && !bean.isRunTestNG()) {
+				throw new CmdLineException("one of JUnit or TestNG required");				
 			}
 	        return 0;
 		} catch (CmdLineException e) {

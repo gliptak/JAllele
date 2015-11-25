@@ -21,7 +21,13 @@ public class CommandLineArgs {
 	@Option(name="-count", aliases={"--count"}, required=true,
 			usage="number of test runs")
 	private int count=0;
-	
+
+	@Option(name="-junit", aliases={"--junit"}, usage="run with JUnit")
+	private boolean runJUnit=false;
+
+	@Option(name="-testng", aliases={"--testng"}, usage="run with TestNG")
+	private boolean runTestNG=false;
+
 	@Argument
     private List<String> arguments = new ArrayList<String>();
 
@@ -44,6 +50,20 @@ public class CommandLineArgs {
 	 */
 	public int getCount() {
 		return count;
+	}
+
+	/**
+	 * @return the runJUnit
+	 */
+	public boolean isRunJUnit() {
+		return runJUnit;
+	}
+
+	/**
+	 * @return the runTestNG
+	 */
+	public boolean isRunTestNG() {
+		return runTestNG;
 	}
 
 	/**

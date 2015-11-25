@@ -1,7 +1,8 @@
 dependencies {
     compile project(':jallele-engine')
-    compile "args4j:args4j:2.0.12"
-    compile "junit:junit:4.+"
+    compile 'args4j:args4j:2.0.12'
+    compile 'junit:junit:4.+'
+    compile 'org.testng:testng:6.+'
 }
 
 def attr = [
