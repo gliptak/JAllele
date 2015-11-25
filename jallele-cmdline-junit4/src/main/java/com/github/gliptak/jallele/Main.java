@@ -29,11 +29,16 @@ public class Main {
 	    if (rc!=0){
 	    	return rc;
 	    }
-	    rc=runTests(bean.getCount(), bean.getSources(), bean.getTests());
+	    try {
+	    	Class.forName("org.junit.internal.JUnitSystem");
+		    rc=runJUnitTests(bean.getCount(), bean.getSources(), bean.getTests());
+	    } catch (ClassNotFoundException cnfe) {
+	    	// IGNORE
+	    }
 	    return rc;
 	}
 
-	protected int runTests(int count, List<String> sources, List<String> tests) throws Exception {
+	protected int runJUnitTests(int count, List<String> sources, List<String> tests) throws Exception {
 		SecurityManager securityManager = System.getSecurityManager();
 	    System.setSecurityManager(new NoExitSecurityManager());
 	    
