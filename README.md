@@ -25,7 +25,7 @@ $ ./gradlew build
 ```
 Run sample (packaged into uberjar):
 ```
-$ java -jar jallele-cmdline-junit4/build/libs/jallele-cmdline-junit4-test-*.jar --count 10 --sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassTest
+$ java -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --count 10 --sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassTest
 ```
 
 Contributions, issues, pull requests are welcome.

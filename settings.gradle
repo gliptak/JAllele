@@ -1,5 +1,5 @@
 include 'jallele-engine'
-include 'jallele-cmdline-junit4'
-include 'jallele-gradle-junit4'
+include 'jallele-cmdline'
+include 'jallele-gradle'
 
 rootProject.name = 'jallele'

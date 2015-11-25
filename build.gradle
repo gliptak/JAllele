@@ -4,6 +4,8 @@ allprojects {
     }
 }
 
+group = 'com.github.gliptak.jallele'
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'eclipse'

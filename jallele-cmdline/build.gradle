@@ -17,7 +17,6 @@ task uberjar(type: Jar) {
 		attributes attr
 	}
 	baseName = project.name + '-all'
-    from files(sourceSets.main.output.classesDir)
 	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
@@ -26,8 +25,7 @@ task uberjartest(type: Jar) {
         attributes attr
     }
     baseName = project.name + '-test'
-    from files(sourceSets.main.output.classesDir)
-    from files(sourceSets.test.output.classesDir)
+    from files(sourceSets.test.output)
     from { configurations.testCompile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
