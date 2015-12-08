@@ -42,3 +42,4 @@ $ java -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --count 10 \
 Contributions, issues, pull requests are welcome.
 
 [![Travis](https://api.travis-ci.org/gliptak/JAllele.svg?branch=master)](https://travis-ci.org/gliptak/JAllele)
+[![GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl.html)
