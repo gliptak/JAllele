@@ -1,6 +1,9 @@
 JAllele
 ==========
+[![Build Status](https://travis-ci.org/gliptak/JAllele.svg?branch=master)](https://travis-ci.org/gliptak/JAllele)
 
+JAllele is a [mutation testing tool](https://en.wikipedia.org/wiki/Mutation_testing) for Java. By design, all
+mutants generated are valid and it aspires to avoid equivalent mutants.
 
 Here is the origin for the project's name:
 
