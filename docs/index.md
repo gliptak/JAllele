@@ -43,4 +43,8 @@ $ java -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --count 10 \
 --sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassTestNGTest
 ```
 
+Development
+------------
+Sources are on [Github](https://github.com/gliptak/JAllele).
+
 Contributions, issues, pull requests are welcome.
