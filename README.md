@@ -1,6 +1,6 @@
 JAllele
 ==========
-[![Build Status](https://travis-ci.org/gliptak/JAllele.svg?branch=master)](https://travis-ci.org/gliptak/JAllele)
+[![ci](https://github.com/gliptak/JAllele/workflows/ci/badge.svg)](https://github.com/gliptak/JAllele/actions?query=branch%3Amaster)
 [![GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl.html)
 
 JAllele is a [mutation testing tool](https://en.wikipedia.org/wiki/Mutation_testing) for Java. By design, all
