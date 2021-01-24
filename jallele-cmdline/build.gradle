@@ -13,6 +13,10 @@ def attr = [
         'Main-Class' : 'com.github.gliptak.jallele.Main'
         ]
 
+test {
+    jvmArgs '-Djdk.attach.allowAttachSelf=true'
+}
+
 task uberjar(type: Jar) {
 	manifest {
 		attributes attr

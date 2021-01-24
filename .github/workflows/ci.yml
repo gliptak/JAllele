@@ -10,8 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        java: ['8']
+        java: ['8', '11']
     name: Build
     steps:
       - name: Checkout

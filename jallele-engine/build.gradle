@@ -1,8 +1,17 @@
-def javaHome = System.properties['java.home']
+def toolsJar = org.gradle.internal.jvm.Jvm.current().toolsJar
+
+println("toolsJar ${toolsJar}")
 
 dependencies {
-    compile files("$javaHome/../lib/tools.jar")
-    compile "org.ow2.asm:asm-all:5.0.3"
+    compile "org.ow2.asm:asm:9.0"
+    compile "org.ow2.asm:asm-util:9.0"
     compile "org.apache.commons:commons-lang3:3.4"
     testCompile "junit:junit:[4.0,)"
+    if (toolsJar) {
+        compile files(toolsJar)
+    }
+}
+
+test {
+    jvmArgs '-Djdk.attach.allowAttachSelf=true'
 }
