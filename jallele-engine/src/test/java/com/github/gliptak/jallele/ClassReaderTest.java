@@ -3,8 +3,10 @@ package com.github.gliptak.jallele;
 import com.github.gliptak.jallele.testStack.IStore;
 import org.junit.Test;
 import org.objectweb.asm.*;
+import org.objectweb.asm.util.TraceClassVisitor;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class ClassReaderTest {
     @Test
@@ -23,6 +25,15 @@ public class ClassReaderTest {
         };
         cr.accept(cv, 0);
         System.out.println(bytesToHex(cw.toByteArray()));
+    }
+
+    @Test
+    public void testTrace() throws IOException {
+        PrintWriter pw = new PrintWriter(System.out);
+        ClassReader cr = new ClassReader(IStore.class.getName());
+        ClassWriter cw = new ClassWriter(0);
+        TraceClassVisitor cv = new TraceClassVisitor(cw, pw);
+        cr.accept(cv, 0);
     }
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
