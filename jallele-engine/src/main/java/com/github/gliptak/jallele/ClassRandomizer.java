@@ -10,20 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.github.gliptak.jallele.spi.*;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-
-import com.github.gliptak.jallele.spi.DoubleOpInstructionVisitor;
-import com.github.gliptak.jallele.spi.IConstInstructionVisitor;
-import com.github.gliptak.jallele.spi.IfACompareInstructionVisitor;
-import com.github.gliptak.jallele.spi.IfICompareInstructionVisitor;
-import com.github.gliptak.jallele.spi.IfNullInstructionVisitor;
-import com.github.gliptak.jallele.spi.InstructionVisitor;
-import com.github.gliptak.jallele.spi.IntegerOpInstructionVisitor;
-import com.github.gliptak.jallele.spi.LConstInstructionVisitor;
 
 /**
  * @author gliptak
@@ -59,6 +51,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 		visitors.add(new IfICompareInstructionVisitor());
 		visitors.add(new DoubleOpInstructionVisitor());
 		visitors.add(new IntegerOpInstructionVisitor());
+		visitors.add(new IPushInstructionVisitor());
 	}
 
 	public void recordMatches() throws Exception {

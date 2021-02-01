@@ -9,6 +9,8 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import static java.lang.String.format;
+
 /**
  * @author gliptak
  * 
@@ -43,7 +45,7 @@ public class MethodRandomizerVisitor extends MethodVisitor {
 	 */
 	@Override
 	public void visitInsn(int opCode) {
-		logger.fine("visitInsn() "+opCode);
+		logger.fine(format("visitInsn %x/%d", opCode, opCode));
 		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count, currentLine);
 		vs.setOpCode(opCode);
 		VisitStatus newVs=cr.visit(vs);
@@ -51,12 +53,23 @@ public class MethodRandomizerVisitor extends MethodVisitor {
 		super.visitInsn(newVs.getOpCode());			
 	}
 
+	@Override
+	public void visitIntInsn(int opCode, int operand) {
+		logger.fine(format("visitIntInsn %x/%d %d", opCode, opCode, operand));
+		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count, currentLine);
+		vs.setOpCode(opCode);
+		vs.setOperand(operand);
+		VisitStatus newVs=cr.visit(vs);
+		count++;
+		super.visitIntInsn(newVs.getOpCode(), newVs.getOperand());
+	}
+
 	/* (non-Javadoc)
 	 * @see org.objectweb.asm.MethodAdapter#visitJumpInsn(int, org.objectweb.asm.Label)
 	 */
 	@Override
 	public void visitJumpInsn(int opCode, Label label) {
-		logger.fine("visitJumpInsn() "+opCode+"/"+label);
+		logger.fine(format("visitInsn %x/%d %s", opCode, opCode, label));
 		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count, currentLine);
 		vs.setOpCode(opCode);
 		vs.setLabel(label);
