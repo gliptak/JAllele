@@ -1,6 +1,5 @@
 package com.github.gliptak.jallele.testStack;
 
-import com.github.gliptak.jallele.testStack.IStore;
 import org.junit.Test;
 import org.objectweb.asm.*;
 import org.objectweb.asm.util.ASMifier;

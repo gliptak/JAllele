@@ -8,6 +8,7 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 import com.github.gliptak.jallele.spi.*;
@@ -67,7 +68,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 	
 	public VisitStatus[] randomizeRun() throws Exception {
 		String classNameWithDots=null;
-		int selected=(int)Math.floor(Math.random()*matches.size());
+		int selected=(int)Math.floor(ThreadLocalRandom.current().nextDouble()*matches.size());
 		if (matches.size()>0){
 			currentStatusPair=matches.get(selected);
 			classNameWithDots=currentStatusPair[0].getClassName().replaceAll("/", ".");

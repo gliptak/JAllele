@@ -5,6 +5,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.objectweb.asm.Opcodes;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class IPushInstructionVisitor implements InstructionVisitor {
 
@@ -15,10 +16,10 @@ public class IPushInstructionVisitor implements InstructionVisitor {
 		if (ArrayUtils.contains(values, vs.getOpCode())){
 			if (newVs.getOpCode() == Opcodes.BIPUSH) {
 				byte[] b = new byte[1];
-				new Random().nextBytes(b);
+				ThreadLocalRandom.current().nextBytes(b);
 				newVs.setOperand(b[0]);
 			} else if (newVs.getOpCode() == Opcodes.SIPUSH) {
-				newVs.setOperand((short) new Random().nextInt(1 << 16));
+				newVs.setOperand((short)ThreadLocalRandom.current().nextInt(1 << 16));
 			} else {
 				// TODO NEWARRAY
 			}
