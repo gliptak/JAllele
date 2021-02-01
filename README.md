@@ -33,14 +33,19 @@ $ ./gradlew build
 ```
 Run JUnit sample (packaged into uberjar):
 ```
-$ java -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --count 10 \
+$ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --junit --count 10 \
 --sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassJUnitTest
 ```
 
 Run TestNG sample (packaged into uberjar):
 ```
-$ java -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --count 10 \
+$ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --testng --count 10 \
 --sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassTestNGTest
 ```
 
 Contributions, issues, pull requests are welcome.
+
+## Notes
+
+https://asm.ow2.io/asm4-guide.pdf
+
