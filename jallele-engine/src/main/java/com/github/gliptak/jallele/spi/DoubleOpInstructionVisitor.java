@@ -5,6 +5,8 @@ import org.objectweb.asm.Opcodes;
 
 import com.github.gliptak.jallele.VisitStatus;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class DoubleOpInstructionVisitor implements InstructionVisitor {
 
 	protected int[] values={Opcodes.DADD, Opcodes.DDIV, Opcodes.DMUL, Opcodes.DREM, Opcodes.DSUB};
@@ -15,7 +17,7 @@ public class DoubleOpInstructionVisitor implements InstructionVisitor {
 			int which=ArrayUtils.indexOf(values, vs.getOpCode());
 			int selected=-1;
 			do {
-				selected=(int)Math.floor(Math.random()*values.length);
+				selected=(int)Math.floor(ThreadLocalRandom.current().nextDouble()*values.length);
 			} while (which==selected);
 			newVs.setOpCode(values[selected]);
 		}

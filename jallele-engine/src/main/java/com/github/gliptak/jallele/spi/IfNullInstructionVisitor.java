@@ -5,6 +5,8 @@ import org.objectweb.asm.Opcodes;
 
 import com.github.gliptak.jallele.VisitStatus;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class IfNullInstructionVisitor implements InstructionVisitor {
 
 	protected int[] values={Opcodes.IFNULL, Opcodes.IFNONNULL};
@@ -15,7 +17,7 @@ public class IfNullInstructionVisitor implements InstructionVisitor {
 			int which=ArrayUtils.indexOf(values, vs.getOpCode());
 			int selected=-1;
 			do {
-				selected=(int)Math.floor(Math.random()*values.length);
+				selected=(int)Math.floor(ThreadLocalRandom.current().nextDouble()*values.length);
 			} while (which==selected);
 			newVs.setOpCode(values[selected]);
 		}
