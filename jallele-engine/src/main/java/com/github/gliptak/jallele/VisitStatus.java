@@ -12,6 +12,7 @@ public class VisitStatus {
 	private int count=0;
 	private int lineNumber = 1;
 	private int opCode=-1;
+	private int operand = 0;
 	private String className=null;
 	private String methodDesc=null;
 	private String methodName=null;
@@ -31,6 +32,7 @@ public class VisitStatus {
 		this.methodName=vs.getMethodName();
 		this.methodDesc=vs.getMethodDesc();
 		this.opCode=vs.getOpCode();
+		this.operand=vs.getOperand();
 		this.label=vs.getLabel();
 		this.count=vs.getCount();
 		this.lineNumber=vs.getLineNumber();
@@ -98,6 +100,14 @@ public class VisitStatus {
 
 	public void setLineNumber(int lineNumber) {
 		this.lineNumber = lineNumber;
+	}
+
+	public int getOperand() {
+		return operand;
+	}
+
+	public void setOperand(int operand) {
+		this.operand = operand;
 	}
 
 	public class OpcodeFormatter extends ToStringStyle {
