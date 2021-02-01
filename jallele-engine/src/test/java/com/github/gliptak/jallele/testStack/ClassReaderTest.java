@@ -1,8 +1,9 @@
-package com.github.gliptak.jallele;
+package com.github.gliptak.jallele.testStack;
 
 import com.github.gliptak.jallele.testStack.IStore;
 import org.junit.Test;
 import org.objectweb.asm.*;
+import org.objectweb.asm.util.ASMifier;
 import org.objectweb.asm.util.TraceClassVisitor;
 
 import java.io.IOException;
@@ -34,6 +35,11 @@ public class ClassReaderTest {
         ClassWriter cw = new ClassWriter(0);
         TraceClassVisitor cv = new TraceClassVisitor(cw, pw);
         cr.accept(cv, 0);
+    }
+
+    @Test
+    public void testASMifier() throws IOException {
+        ASMifier.main(new String[]{IStore.class.getName()});
     }
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
