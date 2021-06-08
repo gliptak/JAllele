@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsNot;
 import static org.junit.Assert.assertThat;
-import com.github.gliptak.jallele.Agent;
 
 public class Helper {
 

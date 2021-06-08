@@ -5,12 +5,18 @@ import org.objectweb.asm.Opcodes;
 
 import com.github.gliptak.jallele.VisitStatus;
 
-public class IfICompareInstructionVisitor implements InstructionVisitor {
+import java.util.Random;
+
+public class IfICompareInstructionVisitor extends InstructionVisitor {
 
 	protected int[] values={Opcodes.IF_ICMPEQ, Opcodes.IF_ICMPNE, Opcodes.IF_ICMPLE, Opcodes.IF_ICMPLT,
 			Opcodes.IF_ICMPGE, Opcodes.IF_ICMPGT};
-	
-	public VisitStatus isMatch(VisitStatus vs) {
+
+    public IfICompareInstructionVisitor(Random random) {
+        super(random);
+    }
+
+    public VisitStatus isMatch(VisitStatus vs) {
 		VisitStatus newVs=new VisitStatus(vs);
 		if (ArrayUtils.contains(values, vs.getOpCode())){
 			switch (vs.getOpCode()) {

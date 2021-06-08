@@ -14,6 +14,8 @@ import org.objectweb.asm.Opcodes;
 
 import com.github.gliptak.jallele.VisitStatus;
 
+import java.util.Random;
+
 public class LConstInstructionVisitorTest {
 
 	@BeforeClass
@@ -37,7 +39,8 @@ public class LConstInstructionVisitorTest {
 		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10, 1);
 		int opCode=Opcodes.LCONST_0;
 		vs.setOpCode(opCode);
-		LConstInstructionVisitor v=new LConstInstructionVisitor();
+		Random random = new Random();
+		LConstInstructionVisitor v=new LConstInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
 		assertThat(vsNew.getOpCode(), IsNot.not(vs.getOpCode()));
 		assertThat(vsNew.getOpCode(),
@@ -53,7 +56,8 @@ public class LConstInstructionVisitorTest {
 	public final void testIsMatchNot() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10, 1);
 		vs.setOpCode(Opcodes.RETURN);
-		LConstInstructionVisitor v=new LConstInstructionVisitor();
+		Random random = new Random();
+		LConstInstructionVisitor v=new LConstInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
 		assertThat(vsNew, equalTo(vs));
 	}

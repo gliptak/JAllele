@@ -17,6 +17,8 @@ import org.objectweb.asm.Opcodes;
 
 import com.github.gliptak.jallele.VisitStatus;
 
+import java.util.Random;
+
 /**
  * @author gliptak
  *
@@ -58,7 +60,8 @@ public class IConstInstructionVisitorTest {
 	public final void testIsMatchNot() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10, 1);
 		vs.setOpCode(Opcodes.RETURN);
-		IConstInstructionVisitor v=new IConstInstructionVisitor();
+		Random random = new Random();
+		IConstInstructionVisitor v=new IConstInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
 		assertThat(vsNew, equalTo(vs));
 	}
@@ -72,7 +75,8 @@ public class IConstInstructionVisitorTest {
 		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10, 1);
 		int opCode=Opcodes.ICONST_0;
 		vs.setOpCode(opCode);
-		IConstInstructionVisitor v=new IConstInstructionVisitor();
+		Random random = new Random();
+		IConstInstructionVisitor v=new IConstInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
 		assertThat(vsNew.getOpCode(), IsNot.not(vs.getOpCode()));
 		assertThat(vsNew.getOpCode(), anyOf(equalTo(Opcodes.ICONST_0), equalTo(Opcodes.ICONST_1),
@@ -90,7 +94,8 @@ public class IConstInstructionVisitorTest {
 		VisitStatus vs=new VisitStatus("Class", "method", "()I", 10, 1);
 		int opCode=Opcodes.ICONST_1;
 		vs.setOpCode(opCode);
-		IConstInstructionVisitor v=new IConstInstructionVisitor();
+		Random random = new Random();
+		IConstInstructionVisitor v=new IConstInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
 		assertThat(vsNew.getOpCode(), Is.is(Opcodes.ICONST_0));
 		vsNew.setOpCode(opCode);
