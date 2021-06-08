@@ -2,13 +2,21 @@ package com.github.gliptak.jallele.spi;
 
 import com.github.gliptak.jallele.VisitStatus;
 
-public interface InstructionVisitor {
+import java.util.Random;
+
+public abstract class InstructionVisitor {
+
+	protected final Random random;
+
+	public InstructionVisitor(Random random) {
+		this.random = random;
+	}
 
 	/** Process this status and return new one
 	 * 
 	 * @param vs describes status
 	 * @return describes new status
 	 */
-	VisitStatus isMatch(VisitStatus vs);
+	abstract public VisitStatus isMatch(VisitStatus vs);
 
 }

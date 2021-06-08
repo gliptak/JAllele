@@ -8,7 +8,7 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import com.github.gliptak.jallele.spi.*;
@@ -24,11 +24,13 @@ import org.objectweb.asm.Opcodes;
  */
 public class ClassRandomizer implements ClassFileTransformer {
 
-	private static Logger logger = Logger.getLogger(ClassRandomizer.class.getName());
+	private static final Logger logger = Logger.getLogger(ClassRandomizer.class.getName());
+
+	private final Random random;
 
 	private List<String> sources=new ArrayList<String>();
 	
-	private List<InstructionVisitor> visitors=new ArrayList<InstructionVisitor>();
+	private final List<InstructionVisitor> visitors=new ArrayList<InstructionVisitor>();
 
 	private boolean recording=false;
 
@@ -41,18 +43,19 @@ public class ClassRandomizer implements ClassFileTransformer {
 	public ClassRandomizer(List<String> sources, TestRunner runner){
 		this.sources=sources;
 		this.runner=runner;
-		initVisitors();
+		random = new Random();
+		initVisitors(random);
 	}
 
-	protected void initVisitors() {
-		visitors.add(new IConstInstructionVisitor());
-		visitors.add(new IfNullInstructionVisitor());
-		visitors.add(new LConstInstructionVisitor());
-		visitors.add(new IfACompareInstructionVisitor());
-		visitors.add(new IfICompareInstructionVisitor());
-		visitors.add(new DoubleOpInstructionVisitor());
-		visitors.add(new IntegerOpInstructionVisitor());
-		visitors.add(new IPushInstructionVisitor());
+	protected void initVisitors(Random random) {
+		visitors.add(new IConstInstructionVisitor(random));
+		visitors.add(new IfNullInstructionVisitor(random));
+		visitors.add(new LConstInstructionVisitor(random));
+		visitors.add(new IfACompareInstructionVisitor(random));
+		visitors.add(new IfICompareInstructionVisitor(random));
+		visitors.add(new DoubleOpInstructionVisitor(random));
+		visitors.add(new IntegerOpInstructionVisitor(random));
+		visitors.add(new IPushInstructionVisitor(random));
 	}
 
 	public void recordMatches() throws Exception {
@@ -68,7 +71,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 	
 	public VisitStatus[] randomizeRun() throws Exception {
 		String classNameWithDots=null;
-		int selected=(int)Math.floor(ThreadLocalRandom.current().nextDouble()*matches.size());
+		int selected=(int)Math.floor(random.nextDouble()*matches.size());
 		if (matches.size()>0){
 			currentStatusPair=matches.get(selected);
 			classNameWithDots=currentStatusPair[0].getClassName().replaceAll("/", ".");
@@ -114,7 +117,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 				MethodVisitor mv=super.visitMethod(access, name, desc, signature,
 						exceptions);
 				return new MethodRandomizerVisitor(className1, name, desc, mv, cr1);
-			};
+			}
 		};
 		ClassReader cr = new ClassReader(classfileBuffer);
 		cr.accept(cv, 0);
