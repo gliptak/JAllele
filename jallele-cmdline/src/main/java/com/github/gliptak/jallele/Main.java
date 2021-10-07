@@ -51,6 +51,7 @@ public class Main {
 		return runTests(count, runner, sources);
 	}
 
+	@SuppressWarnings("removal")
 	protected int runTests(int count, TestRunner runner, List<String> sources) throws Exception {
 		SecurityManager securityManager = System.getSecurityManager();
 	    System.setSecurityManager(new NoExitSecurityManager());
@@ -144,6 +145,7 @@ public class Main {
 	    }
 	}
 
+	@SuppressWarnings("removal")
 	protected static class NoExitSecurityManager extends SecurityManager {
 	    @Override
 	    public void checkPermission(Permission perm) {
