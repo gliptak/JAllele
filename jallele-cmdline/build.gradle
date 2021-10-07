@@ -1,8 +1,8 @@
 dependencies {
-    compile project(':jallele-engine')
-    compile 'args4j:args4j:2.33'
-    compile 'junit:junit:4.+'
-    compile 'org.testng:testng:6.+'
+    implementation project(':jallele-engine')
+    implementation 'args4j:args4j:2.33'
+    implementation 'junit:junit:4.+'
+    implementation 'org.testng:testng:6.+'
 }
 
 def attr = [
@@ -21,7 +21,7 @@ task uberjar(type: Jar) {
 	manifest {
 		attributes attr
 	}
-	baseName = project.name + '-all'
+	archiveBaseName = project.name + '-all'
 	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
@@ -29,7 +29,7 @@ task uberjartest(type: Jar) {
     manifest {
         attributes attr
     }
-    baseName = project.name + '-test'
+    archiveBaseName = project.name + '-test'
     from files(sourceSets.test.output)
     from { configurations.testCompile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar

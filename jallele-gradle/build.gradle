@@ -1,12 +1,12 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
+    implementation gradleApi()
+    implementation localGroovy()
 }
 
 dependencies {
-    testCompile 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.+'
 }
 
 group = 'com.github.gliptak.jallele'
