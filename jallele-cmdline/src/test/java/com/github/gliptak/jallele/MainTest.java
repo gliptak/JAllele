@@ -30,6 +30,7 @@ public class MainTest {
 	public void tearDown() throws Exception {
 	}
 
+	@SuppressWarnings("removal")
 	@Test
 	public final void testMainJUnit() throws Exception {
 		String[] args={"--count", "10", "--junit", "--sources", SimpleClass.class.getName(),
@@ -44,6 +45,7 @@ public class MainTest {
 	    System.setSecurityManager(securityManager);
 	}
 
+	@SuppressWarnings("removal")
 	@Test
 	public final void testMainTestNG() throws Exception {
 		String[] args={"--count", "10", "--testng", "--sources", SimpleClass.class.getName(),
