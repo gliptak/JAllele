@@ -17,22 +17,27 @@ test {
     jvmArgs '-Djdk.attach.allowAttachSelf=true'
 }
 
-task uberjar(type: Jar) {
-	manifest {
-		attributes attr
-	}
-	archiveBaseName = project.name + '-all'
-	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+task uberjar(type: Jar, dependsOn: ':jallele-engine:build') {
+    manifest {
+        attributes attr
+    }
+    archiveBaseName = project.name + '-all'
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    } with jar
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-task uberjartest(type: Jar) {
+task uberjartest(type: Jar, dependsOn: ':jallele-engine:build') {
     manifest {
         attributes attr
     }
     archiveBaseName = project.name + '-test'
     from files(sourceSets.test.output)
-    from { configurations.testCompile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
+    from {
+        configurations.testRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    } with jar
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 artifacts {
