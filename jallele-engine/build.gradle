@@ -3,12 +3,12 @@ def toolsJar = org.gradle.internal.jvm.Jvm.current().toolsJar
 println("toolsJar ${toolsJar}")
 
 dependencies {
-    compile "org.ow2.asm:asm:9.2"
-    compile "org.ow2.asm:asm-util:9.2"
-    compile "org.apache.commons:commons-lang3:3.12.0"
-    testCompile "junit:junit:[4.0,)"
+    implementation "org.ow2.asm:asm:9.2"
+    implementation "org.ow2.asm:asm-util:9.2"
+    implementation "org.apache.commons:commons-lang3:3.12.0"
+    testImplementation "junit:junit:[4.0,)"
     if (toolsJar) {
-        compile files(toolsJar)
+        implementation files(toolsJar)
     }
 }
 
