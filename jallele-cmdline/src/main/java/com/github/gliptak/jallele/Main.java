@@ -53,14 +53,26 @@ public class Main {
 
 	@SuppressWarnings("removal")
 	protected int runTests(int count, TestRunner runner, List<String> sources) throws Exception {
-		SecurityManager securityManager = System.getSecurityManager();
-	    System.setSecurityManager(new NoExitSecurityManager());
+		SecurityManager securityManager = null;
+		boolean useSecurityManager = true;
+		
+		// Try to use SecurityManager if available (Java < 21)
+		try {
+			securityManager = System.getSecurityManager();
+			System.setSecurityManager(new NoExitSecurityManager());
+		} catch (UnsupportedOperationException e) {
+			// SecurityManager is not supported (Java 21+), continue without it
+			useSecurityManager = false;
+		}
 
 	    // first run to succeed
 	    logger.fine("first run start");
 		runner.runTests();
 		if (runner.getFailureCount()!=0){
 			System.out.println("first run failed");
+			if (useSecurityManager) {
+				System.setSecurityManager(securityManager);
+			}
 			return 1;
 		}
 	    logger.fine("first run complete");
@@ -76,6 +88,9 @@ public class Main {
 		runner.runTests();
 		if (runner.getFailureCount()!=0){
 			System.out.println("second run failed");
+			if (useSecurityManager) {
+				System.setSecurityManager(securityManager);
+			}
 			return 1;
 		}
 	    logger.fine("second run complete");		
@@ -88,7 +103,9 @@ public class Main {
 			}
 	    }
 
-	    System.setSecurityManager(securityManager);
+	    if (useSecurityManager) {
+	    	System.setSecurityManager(securityManager);
+	    }
 	    System.out.println("results "+expectedFailure+"/"+count+" ("+((float)expectedFailure/count)+")");
 		return 0;
 	}
