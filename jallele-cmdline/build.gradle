@@ -1,6 +1,6 @@
 dependencies {
     implementation project(':jallele-engine')
-    implementation 'args4j:args4j:2.33'
+    implementation 'args4j:args4j:2.37'
     implementation 'junit:junit:4.+'
     implementation 'org.testng:testng:6.+'
 }
