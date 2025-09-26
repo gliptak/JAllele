@@ -13,7 +13,7 @@ http://en.wikipedia.org/wiki/Allele
 Status
 --------
 
-Current status of the project is described in [bytecode mapping](bytecodes.html). Currently implemented bytecodes
+Current status of the project is described in [bytecode mapping](bytecodes.md). Currently implemented bytecodes
 display the corresponding handler.
 
 An initial run will determine a list of all possible mutations.
