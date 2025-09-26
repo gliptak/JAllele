@@ -9,9 +9,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.gliptak.jallele.Main.ExitException;
-import com.github.gliptak.jallele.Main.NoExitSecurityManager;
-
 public class MainTest {
 
 	@BeforeClass
@@ -30,34 +27,22 @@ public class MainTest {
 	public void tearDown() throws Exception {
 	}
 
-	@SuppressWarnings("removal")
 	@Test
 	public final void testMainJUnit() throws Exception {
 		String[] args={"--count", "10", "--junit", "--sources", SimpleClass.class.getName(),
 				"--tests", SimpleClassJUnitTest.class.getName()};
-		SecurityManager securityManager = System.getSecurityManager();
-	    System.setSecurityManager(new NoExitSecurityManager());
-	    try {
-			Main.main(args);	    	
-	    } catch (ExitException ee) {
-			assertThat(ee.status, Is.is(0));
-		}
-	    System.setSecurityManager(securityManager);
+		Main m = new Main();
+		int exitCode = m.execute(args);
+		assertThat(exitCode, Is.is(0));
 	}
 
-	@SuppressWarnings("removal")
 	@Test
 	public final void testMainTestNG() throws Exception {
 		String[] args={"--count", "10", "--testng", "--sources", SimpleClass.class.getName(),
 				"--tests", SimpleClassTestNGTest.class.getName()};
-		SecurityManager securityManager = System.getSecurityManager();
-	    System.setSecurityManager(new NoExitSecurityManager());
-	    try {
-			Main.main(args);	    	
-	    } catch (ExitException ee) {
-			assertThat(ee.status, Is.is(0));
-		}
-	    System.setSecurityManager(securityManager);
+		Main m = new Main();
+		int exitCode = m.execute(args);
+		assertThat(exitCode, Is.is(0));
 	}
 
 	@Test
