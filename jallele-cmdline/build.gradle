@@ -40,10 +40,8 @@ task uberjartest(type: Jar, dependsOn: ':jallele-engine:build') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-artifacts {
-    archives uberjar
-    archives uberjartest
-}
+// Fix deprecated archives configuration by adding tasks as direct dependencies
+assemble.dependsOn uberjar, uberjartest
 
 jar {
     manifest {
