@@ -70,15 +70,15 @@
 | TBD | fastore | 51 |   | arreyref, index, value → | stores a float in an array |
 | TBD | fcmpg | 96 |   | value1, value2 → result | compares two floats |
 | TBD | fcmpl | 95 |   | value1, value2 → result | compares two floats |
-| TBD | fconst_0 | 0b |   | → 0.0f | pushes 0.0f on the stack |
-| TBD | fconst_1 | 0c |   | → 1.0f | pushes 1.0f on the stack |
-| TBD | fconst_2 | 0d |   | → 2.0f | pushes 2.0f on the stack |
+| FConstInstructionVisitor | fconst_0 | 0b |   | → 0.0f | pushes 0.0f on the stack |
+| FConstInstructionVisitor | fconst_1 | 0c |   | → 1.0f | pushes 1.0f on the stack |
+| FConstInstructionVisitor | fconst_2 | 0d |   | → 2.0f | pushes 2.0f on the stack |
 | FloatOpInstructionVisitor | fdiv | 6e |   | value1, value2 → result | divides two floats |
-| TBD | fload | 17 | index | → value | loads a float value from a local variable #index |
-| TBD | fload_0 | 22 |   | → value | loads a float value from local variable 0 |
-| TBD | fload_1 | 23 |   | → value | loads a float value from local variable 1 |
-| TBD | fload_2 | 24 |   | → value | loads a float value from local variable 2 |
-| TBD | fload_3 | 25 |   | → value | loads a float value from local variable 3 |
+| FLoadInstructionVisitor | fload | 17 | index | → value | loads a float value from a local variable #index |
+| FLoadInstructionVisitor | fload_0 | 22 |   | → value | loads a float value from local variable 0 |
+| FLoadInstructionVisitor | fload_1 | 23 |   | → value | loads a float value from local variable 1 |
+| FLoadInstructionVisitor | fload_2 | 24 |   | → value | loads a float value from local variable 2 |
+| FLoadInstructionVisitor | fload_3 | 25 |   | → value | loads a float value from local variable 3 |
 | FloatOpInstructionVisitor | fmul | 6a |   | value1, value2 → result | multiplies two floats |
 | NegInstructionVisitor | fneg | 76 |   | value → result | negates a float |
 | FloatOpInstructionVisitor | frem | 72 |   | value1, value2 → result | gets the remainder from a division between two floats |
