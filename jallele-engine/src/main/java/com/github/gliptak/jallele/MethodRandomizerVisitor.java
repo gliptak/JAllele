@@ -79,6 +79,17 @@ public class MethodRandomizerVisitor extends MethodVisitor {
 	}
 
 	@Override
+	public void visitVarInsn(int opCode, int var) {
+		logger.fine(format("visitVarInsn %x/%d %d", opCode, opCode, var));
+		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count, currentLine);
+		vs.setOpCode(opCode);
+		vs.setOperand(var);
+		VisitStatus newVs=cr.visit(vs);
+		count++;
+		super.visitVarInsn(newVs.getOpCode(), newVs.getOperand());
+	}
+
+	@Override
 	public void visitLineNumber(int line, Label start) {
 		currentLine = line;
 		super.visitLineNumber(line, start);
