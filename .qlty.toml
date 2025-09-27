@@ -1,0 +1,34 @@
+# Qlty configuration for JAllele project
+# This configuration helps Qlty properly map file paths in coverage reports
+
+[coverage.settings]
+# Set validation threshold to a reasonable level
+threshold = 0.80  # 80% of files should be present
+
+[coverage.transforms]
+# Map coverage file paths to actual source code locations
+# Coverage reports contain paths like "com/github/gliptak/jallele/Agent.java"
+# but actual files are in subdirectories like "jallele-engine/src/main/java/com/github/gliptak/jallele/Agent.java"
+
+# Try to find files in multiple possible locations
+[[coverage.transforms.rules]]
+# Map Java files to their potential locations in different submodules
+from = '^com/github/gliptak/jallele/(.*)\.java$'
+to = [
+  'jallele-engine/src/main/java/com/github/gliptak/jallele/$1.java',
+  'jallele-cmdline/src/main/java/com/github/gliptak/jallele/$1.java'
+]
+
+[[coverage.transforms.rules]]
+# Map Groovy files to their potential locations
+from = '^com/github/gliptak/jallele/(.*)\.groovy$'
+to = [
+  'jallele-gradle/src/main/groovy/com/github/gliptak/jallele/$1.groovy'
+]
+
+[[coverage.transforms.rules]]
+# Map SPI files specifically
+from = '^com/github/gliptak/jallele/spi/(.*)\.java$'
+to = [
+  'jallele-engine/src/main/java/com/github/gliptak/jallele/spi/$1.java'
+]
