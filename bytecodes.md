@@ -163,9 +163,9 @@
 | TBD | l2d | 8a |   | value → result | converts a long to a double |
 | TBD | l2f | 89 |   | value → result | converts a long to a float |
 | TBD | l2i | 88 |   | value → result | converts a long to a int |
-| TBD | ladd | 61 |   | value1, value2 → result | add two longs |
+| LongOpInstructionVisitor | ladd | 61 |   | value1, value2 → result | add two longs |
 | TBD | laload | 2f |   | arrayref, index → value | load a long from an array |
-| TBD | land | 7f |   | value1, value2 → result | bitwise and of two longs |
+| LongOpInstructionVisitor | land | 7f |   | value1, value2 → result | bitwise and of two longs |
 | TBD | lastore | 50 |   | arrayref, index, value → | store a long to an array |
 | TBD | lcmp | 94 |   | value1, value2 → result | compares two longs values |
 | LConstInstructionVisitor | lconst_0 | 09 |   | → 0L | pushes the long 0 onto the stack |
@@ -173,17 +173,17 @@
 | TBD | ldc | 12 | index | → value | pushes a constant #index from a constant pool (String, int or float) onto the stack |
 | TBD | ldc_w | 13 | indexbyte1, indexbyte2 | → value | pushes a constant #index from a constant pool (String, int or float) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2) |
 | TBD | ldc2_w | 14 | indexbyte1, indexbyte2 | → value | pushes a constant #index from a constant pool (double or long) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2) |
-| TBD | ldiv | 6d |   | value1, value2 → result | divide two longs |
+| LongOpInstructionVisitor | ldiv | 6d |   | value1, value2 → result | divide two longs |
 | TBD | lload | 16 | index | → value | load a long value from a local variable #index |
 | TBD | lload_0 | 1e |   | → value | load a long value from a local variable 0 |
 | TBD | lload_1 | 1f |   | → value | load a long value from a local variable 1 |
 | TBD | lload_2 | 20 |   | → value | load a long value from a local variable 2 |
 | TBD | lload_3 | 21 |   | → value | load a long value from a local variable 3 |
-| TBD | lmul | 69 |   | value1, value2 → result | multiplies two longs |
+| LongOpInstructionVisitor | lmul | 69 |   | value1, value2 → result | multiplies two longs |
 | TBD | lneg | 75 |   | value → result | negates a long |
 | TBD | lookupswitch | ab | <0-3 bytes padding>, defaultbyte1, defaultbyte2, defaultbyte3, defaultbyte4, npairs1, npairs2, npairs3, npairs4, match-offset pairs... | key → | a target address is looked up from a table using a key and execution continues from the instruction at that address |
-| TBD | lor | 81 |   | value1, value2 → result | bitwise or of two longs |
-| TBD | lrem | 71 |   | value1, value2 → result | remainder of division of two longs |
+| LongOpInstructionVisitor | lor | 81 |   | value1, value2 → result | bitwise or of two longs |
+| LongOpInstructionVisitor | lrem | 71 |   | value1, value2 → result | remainder of division of two longs |
 | TBD | lreturn | ad |   | value → [empty] | returns a long value |
 | TBD | lshl | 79 |   | value1, value2 → result | bitwise shift left of a long value1 by value2 positions |
 | TBD | lshr | 7b |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions |
@@ -192,9 +192,9 @@
 | TBD | lstore_1 | 40 |   | value → | store a long value in a local variable 1 |
 | TBD | lstore_2 | 41 |   | value → | store a long value in a local variable 2 |
 | TBD | lstore_3 | 42 |   | value → | store a long value in a local variable 3 |
-| TBD | lsub | 65 |   | value1, value2 → result | subtract two longs |
+| LongOpInstructionVisitor | lsub | 65 |   | value1, value2 → result | subtract two longs |
 | TBD | lushr | 7d |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions, unsigned |
-| TBD | lxor | 83 |   | value1, value2 → result | bitwise exclusive or of two longs |
+| LongOpInstructionVisitor | lxor | 83 |   | value1, value2 → result | bitwise exclusive or of two longs |
 | **M** | | | | | |
 | TBD | monitorenter | c2 |   | objectref → | enter monitor for object ("grab the lock" - start of synchronized() section) |
 | TBD | monitorexit | c3 |   | objectref → | exit monitor for object ("release the lock" - end of synchronized() section) |
