@@ -31,14 +31,7 @@ jobs:
         run: ./gradlew jacocoRootReport
       - name: Upload coverage to Qlty
         if: matrix.java == '17'
-        uses: qltysh/qlty-coverage-action@v2
+        uses: qltysh/qlty-action/coverage@v2
         with:
-          file: ./build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
-      - name: Archive coverage artifacts
-        if: matrix.java == '17'
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: |
-            build/reports/jacoco/jacocoRootReport/
-            */build/reports/jacoco/test/
+          oidc: true
+          files: ./build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
