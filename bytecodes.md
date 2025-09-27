@@ -65,7 +65,7 @@
 | TBD | f2d | 8d |   | value → result | converts a float to a double |
 | TBD | f2i | 8b |   | value → result | converts a float to an int |
 | TBD | f2l | 8c |   | value → result | converts a float to a long |
-| TBD | fadd | 62 |   | value1, value2 → result | adds two floats |
+| FloatOpInstructionVisitor | fadd | 62 |   | value1, value2 → result | adds two floats |
 | TBD | faload | 30 |   | arrayref, index → value | loads a float from an array |
 | TBD | fastore | 51 |   | arreyref, index, value → | stores a float in an array |
 | TBD | fcmpg | 96 |   | value1, value2 → result | compares two floats |
@@ -73,22 +73,22 @@
 | TBD | fconst_0 | 0b |   | → 0.0f | pushes 0.0f on the stack |
 | TBD | fconst_1 | 0c |   | → 1.0f | pushes 1.0f on the stack |
 | TBD | fconst_2 | 0d |   | → 2.0f | pushes 2.0f on the stack |
-| TBD | fdiv | 6e |   | value1, value2 → result | divides two floats |
+| FloatOpInstructionVisitor | fdiv | 6e |   | value1, value2 → result | divides two floats |
 | TBD | fload | 17 | index | → value | loads a float value from a local variable #index |
 | TBD | fload_0 | 22 |   | → value | loads a float value from local variable 0 |
 | TBD | fload_1 | 23 |   | → value | loads a float value from local variable 1 |
 | TBD | fload_2 | 24 |   | → value | loads a float value from local variable 2 |
 | TBD | fload_3 | 25 |   | → value | loads a float value from local variable 3 |
-| TBD | fmul | 6a |   | value1, value2 → result | multiplies two floats |
+| FloatOpInstructionVisitor | fmul | 6a |   | value1, value2 → result | multiplies two floats |
 | TBD | fneg | 76 |   | value → result | negates a float |
-| TBD | frem | 72 |   | value1, value2 → result | gets the remainder from a division between two floats |
+| FloatOpInstructionVisitor | frem | 72 |   | value1, value2 → result | gets the remainder from a division between two floats |
 | TBD | freturn | ae |   | value → [empty] | returns a float |
 | TBD | fstore | 38 | index | value → | stores a float value into a local variable #index |
 | TBD | fstore_0 | 43 |   | value → | stores a float value into local variable 0 |
 | TBD | fstore_1 | 44 |   | value → | stores a float value into local variable 1 |
 | TBD | fstore_2 | 45 |   | value → | stores a float value into local variable 2 |
 | TBD | fstore_3 | 46 |   | value → | stores a float value into local variable 3 |
-| TBD | fsub | 66 |   | value1, value2 → result | subtracts two floats |
+| FloatOpInstructionVisitor | fsub | 66 |   | value1, value2 → result | subtracts two floats |
 | **G** | | | | | |
 | TBD | getfield | b4 | index1, index2 | objectref → value | gets a field value of an object objectref, where the field is identified by field reference in the constant pool index (index1 << 8 + index2) |
 | TBD | getstatic | b2 | index1, index2 | → value | gets a static field value of a class, where the field is identified by field reference in the constant pool index (index1 << 8 + index2) |
