@@ -65,7 +65,7 @@
 | TBD | f2d | 8d |   | value → result | converts a float to a double |
 | TBD | f2i | 8b |   | value → result | converts a float to an int |
 | TBD | f2l | 8c |   | value → result | converts a float to a long |
-| TBD | fadd | 62 |   | value1, value2 → result | adds two floats |
+| FloatOpInstructionVisitor | fadd | 62 |   | value1, value2 → result | adds two floats |
 | TBD | faload | 30 |   | arrayref, index → value | loads a float from an array |
 | TBD | fastore | 51 |   | arreyref, index, value → | stores a float in an array |
 | TBD | fcmpg | 96 |   | value1, value2 → result | compares two floats |
@@ -73,22 +73,22 @@
 | TBD | fconst_0 | 0b |   | → 0.0f | pushes 0.0f on the stack |
 | TBD | fconst_1 | 0c |   | → 1.0f | pushes 1.0f on the stack |
 | TBD | fconst_2 | 0d |   | → 2.0f | pushes 2.0f on the stack |
-| TBD | fdiv | 6e |   | value1, value2 → result | divides two floats |
+| FloatOpInstructionVisitor | fdiv | 6e |   | value1, value2 → result | divides two floats |
 | TBD | fload | 17 | index | → value | loads a float value from a local variable #index |
 | TBD | fload_0 | 22 |   | → value | loads a float value from local variable 0 |
 | TBD | fload_1 | 23 |   | → value | loads a float value from local variable 1 |
 | TBD | fload_2 | 24 |   | → value | loads a float value from local variable 2 |
 | TBD | fload_3 | 25 |   | → value | loads a float value from local variable 3 |
-| TBD | fmul | 6a |   | value1, value2 → result | multiplies two floats |
+| FloatOpInstructionVisitor | fmul | 6a |   | value1, value2 → result | multiplies two floats |
 | TBD | fneg | 76 |   | value → result | negates a float |
-| TBD | frem | 72 |   | value1, value2 → result | gets the remainder from a division between two floats |
+| FloatOpInstructionVisitor | frem | 72 |   | value1, value2 → result | gets the remainder from a division between two floats |
 | TBD | freturn | ae |   | value → [empty] | returns a float |
 | TBD | fstore | 38 | index | value → | stores a float value into a local variable #index |
 | TBD | fstore_0 | 43 |   | value → | stores a float value into local variable 0 |
 | TBD | fstore_1 | 44 |   | value → | stores a float value into local variable 1 |
 | TBD | fstore_2 | 45 |   | value → | stores a float value into local variable 2 |
 | TBD | fstore_3 | 46 |   | value → | stores a float value into local variable 3 |
-| TBD | fsub | 66 |   | value1, value2 → result | subtracts two floats |
+| FloatOpInstructionVisitor | fsub | 66 |   | value1, value2 → result | subtracts two floats |
 | **G** | | | | | |
 | TBD | getfield | b4 | index1, index2 | objectref → value | gets a field value of an object objectref, where the field is identified by field reference in the constant pool index (index1 << 8 + index2) |
 | TBD | getstatic | b2 | index1, index2 | → value | gets a static field value of a class, where the field is identified by field reference in the constant pool index (index1 << 8 + index2) |
@@ -121,12 +121,12 @@
 | IfICompareInstructionVisitor | if_icmpge | a2 | branchbyte1, branchbyte2 | value1, value2 → | if value1 is greater than or equal to value2, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | IfICompareInstructionVisitor | if_icmpgt | a3 | branchbyte1, branchbyte2 | value1, value2 → | if value1 is greater than value2, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | IfICompareInstructionVisitor | if_icmple | a4 | branchbyte1, branchbyte2 | value1, value2 → | if value1 is less than or equal to value2, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
-| TBD | ifeq | 99 | branchbyte1, branchbyte2 | value → | if value is 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
-| TBD | ifne | 9a | branchbyte1, branchbyte2 | value → | if value is not 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
-| TBD | iflt | 9b | branchbyte1, branchbyte2 | value → | if value is less than 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
-| TBD | ifge | 9c | branchbyte1, branchbyte2 | value → | if value is greater than or equal to 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
-| TBD | ifgt | 9d | branchbyte1, branchbyte2 | value → | if value is greater than 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
-| TBD | ifle | 9e | branchbyte1, branchbyte2 | value → | if value is less than or equal to 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
+| IfInstructionVisitor | ifeq | 99 | branchbyte1, branchbyte2 | value → | if value is 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
+| IfInstructionVisitor | ifne | 9a | branchbyte1, branchbyte2 | value → | if value is not 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
+| IfInstructionVisitor | iflt | 9b | branchbyte1, branchbyte2 | value → | if value is less than 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
+| IfInstructionVisitor | ifge | 9c | branchbyte1, branchbyte2 | value → | if value is greater than or equal to 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
+| IfInstructionVisitor | ifgt | 9d | branchbyte1, branchbyte2 | value → | if value is greater than 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
+| IfInstructionVisitor | ifle | 9e | branchbyte1, branchbyte2 | value → | if value is less than or equal to 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | IfNullInstructionVisitor | ifnonnull | c7 | branchbyte1, branchbyte2 | value → | if value is not null, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | IfNullInstructionVisitor | ifnull | c6 | branchbyte1, branchbyte2 | value → | if value is null, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | TBD | iinc | 84 | index, const | [No change] | increment local variable #index by signed byte const |
@@ -163,9 +163,9 @@
 | TBD | l2d | 8a |   | value → result | converts a long to a double |
 | TBD | l2f | 89 |   | value → result | converts a long to a float |
 | TBD | l2i | 88 |   | value → result | converts a long to a int |
-| TBD | ladd | 61 |   | value1, value2 → result | add two longs |
+| LongOpInstructionVisitor | ladd | 61 |   | value1, value2 → result | add two longs |
 | TBD | laload | 2f |   | arrayref, index → value | load a long from an array |
-| TBD | land | 7f |   | value1, value2 → result | bitwise and of two longs |
+| LongOpInstructionVisitor | land | 7f |   | value1, value2 → result | bitwise and of two longs |
 | TBD | lastore | 50 |   | arrayref, index, value → | store a long to an array |
 | TBD | lcmp | 94 |   | value1, value2 → result | compares two longs values |
 | LConstInstructionVisitor | lconst_0 | 09 |   | → 0L | pushes the long 0 onto the stack |
@@ -173,28 +173,28 @@
 | TBD | ldc | 12 | index | → value | pushes a constant #index from a constant pool (String, int or float) onto the stack |
 | TBD | ldc_w | 13 | indexbyte1, indexbyte2 | → value | pushes a constant #index from a constant pool (String, int or float) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2) |
 | TBD | ldc2_w | 14 | indexbyte1, indexbyte2 | → value | pushes a constant #index from a constant pool (double or long) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2) |
-| TBD | ldiv | 6d |   | value1, value2 → result | divide two longs |
+| LongOpInstructionVisitor | ldiv | 6d |   | value1, value2 → result | divide two longs |
 | TBD | lload | 16 | index | → value | load a long value from a local variable #index |
 | TBD | lload_0 | 1e |   | → value | load a long value from a local variable 0 |
 | TBD | lload_1 | 1f |   | → value | load a long value from a local variable 1 |
 | TBD | lload_2 | 20 |   | → value | load a long value from a local variable 2 |
 | TBD | lload_3 | 21 |   | → value | load a long value from a local variable 3 |
-| TBD | lmul | 69 |   | value1, value2 → result | multiplies two longs |
+| LongOpInstructionVisitor | lmul | 69 |   | value1, value2 → result | multiplies two longs |
 | TBD | lneg | 75 |   | value → result | negates a long |
 | TBD | lookupswitch | ab | <0-3 bytes padding>, defaultbyte1, defaultbyte2, defaultbyte3, defaultbyte4, npairs1, npairs2, npairs3, npairs4, match-offset pairs... | key → | a target address is looked up from a table using a key and execution continues from the instruction at that address |
-| TBD | lor | 81 |   | value1, value2 → result | bitwise or of two longs |
-| TBD | lrem | 71 |   | value1, value2 → result | remainder of division of two longs |
+| LongOpInstructionVisitor | lor | 81 |   | value1, value2 → result | bitwise or of two longs |
+| LongOpInstructionVisitor | lrem | 71 |   | value1, value2 → result | remainder of division of two longs |
 | TBD | lreturn | ad |   | value → [empty] | returns a long value |
-| TBD | lshl | 79 |   | value1, value2 → result | bitwise shift left of a long value1 by value2 positions |
-| TBD | lshr | 7b |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions |
+| LongShiftInstructionVisitor | lshl | 79 |   | value1, value2 → result | bitwise shift left of a long value1 by value2 positions |
+| LongShiftInstructionVisitor | lshr | 7b |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions |
 | TBD | lstore | 37 | index | value → | store a long value in a local variable #index |
 | TBD | lstore_0 | 3f |   | value → | store a long value in a local variable 0 |
 | TBD | lstore_1 | 40 |   | value → | store a long value in a local variable 1 |
 | TBD | lstore_2 | 41 |   | value → | store a long value in a local variable 2 |
 | TBD | lstore_3 | 42 |   | value → | store a long value in a local variable 3 |
-| TBD | lsub | 65 |   | value1, value2 → result | subtract two longs |
-| TBD | lushr | 7d |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions, unsigned |
-| TBD | lxor | 83 |   | value1, value2 → result | bitwise exclusive or of two longs |
+| LongOpInstructionVisitor | lsub | 65 |   | value1, value2 → result | subtract two longs |
+| LongShiftInstructionVisitor | lushr | 7d |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions, unsigned |
+| LongOpInstructionVisitor | lxor | 83 |   | value1, value2 → result | bitwise exclusive or of two longs |
 | **M** | | | | | |
 | TBD | monitorenter | c2 |   | objectref → | enter monitor for object ("grab the lock" - start of synchronized() section) |
 | TBD | monitorexit | c3 |   | objectref → | exit monitor for object ("release the lock" - end of synchronized() section) |
