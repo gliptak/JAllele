@@ -185,15 +185,15 @@
 | LongOpInstructionVisitor | lor | 81 |   | value1, value2 → result | bitwise or of two longs |
 | LongOpInstructionVisitor | lrem | 71 |   | value1, value2 → result | remainder of division of two longs |
 | TBD | lreturn | ad |   | value → [empty] | returns a long value |
-| TBD | lshl | 79 |   | value1, value2 → result | bitwise shift left of a long value1 by value2 positions |
-| TBD | lshr | 7b |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions |
+| LongShiftInstructionVisitor | lshl | 79 |   | value1, value2 → result | bitwise shift left of a long value1 by value2 positions |
+| LongShiftInstructionVisitor | lshr | 7b |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions |
 | TBD | lstore | 37 | index | value → | store a long value in a local variable #index |
 | TBD | lstore_0 | 3f |   | value → | store a long value in a local variable 0 |
 | TBD | lstore_1 | 40 |   | value → | store a long value in a local variable 1 |
 | TBD | lstore_2 | 41 |   | value → | store a long value in a local variable 2 |
 | TBD | lstore_3 | 42 |   | value → | store a long value in a local variable 3 |
 | LongOpInstructionVisitor | lsub | 65 |   | value1, value2 → result | subtract two longs |
-| TBD | lushr | 7d |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions, unsigned |
+| LongShiftInstructionVisitor | lushr | 7d |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions, unsigned |
 | LongOpInstructionVisitor | lxor | 83 |   | value1, value2 → result | bitwise exclusive or of two longs |
 | **M** | | | | | |
 | TBD | monitorenter | c2 |   | objectref → | enter monitor for object ("grab the lock" - start of synchronized() section) |
