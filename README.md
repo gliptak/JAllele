@@ -3,7 +3,6 @@ JAllele
 [![ci](https://github.com/gliptak/JAllele/workflows/ci/badge.svg)](https://github.com/gliptak/JAllele/actions?query=branch%3Amaster)
 [![Qlty Coverage](https://img.shields.io/badge/qlty-coverage-blue.svg)](https://app.qlty.sh/dashboard/gliptak/JAllele)
 [![GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl.html)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.gliptak.jallele/jallele-engine.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.gliptak.jallele/jallele-engine)
 
 JAllele is a [mutation testing tool](https://en.wikipedia.org/wiki/Mutation_testing) for Java. By design, all
 mutants generated are valid and it aspires to avoid equivalent mutants.
@@ -28,28 +27,8 @@ the mutation runs failed over the number of mutations runs.
 Usage
 --------
 
-### Maven/Gradle Dependencies
-
-JAllele is published to Maven Central. You can include it in your project:
-
-**Maven:**
-```xml
-<dependency>
-    <groupId>com.github.gliptak.jallele</groupId>
-    <artifactId>jallele-engine</artifactId>
-    <version>0.1-SNAPSHOT</version>
-</dependency>
-```
-
-**Gradle:**
-```groovy
-implementation 'com.github.gliptak.jallele:jallele-engine:0.1-SNAPSHOT'
-```
-
-### Command Line Usage
-
 Currently a command line access is made available.
-For development, the libraries need to be built:
+The libraries have to be built, as they are not yet published to a Maven repository.
 ```
 $ ./gradlew build
 ```
