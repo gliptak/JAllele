@@ -4,17 +4,135 @@ allprojects {
     }
 }
 
+apply plugin: 'jacoco'
+
 group = 'com.github.gliptak.jallele'
 
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'eclipse'
+    apply plugin: 'jacoco'
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
 
+    group = 'com.github.gliptak.jallele'
     version = '0.1-SNAPSHOT'
     
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(17)
+        }
+        withJavadocJar()
+        withSourcesJar()
+    }
+    
+    jacoco {
+        toolVersion = "0.8.12"
+    }
+    
+    jacocoTestReport {
+        reports {
+            xml.required = true
+            html.required = true
+        }
+    }
+    
+    test.finalizedBy jacocoTestReport
+    
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+                
+                pom {
+                    name = "${project.name}"
+                    description = 'JAllele is a mutation testing tool for Java. By design, all mutants generated are valid and it aspires to avoid equivalent mutants.'
+                    url = 'https://github.com/gliptak/JAllele'
+                    inceptionYear = '2024'
+                    
+                    licenses {
+                        license {
+                            name = 'GPL-3.0'
+                            url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
+                        }
+                    }
+                    
+                    developers {
+                        developer {
+                            id = 'gliptak'
+                            name = 'Gabor Liptak'
+                            url = 'https://github.com/gliptak'
+                        }
+                    }
+                    
+                    scm {
+                        url = 'https://github.com/gliptak/JAllele'
+                        connection = 'scm:git:https://github.com/gliptak/JAllele.git'
+                        developerConnection = 'scm:git:https://github.com/gliptak/JAllele.git'
+                    }
+                    
+                    issueManagement {
+                        system = 'GitHub Issues'
+                        url = 'https://github.com/gliptak/JAllele/issues'
+                    }
+                }
+            }
+        }
+        
+        repositories {
+            maven {
+                name = "OSSRH"
+                url = version.endsWith('SNAPSHOT') ? 
+                    "https://oss.sonatype.org/content/repositories/snapshots/" : 
+                    "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                credentials {
+                    username = project.findProperty("ossrhUsername") ?: System.getenv("MAVEN_USERNAME")
+                    password = project.findProperty("ossrhPassword") ?: System.getenv("MAVEN_PASSWORD")
+                }
+            }
+        }
+    }
+    
+    signing {
+        required { gradle.taskGraph.hasTask("publishAllPublicationsToOSSRHRepository") }
+        sign publishing.publications.maven
+    }
+}
+
+task jacocoRootReport(type: JacocoReport) {
+    description = 'Generates an aggregate report from all subprojects'
+    group = 'Coverage reports'
+    
+    dependsOn(subprojects.test, subprojects.jacocoTestReport)
+    
+    additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories.setFrom files(subprojects.sourceSets.main.output)
+    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
+    
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+task jacocoRootCoverageVerification(type: JacocoCoverageVerification) {
+    description = 'Verifies code coverage metrics based on specified rules for the whole project.'
+    group = 'Coverage reports'
+    
+    dependsOn jacocoRootReport
+    
+    additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories.setFrom files(subprojects.sourceSets.main.output)
+    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
+    
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.30 // 30% minimum coverage - can be adjusted
+            }
         }
     }
 }

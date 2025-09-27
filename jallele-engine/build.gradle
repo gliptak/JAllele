@@ -6,7 +6,7 @@ dependencies {
     implementation "org.ow2.asm:asm:9.8"
     implementation "org.ow2.asm:asm-util:9.8"
     implementation "org.apache.commons:commons-lang3:3.19.0"
-    testImplementation "junit:junit:[4.0,)"
+    testImplementation "junit:junit:4.13.2"
     if (toolsJar) {
         implementation files(toolsJar)
     }
