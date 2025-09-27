@@ -1,7 +1,9 @@
 JAllele
 ==========
-[![Build Status](https://travis-ci.org/gliptak/JAllele.svg?branch=master)](https://travis-ci.org/gliptak/JAllele)
+[![ci](https://github.com/gliptak/JAllele/workflows/ci/badge.svg)](https://github.com/gliptak/JAllele/actions?query=branch%3Amaster)
+[![codecov](https://codecov.io/gh/gliptak/JAllele/branch/master/graph/badge.svg)](https://codecov.io/gh/gliptak/JAllele)
 [![GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl.html)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.gliptak.jallele/jallele-engine.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.gliptak.jallele/jallele-engine)
 
 JAllele is a [mutation testing tool](https://en.wikipedia.org/wiki/Mutation_testing) for Java. By design, all
 mutants generated are valid and it aspires to avoid equivalent mutants.

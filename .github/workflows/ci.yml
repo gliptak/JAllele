@@ -4,16 +4,18 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v*'
   pull_request:
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         java: ['17', '19', '21']
-    name: Build
+    name: Test Java ${{ matrix.java }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -24,3 +26,44 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Build with Gradle
         run: ./gradlew build
+      - name: Generate code coverage report
+        run: ./gradlew jacocoRootReport
+      - name: Upload coverage reports to Codecov
+        if: matrix.java == '17'
+        uses: codecov/codecov-action@v5
+        with:
+          file: ./build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Archive coverage artifacts
+        if: matrix.java == '17'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            build/reports/jacoco/jacocoRootReport/
+            */build/reports/jacoco/test/
+
+  publish:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: ubuntu-latest
+    name: Publish to Maven Central
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: '17'
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Publish to Maven Central
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        run: ./gradlew publishAllPublicationsToOSSRHRepository
