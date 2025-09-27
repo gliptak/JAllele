@@ -46,7 +46,7 @@
 | TBD | dload_2 | 28 |   | → value | loads a double from local variable 2 |
 | TBD | dload_3 | 29 |   | → value | loads a double from local variable 3 |
 | DoubleOpInstructionVisitor | dmul | 6b |   | value1, value2 → result | multiplies two doubles |
-| TBD | dneg | 77 |   | value → result | negates a double |
+| NegInstructionVisitor | dneg | 77 |   | value → result | negates a double |
 | DoubleOpInstructionVisitor | drem | 73 |   | value1, value2 → result | gets the remainder from a division between two doubles |
 | TBD | dreturn | af |   | value → [empty] | returns a double from a method |
 | TBD | dstore | 39 | index | value → | stores a double value into a local variable #index |
@@ -80,7 +80,7 @@
 | TBD | fload_2 | 24 |   | → value | loads a float value from local variable 2 |
 | TBD | fload_3 | 25 |   | → value | loads a float value from local variable 3 |
 | FloatOpInstructionVisitor | fmul | 6a |   | value1, value2 → result | multiplies two floats |
-| TBD | fneg | 76 |   | value → result | negates a float |
+| NegInstructionVisitor | fneg | 76 |   | value → result | negates a float |
 | FloatOpInstructionVisitor | frem | 72 |   | value1, value2 → result | gets the remainder from a division between two floats |
 | TBD | freturn | ae |   | value → [empty] | returns a float |
 | TBD | fstore | 38 | index | value → | stores a float value into a local variable #index |
@@ -136,7 +136,7 @@
 | TBD | iload_2 | 1c |   | → value | loads an int value from variable 2 |
 | TBD | iload_3 | 1d |   | → value | loads an int value from variable 3 |
 | IntegerOpInstructionVisitor | imul | 68 |   | value1, value2 → result | multiply two integers |
-| TBD | ineg | 74 |   | value → result | negate int |
+| NegInstructionVisitor | ineg | 74 |   | value → result | negate int |
 | TBD | instanceof | c1 | indexbyte1, indexbyte2 | objectref → result | determines if an object objectref is of a given type, identified by class reference index in constant pool (indexbyte1 << 8 + indexbyte2) |
 | TBD | invokedynamic | ba | indexbyte1, indexbyte2, 0, 0 | [arg1, [arg2 ...]] → | invokes a dynamic method identified by method reference index in constant pool (indexbyte1 << 8 + indexbyte2) |
 | TBD | invokeinterface | b9 | indexbyte1, indexbyte2, count, 0 | objectref, [arg1, arg2, ...] → | invokes an interface method on object objectref, where the interface method is identified by method reference index in constant pool (indexbyte1 << 8 + indexbyte2) |
@@ -180,7 +180,7 @@
 | TBD | lload_2 | 20 |   | → value | load a long value from a local variable 2 |
 | TBD | lload_3 | 21 |   | → value | load a long value from a local variable 3 |
 | LongOpInstructionVisitor | lmul | 69 |   | value1, value2 → result | multiplies two longs |
-| TBD | lneg | 75 |   | value → result | negates a long |
+| NegInstructionVisitor | lneg | 75 |   | value → result | negates a long |
 | TBD | lookupswitch | ab | <0-3 bytes padding>, defaultbyte1, defaultbyte2, defaultbyte3, defaultbyte4, npairs1, npairs2, npairs3, npairs4, match-offset pairs... | key → | a target address is looked up from a table using a key and execution continues from the instruction at that address |
 | LongOpInstructionVisitor | lor | 81 |   | value1, value2 → result | bitwise or of two longs |
 | LongOpInstructionVisitor | lrem | 71 |   | value1, value2 → result | remainder of division of two longs |
