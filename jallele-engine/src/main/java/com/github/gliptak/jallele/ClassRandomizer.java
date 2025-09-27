@@ -52,6 +52,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 		visitors.add(new IfInstructionVisitor(random));
 		visitors.add(new IfNullInstructionVisitor(random));
 		visitors.add(new LConstInstructionVisitor(random));
+		visitors.add(new DConstInstructionVisitor(random));
 		visitors.add(new IfACompareInstructionVisitor(random));
 		visitors.add(new IfICompareInstructionVisitor(random));
 		visitors.add(new DoubleOpInstructionVisitor(random));
@@ -63,6 +64,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 		visitors.add(new IPushInstructionVisitor(random));
 		visitors.add(new IincInstructionVisitor(random));
 		visitors.add(new ALoadInstructionVisitor(random));
+		visitors.add(new DLoadInstructionVisitor(random));
 	}
 
 	public void recordMatches() throws Exception {

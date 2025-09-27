@@ -37,14 +37,14 @@
 | TBD | dastore | 52 |   | arrayref, index, value → | stores a double into an array |
 | TBD | dcmpg | 98 |   | value1, value2 → result | compares two doubles |
 | TBD | dcmpl | 97 |   | value1, value2 → result | compares two doubles |
-| TBD | dconst_0 | 0e |   | → 0.0 | pushes the constant 0.0 onto the stack |
-| TBD | dconst_1 | 0f |   | → 1.0 | pushes the constant 1.0 onto the stack |
+| DConstInstructionVisitor | dconst_0 | 0e |   | → 0.0 | pushes the constant 0.0 onto the stack |
+| DConstInstructionVisitor | dconst_1 | 0f |   | → 1.0 | pushes the constant 1.0 onto the stack |
 | DoubleOpInstructionVisitor | ddiv | 6f |   | value1, value2 → result | divides two doubles |
-| TBD | dload | 18 | index | → value | loads a double value from a local variable #index |
-| TBD | dload_0 | 26 |   | → value | loads a double from local variable 0 |
-| TBD | dload_1 | 27 |   | → value | loads a double from local variable 1 |
-| TBD | dload_2 | 28 |   | → value | loads a double from local variable 2 |
-| TBD | dload_3 | 29 |   | → value | loads a double from local variable 3 |
+| DLoadInstructionVisitor | dload | 18 | index | → value | loads a double value from a local variable #index |
+| DLoadInstructionVisitor | dload_0 | 26 |   | → value | loads a double from local variable 0 |
+| DLoadInstructionVisitor | dload_1 | 27 |   | → value | loads a double from local variable 1 |
+| DLoadInstructionVisitor | dload_2 | 28 |   | → value | loads a double from local variable 2 |
+| DLoadInstructionVisitor | dload_3 | 29 |   | → value | loads a double from local variable 3 |
 | DoubleOpInstructionVisitor | dmul | 6b |   | value1, value2 → result | multiplies two doubles |
 | NegInstructionVisitor | dneg | 77 |   | value → result | negates a double |
 | DoubleOpInstructionVisitor | drem | 73 |   | value1, value2 → result | gets the remainder from a division between two doubles |
