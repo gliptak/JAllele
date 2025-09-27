@@ -29,11 +29,9 @@ jobs:
         run: ./gradlew build
       - name: Generate code coverage report
         run: ./gradlew jacocoRootReport
-      - name: Upload coverage to Qlty
+      - name: Upload coverage to Codecov
         if: matrix.java == '17'
-        uses: qltysh/qlty-action/coverage@v2
+        uses: codecov/codecov-action@v4
         with:
-          oidc: true
-          files: ./build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
-          skip-errors: false
-          add-prefix: jallele-engine/src/main/java jallele-cmdline/src/main/java
+          file: ./build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
+          fail_ci_if_error: true

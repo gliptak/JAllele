@@ -1,7 +1,7 @@
 JAllele
 ==========
 [![ci](https://github.com/gliptak/JAllele/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gliptak/JAllele/actions/workflows/ci.yml?query=branch%3Amain)
-[![Qlty Coverage](https://img.shields.io/badge/qlty-coverage-blue.svg)](https://app.qlty.sh/dashboard/gliptak/JAllele)
+[![codecov](https://codecov.io/gh/gliptak/JAllele/branch/main/graph/badge.svg)](https://codecov.io/gh/gliptak/JAllele)
 [![GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl.html)
 
 JAllele is a [mutation testing tool](https://en.wikipedia.org/wiki/Mutation_testing) for Java. By design, all
