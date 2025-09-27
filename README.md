@@ -1,6 +1,6 @@
 JAllele
 ==========
-[![ci](https://github.com/gliptak/JAllele/workflows/ci/badge.svg)](https://github.com/gliptak/JAllele/actions?query=branch%3Amain)
+[![ci](https://github.com/gliptak/JAllele/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gliptak/JAllele/actions/workflows/ci.yml?query=branch%3Amain)
 [![Qlty Coverage](https://img.shields.io/badge/qlty-coverage-blue.svg)](https://app.qlty.sh/dashboard/gliptak/JAllele)
 [![GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl.html)
 
