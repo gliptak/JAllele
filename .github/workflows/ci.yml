@@ -36,4 +36,5 @@ jobs:
           oidc: true
           files: ./build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
           skip-errors: false
-          add-prefix: jallele-engine/src/main/java,jallele-cmdline/src/main/java/com
+          add-prefix: jallele-engine/src/main/java
+          add-prefix: jallele-cmdline/src/main/java
