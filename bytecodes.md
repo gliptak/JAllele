@@ -6,11 +6,11 @@
 | TBD | aaload | 32 |   | arrayref, index → value | loads onto the stack a reference from an array |
 | TBD | aastore | 53 |   | arrayref, index, value → | stores into a reference to an array |
 | TBD | aconst_null | 01 |   | → null | pushes a null reference onto the stack |
-| TBD | aload | 19 | index | → objectref | loads a reference onto the stack from a local variable #index |
-| TBD | aload_0 | 2a |   | → objectref | loads a reference onto the stack from local variable 0 |
-| TBD | aload_1 | 2b |   | → objectref | loads a reference onto the stack from local variable 1 |
-| TBD | aload_2 | 2c |   | → objectref | loads a reference onto the stack from local variable 2 |
-| TBD | aload_3 | 2d |   | → objectref | loads a reference onto the stack from local variable 3 |
+| ALoadInstructionVisitor | aload | 19 | index | → objectref | loads a reference onto the stack from a local variable #index |
+| ALoadInstructionVisitor | aload_0 | 2a |   | → objectref | loads a reference onto the stack from local variable 0 |
+| ALoadInstructionVisitor | aload_1 | 2b |   | → objectref | loads a reference onto the stack from local variable 1 |
+| ALoadInstructionVisitor | aload_2 | 2c |   | → objectref | loads a reference onto the stack from local variable 2 |
+| ALoadInstructionVisitor | aload_3 | 2d |   | → objectref | loads a reference onto the stack from local variable 3 |
 | TBD | anewarray | bd | indexbyte1, indexbyte2 | count → arrayref | creates a new array of references of length count and component type identified by the class reference index (indexbyte1 << 8 + indexbyte2) in the constant pool |
 | TBD | areturn | b0 |   | objectref → [empty] | returns a reference from a method |
 | TBD | arraylength | be |   | arrayref → length | gets the length of an array |
