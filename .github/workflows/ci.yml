@@ -31,7 +31,7 @@ jobs:
         run: ./gradlew jacocoRootReport
       - name: Upload coverage to Codecov
         if: matrix.java == '17'
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           file: ./build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
           fail_ci_if_error: true
