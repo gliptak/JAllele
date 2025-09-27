@@ -11,39 +11,15 @@ import org.objectweb.asm.Opcodes;
 
 import com.github.gliptak.jallele.VisitStatus;
 
-public class UtilityInstructionVisitorTest {
+public class IincInstructionVisitorTest {
 
-	private UtilityInstructionVisitor visitor;
+	private IincInstructionVisitor visitor;
 	private Random random;
 
 	@Before
 	public void setUp() {
 		random = new Random(12345); // Use fixed seed for reproducible tests
-		visitor = new UtilityInstructionVisitor(random);
-	}
-
-	@Test
-	public void testNopInstructionNoChange() {
-		VisitStatus vs = new VisitStatus("TestClass", "testMethod", "()V", 1, 1);
-		vs.setOpCode(Opcodes.NOP);
-		
-		VisitStatus result = visitor.isMatch(vs);
-		
-		// NOP should remain unchanged
-		assertThat(result.getOpCode(), is(Opcodes.NOP));
-		assertThat(result.getOperand(), is(vs.getOperand()));
-	}
-
-	@Test
-	public void testSwapInstructionNoChange() {
-		VisitStatus vs = new VisitStatus("TestClass", "testMethod", "()V", 1, 1);
-		vs.setOpCode(Opcodes.SWAP);
-		
-		VisitStatus result = visitor.isMatch(vs);
-		
-		// SWAP should remain unchanged
-		assertThat(result.getOpCode(), is(Opcodes.SWAP));
-		assertThat(result.getOperand(), is(vs.getOperand()));
+		visitor = new IincInstructionVisitor(random);
 	}
 
 	@Test
@@ -94,5 +70,22 @@ public class UtilityInstructionVisitorTest {
 		assertTrue("Result1 operand should be <= 127", result1.getOperand() <= 127);
 		assertTrue("Result2 operand should be >= -128", result2.getOperand() >= -128);
 		assertTrue("Result2 operand should be <= 127", result2.getOperand() <= 127);
+	}
+
+	@Test
+	public void testIincWithZeroOperand() {
+		VisitStatus vs = new VisitStatus("TestClass", "testMethod", "()V", 1, 1);
+		vs.setOpCode(Opcodes.IINC);
+		vs.setOperand(0); // Original increment value of 0
+		
+		VisitStatus result = visitor.isMatch(vs);
+		
+		// IINC opcode should remain the same
+		assertThat(result.getOpCode(), is(Opcodes.IINC));
+		// But operand should be different from 0
+		assertThat(result.getOperand(), not(0));
+		// Operand should be within byte range
+		assertTrue("Operand should be >= -128", result.getOperand() >= -128);
+		assertTrue("Operand should be <= 127", result.getOperand() <= 127);
 	}
 }

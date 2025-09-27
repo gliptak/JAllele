@@ -129,7 +129,7 @@
 | IfInstructionVisitor | ifle | 9e | branchbyte1, branchbyte2 | value → | if value is less than or equal to 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | IfNullInstructionVisitor | ifnonnull | c7 | branchbyte1, branchbyte2 | value → | if value is not null, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | IfNullInstructionVisitor | ifnull | c6 | branchbyte1, branchbyte2 | value → | if value is null, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
-| UtilityInstructionVisitor | iinc | 84 | index, const | [No change] | increment local variable #index by signed byte const |
+| IincInstructionVisitor | iinc | 84 | index, const | [No change] | increment local variable #index by signed byte const |
 | TBD | iload | 15 | index | → value | loads an int value from a variable #index |
 | TBD | iload_0 | 1a |   | → value | loads an int value from variable 0 |
 | TBD | iload_1 | 1b |   | → value | loads an int value from variable 1 |
@@ -202,7 +202,7 @@
 | **N** | | | | | |
 | TBD | new | bb | indexbyte1, indexbyte2 | → objectref | creates new object of type identified by class reference in constant pool index (indexbyte1 << 8 + indexbyte2) |
 | TBD | newarray | bc | atype | count → arrayref | creates new array with count elements of primitive type identified by atype |
-| UtilityInstructionVisitor | nop | 00 |   | [No change] | performs no operation |
+| TBD | nop | 00 |   | [No change] | performs no operation |
 | **P** | | | | | |
 | TBD | pop | 57 |   | value → | discards the top value on the stack |
 | TBD | pop2 | 58 |   | {value2, value1} → | discards the top two values on the stack (or one value, if it is a double or long) |
@@ -215,7 +215,7 @@
 | TBD | saload | 35 |   | arrayref, index → value | load short from array |
 | TBD | sastore | 56 |   | arrayref, index, value → | store short to array |
 | IPushInstructionVisitor | sipush | 11 | byte1, byte2 | → value | pushes a signed integer (byte1 << 8 + byte2) onto the stack |
-| UtilityInstructionVisitor | swap | 5f |   | value2, value1 → value1, value2 | swaps two top words on the stack (note that value1 and value2 must not be double or long) |
+| TBD | swap | 5f |   | value2, value1 → value1, value2 | swaps two top words on the stack (note that value1 and value2 must not be double or long) |
 | **T** | | | | | |
 | TBD | tableswitch | aa | [0-3 bytes padding], defaultbyte1, defaultbyte2, defaultbyte3, defaultbyte4, lowbyte1, lowbyte2, lowbyte3, lowbyte4, highbyte1, highbyte2, highbyte3, highbyte4, jump offsets... | index → | continue execution from an address in the table at offset index |
 | **W** | | | | | |
