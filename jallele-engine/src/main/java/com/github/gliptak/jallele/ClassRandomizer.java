@@ -54,6 +54,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 		visitors.add(new IfACompareInstructionVisitor(random));
 		visitors.add(new IfICompareInstructionVisitor(random));
 		visitors.add(new DoubleOpInstructionVisitor(random));
+		visitors.add(new FloatOpInstructionVisitor(random));
 		visitors.add(new IntegerOpInstructionVisitor(random));
 		visitors.add(new IPushInstructionVisitor(random));
 	}
