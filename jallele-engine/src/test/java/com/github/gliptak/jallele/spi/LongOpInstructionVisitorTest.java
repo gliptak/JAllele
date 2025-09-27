@@ -46,8 +46,7 @@ public class LongOpInstructionVisitorTest {
 		assertThat(vsNew.getOpCode(),
 				anyOf(equalTo(Opcodes.LADD), equalTo(Opcodes.LDIV), 
 					  equalTo(Opcodes.LMUL), equalTo(Opcodes.LREM), equalTo(Opcodes.LSUB),
-					  equalTo(Opcodes.LAND), equalTo(Opcodes.LOR), equalTo(Opcodes.LXOR),
-					  equalTo(Opcodes.LSHL), equalTo(Opcodes.LSHR), equalTo(Opcodes.LUSHR)));
+					  equalTo(Opcodes.LAND), equalTo(Opcodes.LOR), equalTo(Opcodes.LXOR)));
 		vsNew.setOpCode(opCode);
 		assertThat(vsNew, equalTo(vs));
 	}
