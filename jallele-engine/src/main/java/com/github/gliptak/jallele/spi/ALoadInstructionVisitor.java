@@ -9,7 +9,13 @@ import java.util.Random;
 
 public class ALoadInstructionVisitor extends InstructionVisitor {
 
-	protected int[] values={Opcodes.ALOAD, 0x2a, 0x2b, 0x2c, 0x2d}; // aload, aload_0, aload_1, aload_2, aload_3
+	// Opcodes for aload_0, aload_1, aload_2, aload_3 (ASM doesn't provide these constants)
+	private static final int ALOAD_0 = 0x2a;
+	private static final int ALOAD_1 = 0x2b;
+	private static final int ALOAD_2 = 0x2c;
+	private static final int ALOAD_3 = 0x2d;
+
+	protected int[] values={Opcodes.ALOAD, ALOAD_0, ALOAD_1, ALOAD_2, ALOAD_3}; // aload, aload_0, aload_1, aload_2, aload_3
 
 	public ALoadInstructionVisitor(Random random) {
 		super(random);
