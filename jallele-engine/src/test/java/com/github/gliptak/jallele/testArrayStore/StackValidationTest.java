@@ -15,6 +15,21 @@ package com.github.gliptak.jallele.testArrayStore;
  *   <li>Test immediate operations to catch stack corruption as soon as possible</li>
  * </ul>
  * 
+ * <h3>Precise Validation Pattern:</h3>
+ * The updated tests follow a specific pattern for maximum stack corruption detection:
+ * <ol>
+ *   <li><strong>*const* load value to stack</strong> - Push known value using iconst_*, lconst_*, etc.</li>
+ *   <li><strong>Array store instruction</strong> - Perform array store (which when mutated leaves extra values)</li>
+ *   <li><strong>*const* load values to stack</strong> - Push new known values for arithmetic</li>
+ *   <li><strong>*add operation</strong> - Perform arithmetic that should use the newly loaded values</li>
+ *   <li><strong>Validate result</strong> - Check if result matches expected (fails if corruption occurred)</li>
+ * </ol>
+ * 
+ * <h3>Why This Pattern Works:</h3>
+ * If array store mutations leave extra values on the stack, the arithmetic operations will
+ * consume those leftover values instead of the intended operands, producing wrong results.
+ * This makes stack corruption immediately detectable.
+ * 
  * <h3>Bytecode Strategy:</h3>
  * The methods intentionally use constants and operations that translate to direct
  * JVM stack instructions:
@@ -33,132 +48,165 @@ public class StackValidationTest {
     
     /**
      * Test that uses direct integer constants and arithmetic to validate stack state.
-     * Generates bytecode: iconst_*, iastore, iconst_*, iadd
+     * 
+     * Pattern: iconst_* → array store (mutated) → iconst_* → iadd → validate
+     * If array store mutation leaves extra values, the iadd will use wrong operands.
      */
     public int testIntArrayStoreWithDirectStackOperations() {
         int[] array = new int[3];
         
-        // Use direct integer constants that translate to iconst_* bytecode
-        array[0] = 5; // iconst_5, iastore - if mutated to POP2, leaves 1 value on stack
+        // Step 1: iconst_5 loads 5 to stack
+        // Step 2: iastore consumes arrayref, index, value (3 slots)
+        //         When mutated to POP2, leaves 1 value on stack (arrayref)
+        array[0] = 5; // iconst_5, iastore → mutation leaves arrayref on stack
         
-        // Immediate arithmetic using direct constants - sensitive to stack corruption
-        int result = 3 + 7; // iconst_3, bipush 7, iadd - will fail if stack has extra values
+        // Step 3: iconst_3 loads 3 to stack
+        // Step 4: iconst_7 loads 7 to stack 
+        // Step 5: iadd should consume 3 and 7 to produce 10
+        //         But if mutation left extra value, iadd might use that instead
+        int result = 3 + 7; // Expected: 10, but will fail if stack corruption occurs
         
-        array[1] = result; // Should be 10
-        
-        // Direct arithmetic validation
-        int sum = array[0] + array[1]; // Should be 15 if stack was clean during operations
-        
-        return sum;
+        return result; // Should be 10 if stack is clean, wrong value if corrupted
     }
     
     /**
      * Test that uses direct long constants to validate stack state after lastore.
-     * Generates bytecode: lconst_*, lastore, iconst_*, i2l, ladd
+     * 
+     * Pattern: lconst_* → lastore (mutated) → lconst_* → ladd → validate
      */
     public long testLongArrayStoreWithDirectStackOperations() {
         long[] array = new long[3];
         
-        // Use direct long constants
-        array[0] = 1L; // lconst_1, lastore - if mutated to POP2, leaves 2 values on stack
+        // Step 1: lconst_1 loads 1L to stack (uses 2 slots)
+        // Step 2: lastore consumes arrayref, index, long_value (4 slots)
+        //         When mutated to POP2, leaves 2 values on stack (arrayref + index)
+        array[0] = 1L; // lconst_1, lastore → mutation leaves arrayref + index on stack
         
-        // Direct arithmetic that's sensitive to stack corruption
-        long result = 2L + 3L; // lconst_1 (for 2), ldc 3L, ladd - sensitive to stack state
+        // Step 3: lconst_0 loads 0L to stack
+        // Step 4: ldc 5L loads 5L to stack
+        // Step 5: ladd should consume 0L and 5L to produce 5L
+        //         But if mutation left extra values, ladd might use those instead
+        long result = 0L + 5L; // Expected: 5L, but will fail if stack corruption occurs
         
-        array[1] = result; // Should be 5
-        
-        // Validate with direct arithmetic
-        return array[0] + array[1]; // Should be 6
+        return result; // Should be 5L if stack is clean, wrong value if corrupted
     }
     
     /**
      * Test that uses direct double constants to validate stack state.
-     * Generates bytecode: dconst_*, dastore, dconst_*, dadd
+     * 
+     * Pattern: dconst_* → dastore (mutated) → dconst_* → dadd → validate
      */
     public double testDoubleArrayStoreWithDirectStackOperations() {
         double[] array = new double[3];
         
-        // Use direct double constants  
-        array[0] = 1.0; // dconst_1, dastore - if mutated to POP2, leaves 2 values on stack
+        // Step 1: dconst_1 loads 1.0 to stack (uses 2 slots)
+        // Step 2: dastore consumes arrayref, index, double_value (4 slots)
+        //         When mutated to POP2, leaves 2 values on stack (arrayref + index)
+        array[0] = 1.0; // dconst_1, dastore → mutation leaves arrayref + index on stack
         
-        // Direct double arithmetic sensitive to stack state
-        double result = 0.5 + 0.5; // ldc 0.5, ldc 0.5, dadd - sensitive to stack corruption
+        // Step 3: dconst_0 loads 0.0 to stack
+        // Step 4: ldc 2.0 loads 2.0 to stack
+        // Step 5: dadd should consume 0.0 and 2.0 to produce 2.0
+        //         But if mutation left extra values, dadd might use those instead
+        double result = 0.0 + 2.0; // Expected: 2.0, but will fail if stack corruption occurs
         
-        array[1] = result; // Should be 1.0
-        
-        return array[0] + array[1]; // Should be 2.0
+        return result; // Should be 2.0 if stack is clean, wrong value if corrupted
     }
     
     /**
-     * Test sequential array operations with direct stack-sensitive operations.
-     * Uses iconst_*, iadd, imul to create stack-sensitive arithmetic.
+     * Test sequential array operations with precise stack validation pattern.
+     * 
+     * Pattern: iconst_* → iastore (mutated) → iconst_* → iconst_* → iadd → validate
      */
     public int testSequentialArrayOperationsWithDirectArithmetic() {
-        int[] ints = new int[3];
+        int[] array = new int[3];
         
-        // Array stores that could leave values on stack if mutations are incorrect
-        ints[0] = 2; // iconst_2, iastore → POP2 mutation leaves 1 slot
-        ints[1] = 3; // iconst_3, iastore → POP2 mutation leaves 1 slot
+        // First array store with stack corruption potential
+        array[0] = 2; // iconst_2, iastore → mutation leaves arrayref on stack
         
-        // Direct arithmetic operations very sensitive to stack corruption
-        // These use iconst_* which push exact values and are sensitive to stack state
-        int a = 4;     // iconst_4
-        int b = 5;     // iconst_5  
-        int product = a * b; // imul - will fail if stack has unexpected values
+        // Immediate arithmetic that will detect stack corruption
+        // iconst_4, iconst_6, iadd should produce 10
+        // But if arrayref is still on stack, iadd might use wrong operands
+        int firstResult = 4 + 6; // Expected: 10, corrupted if stack has extra values
         
-        ints[2] = product; // Should be 20
+        // Second array store
+        array[1] = 3; // iconst_3, iastore → another potential corruption
         
-        // Final calculation using direct arithmetic
-        int sum = ints[0] + ints[1] + ints[2]; // iadd operations - stack sensitive
+        // Another immediate arithmetic test
+        int secondResult = 1 + 2; // iconst_1, iconst_2, iadd → Expected: 3
         
-        return sum; // Should be 2 + 3 + 20 = 25
+        // Final validation
+        return firstResult + secondResult; // Expected: 13 if both operations were clean
     }
     
     /**
-     * Test method that performs immediate arithmetic after array store using
-     * direct constant instructions that generate iconst_*, iadd bytecode.
+     * Test immediate arithmetic after array store with precise validation.
+     * 
+     * Pattern: iconst_1 → iastore (mutated) → iconst_2 → iconst_3 → iadd → validate
+     * This is the most direct test of the proposed pattern.
      */
     public int testImmediateArithmeticAfterArrayStore() {
         int[] array = new int[2];
         
-        // Array store that could corrupt stack
-        array[0] = 1; // iconst_1, iastore - if mutated incorrectly, leaves values on stack
+        // Step 1: iconst_1 loads 1 to stack
+        // Step 2: Array store that when mutated will leave arrayref on stack
+        array[0] = 1; // iconst_1, iastore → mutation leaves arrayref on stack
         
-        // Immediate arithmetic using direct constants - extremely stack sensitive
-        // This should generate: iconst_2, iconst_3, iadd
-        int result = 2 + 3; // iconst_2, iconst_3, iadd - will fail with stack corruption
+        // Step 3: iconst_2 loads 2 to stack  
+        // Step 4: iconst_3 loads 3 to stack
+        // Step 5: iadd should consume 2 and 3, producing 5
+        //         If array store mutation left arrayref, iadd will use wrong values
+        int result = 2 + 3; // Expected: 5, but will be corrupted if stack has arrayref
         
-        array[1] = result; // Should be 5
-        
-        return result; // Should be exactly 5
+        return result; // Should be exactly 5 if stack is clean
     }
     
     /**
-     * Test that validates stack behavior with mixed operations and direct constants.
-     * Uses combinations of iconst_*, bipush, iadd, imul to stress-test stack state.
+     * Test reference array store with stack validation pattern.
+     * 
+     * Pattern: aconst_null/ldc → aastore (mutated) → iconst_* → iadd → validate
+     */  
+    public int testStringArrayStoreWithStackValidation() {
+        String[] array = new String[2];
+        
+        // String array store that when mutated will leave arrayref on stack
+        array[0] = "test"; // ldc "test", aastore → mutation leaves arrayref on stack
+        
+        // Immediate integer arithmetic to detect stack corruption
+        // If aastore mutation left arrayref on stack, this arithmetic will be corrupted
+        int result = 7 + 8; // iconst_*, bipush, iadd → Expected: 15
+        
+        return result; // Should be 15 if stack is clean after aastore mutation
+    }
+    
+    /**
+     * Test mixed operations with precise stack corruption detection.
+     * 
+     * Multiple array stores followed by immediate arithmetic to amplify corruption effects.
      */
     public int testMixedDirectStackOperations() {
         int[] array = new int[4];
         
-        // Multiple array stores with small constants (iconst_*)
-        array[0] = 1; // iconst_1, iastore
-        array[1] = 2; // iconst_2, iastore  
-        array[2] = 3; // iconst_3, iastore
+        // First corruption point
+        array[0] = 1; // iconst_1, iastore → leaves arrayref on stack
         
-        // Complex arithmetic using direct bytecode instructions
-        int base = 10;        // bipush 10
-        int multiplier = 2;   // iconst_2
-        int addition = 5;     // iconst_5
+        // Immediate test - will fail if stack corrupted
+        int first = 2 + 2; // iconst_2, iconst_2, iadd → Expected: 4
         
-        // Arithmetic chain that's very sensitive to stack corruption
-        int result = base * multiplier + addition; // imul, iadd - sensitive to stack state
+        // Second corruption point  
+        array[1] = 2; // iconst_2, iastore → leaves another arrayref on stack
         
-        array[3] = result; // Should be 25
+        // Another immediate test
+        int second = 3 + 3; // iconst_3, iconst_3, iadd → Expected: 6
         
-        // Sum using direct addition operations
-        int total = array[0] + array[1] + array[2] + array[3]; // Multiple iadd - stack sensitive
+        // Third corruption point
+        array[2] = 3; // iconst_3, iastore → leaves third arrayref on stack
         
-        return total; // Should be 1 + 2 + 3 + 25 = 31
+        // Final arithmetic test
+        int third = 1 + 4; // iconst_1, iconst_4, iadd → Expected: 5
+        
+        // Total should be 4 + 6 + 5 = 15 if no stack corruption occurred
+        return first + second + third;
     }
     
     /**

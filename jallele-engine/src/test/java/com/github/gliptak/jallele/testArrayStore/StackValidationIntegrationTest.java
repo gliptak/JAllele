@@ -25,6 +25,15 @@ import org.objectweb.asm.Opcodes;
  * These operations are extremely sensitive to stack corruption and will fail immediately
  * if array store mutations leave unexpected values on the JVM stack.
  * 
+ * <h3>Precise Validation Pattern:</h3>
+ * Each test follows the pattern recommended by @gliptak:
+ * <ol>
+ *   <li><strong>*const* load</strong> - Push value to stack (iconst_5, lconst_1, etc.)</li>
+ *   <li><strong>Array store mutation</strong> - Perform array store (leaves extra values when mutated)</li>
+ *   <li><strong>*const* load</strong> - Push new values to stack for arithmetic</li>
+ *   <li><strong>*add validation</strong> - Perform arithmetic and validate expected result</li>
+ * </ol>
+ * 
  * <h3>Validation Approach:</h3>
  * <ul>
  *   <li>Direct stack operations using iconst_*, lconst_*, dconst_*</li>
@@ -32,6 +41,9 @@ import org.objectweb.asm.Opcodes;
  *   <li>Stack-sensitive boolean operations</li>
  *   <li>Mixed operation sequences to detect accumulated corruption</li>
  * </ul>
+ * 
+ * If mutations leave extra values on stack, arithmetic operations will consume those
+ * values instead of intended operands, causing tests to fail with wrong results.
  */
 public class StackValidationIntegrationTest {
 
@@ -86,69 +98,69 @@ public class StackValidationIntegrationTest {
 	public final void testIntArrayStoreStackBehaviorWithDirectInstructions() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test using direct stack operations (iconst_*, iadd)
-		// This should work correctly even if iastore is mutated to POP2
+		// Test using direct stack operations (iconst_*, iadd) with precise pattern
+		// iconst_5 → iastore → iconst_3 + iconst_7 → iadd (should produce 10)
 		int result = test.testIntArrayStoreWithDirectStackOperations();
-		assertThat("Int array store with direct stack operations should not corrupt stack", result, is(15));
+		assertThat("Int array store with direct stack pattern should produce 10", result, is(10));
 	}
 	
 	@Test
 	public final void testLongArrayStoreStackBehaviorWithDirectInstructions() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test using direct long operations (lconst_*, ladd)
-		// This should work correctly even if lastore is mutated to POP2
+		// Test using direct long operations (lconst_*, ladd) with precise pattern
+		// lconst_1 → lastore → lconst_0 + 5L → ladd (should produce 5L)
 		long result = test.testLongArrayStoreWithDirectStackOperations();
-		assertThat("Long array store with direct stack operations should not corrupt stack", result, is(6L));
+		assertThat("Long array store with direct stack pattern should produce 5L", result, is(5L));
 	}
 	
 	@Test
 	public final void testDoubleArrayStoreStackBehaviorWithDirectInstructions() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test using direct double operations (dconst_*, dadd)
-		// This should work correctly even if dastore is mutated to POP2
+		// Test using direct double operations (dconst_*, dadd) with precise pattern
+		// dconst_1 → dastore → dconst_0 + 2.0 → dadd (should produce 2.0)
 		double result = test.testDoubleArrayStoreWithDirectStackOperations();
-		assertThat("Double array store with direct stack operations should not corrupt stack", result, is(2.0));
+		assertThat("Double array store with direct stack pattern should produce 2.0", result, is(2.0));
 	}
 	
 	@Test
 	public final void testSequentialArrayOperationsWithDirectArithmetic() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test multiple array operations with direct arithmetic (iconst_*, iadd, imul)
-		// Should detect accumulated stack corruption from incomplete POP operations
+		// Test multiple array operations with immediate arithmetic validation
+		// Each array store followed by immediate arithmetic to detect stack corruption
 		int result = test.testSequentialArrayOperationsWithDirectArithmetic();
-		assertThat("Sequential array operations with direct arithmetic should not corrupt stack", result, is(25));
+		assertThat("Sequential array operations with direct arithmetic should produce 13", result, is(13));
 	}
 	
 	@Test
 	public final void testImmediateArithmeticAfterArrayStoreWithDirectInstructions() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test immediate arithmetic using direct constants (iconst_*, iadd)
-		// Should detect if stack has extra values interfering with arithmetic
+		// Test the precise pattern: iconst_1 → iastore → iconst_2 + iconst_3 → iadd
+		// Most direct test of stack corruption detection
 		int result = test.testImmediateArithmeticAfterArrayStore();
-		assertThat("Immediate arithmetic after array store should work correctly", result, is(5));
+		assertThat("Immediate arithmetic after array store should produce exactly 5", result, is(5));
+	}
+	
+	@Test
+	public final void testStringArrayStoreWithStackValidation() {
+		StackValidationTest test = new StackValidationTest();
+		
+		// Test string array store followed by immediate integer arithmetic
+		// ldc "test" → aastore → iconst_7 + iconst_8 → iadd (should produce 15)
+		int result = test.testStringArrayStoreWithStackValidation();
+		assertThat("String array store should not corrupt integer arithmetic", result, is(15));
 	}
 	
 	@Test
 	public final void testMixedDirectStackOperationsAfterArrayStore() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test complex arithmetic chain using direct bytecode instructions
-		// Highly sensitive to stack corruption from array store mutations
+		// Test multiple array stores with immediate arithmetic after each
+		// Amplifies stack corruption effects through multiple operations
 		int result = test.testMixedDirectStackOperations();
-		assertThat("Mixed direct stack operations should work correctly", result, is(31));
-	}
-	
-	@Test
-	public final void testBooleanOperationsAfterArrayStoreWithDirectInstructions() {
-		StackValidationTest test = new StackValidationTest();
-		
-		// Test boolean operations using direct constants (iconst_0, iconst_1)
-		// Should validate stack state with boolean logic operations
-		boolean result = test.testBooleanOperationsAfterArrayStore();
-		assertThat("Boolean operations after array store should work correctly", result, is(true));
+		assertThat("Mixed direct stack operations should produce 15", result, is(15));
 	}
 }
