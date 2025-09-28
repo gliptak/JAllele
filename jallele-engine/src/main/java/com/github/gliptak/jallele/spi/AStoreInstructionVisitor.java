@@ -9,7 +9,13 @@ import java.util.Random;
 
 public class AStoreInstructionVisitor extends InstructionVisitor {
 
-	protected int[] values={Opcodes.ASTORE, 0x4b, 0x4c, 0x4d, 0x4e}; // astore, astore_0, astore_1, astore_2, astore_3
+	// Opcodes for astore_0, astore_1, astore_2, astore_3 (ASM doesn't provide these constants)
+	private static final int ASTORE_0 = 0x4b;
+	private static final int ASTORE_1 = 0x4c;
+	private static final int ASTORE_2 = 0x4d;
+	private static final int ASTORE_3 = 0x4e;
+
+	protected int[] values={Opcodes.ASTORE, ASTORE_0, ASTORE_1, ASTORE_2, ASTORE_3}; // astore, astore_0, astore_1, astore_2, astore_3
 
 	public AStoreInstructionVisitor(Random random) {
 		super(random);

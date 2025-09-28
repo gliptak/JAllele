@@ -9,7 +9,13 @@ import java.util.Random;
 
 public class DLoadInstructionVisitor extends InstructionVisitor {
 
-	protected int[] values={Opcodes.DLOAD, 0x26, 0x27, 0x28, 0x29}; // dload, dload_0, dload_1, dload_2, dload_3
+	// Opcodes for dload_0, dload_1, dload_2, dload_3 (ASM doesn't provide these constants)
+	private static final int DLOAD_0 = 0x26;
+	private static final int DLOAD_1 = 0x27;
+	private static final int DLOAD_2 = 0x28;
+	private static final int DLOAD_3 = 0x29;
+
+	protected int[] values={Opcodes.DLOAD, DLOAD_0, DLOAD_1, DLOAD_2, DLOAD_3}; // dload, dload_0, dload_1, dload_2, dload_3
 
 	public DLoadInstructionVisitor(Random random) {
 		super(random);
