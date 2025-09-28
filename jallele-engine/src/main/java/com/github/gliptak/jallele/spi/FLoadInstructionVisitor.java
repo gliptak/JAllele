@@ -18,8 +18,8 @@ public class FLoadInstructionVisitor extends InstructionVisitor {
 	public VisitStatus isMatch(VisitStatus vs) {
 		VisitStatus newVs=new VisitStatus(vs);
 		if (ArrayUtils.contains(values, vs.getOpCode())){
-			// Mutate any fload instruction to fconst_0, fconst_1 or fconst_2 randomly
-			int[] constValues = {Opcodes.FCONST_0, Opcodes.FCONST_1, Opcodes.FCONST_2};
+			// Mutate any fload instruction to fconst_0, fconst_1, fconst_2, or pop randomly
+			int[] constValues = {Opcodes.FCONST_0, Opcodes.FCONST_1, Opcodes.FCONST_2, Opcodes.POP};
 			int selected = (int)Math.floor(random.nextDouble() * constValues.length);
 			newVs.setOpCode(constValues[selected]);
 		}

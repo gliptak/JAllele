@@ -77,7 +77,7 @@ public class FLoadInstructionVisitorTest {
 		Random random = new Random();
 		FLoadInstructionVisitor v=new FLoadInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
-		assertThat(vsNew.getOpCode(), anyOf(Is.is(Opcodes.FCONST_0), Is.is(Opcodes.FCONST_1), Is.is(Opcodes.FCONST_2)));
+		assertThat(vsNew.getOpCode(), anyOf(Is.is(Opcodes.FCONST_0), Is.is(Opcodes.FCONST_1), Is.is(Opcodes.FCONST_2), Is.is(Opcodes.POP)));
 		// Verify other properties remain the same
 		assertThat(vsNew.getClassName(), Is.is(vs.getClassName()));
 		assertThat(vsNew.getMethodName(), Is.is(vs.getMethodName()));
@@ -97,7 +97,7 @@ public class FLoadInstructionVisitorTest {
 		Random random = new Random();
 		FLoadInstructionVisitor v=new FLoadInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
-		assertThat(vsNew.getOpCode(), anyOf(Is.is(Opcodes.FCONST_0), Is.is(Opcodes.FCONST_1), Is.is(Opcodes.FCONST_2)));
+		assertThat(vsNew.getOpCode(), anyOf(Is.is(Opcodes.FCONST_0), Is.is(Opcodes.FCONST_1), Is.is(Opcodes.FCONST_2), Is.is(Opcodes.POP)));
 		// Verify other properties remain the same
 		assertThat(vsNew.getClassName(), Is.is(vs.getClassName()));
 		assertThat(vsNew.getMethodName(), Is.is(vs.getMethodName()));
@@ -117,7 +117,7 @@ public class FLoadInstructionVisitorTest {
 		Random random = new Random();
 		FLoadInstructionVisitor v=new FLoadInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
-		assertThat(vsNew.getOpCode(), anyOf(Is.is(Opcodes.FCONST_0), Is.is(Opcodes.FCONST_1), Is.is(Opcodes.FCONST_2)));
+		assertThat(vsNew.getOpCode(), anyOf(Is.is(Opcodes.FCONST_0), Is.is(Opcodes.FCONST_1), Is.is(Opcodes.FCONST_2), Is.is(Opcodes.POP)));
 		// Verify other properties remain the same
 		assertThat(vsNew.getClassName(), Is.is(vs.getClassName()));
 		assertThat(vsNew.getMethodName(), Is.is(vs.getMethodName()));
@@ -137,7 +137,7 @@ public class FLoadInstructionVisitorTest {
 		Random random = new Random();
 		FLoadInstructionVisitor v=new FLoadInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
-		assertThat(vsNew.getOpCode(), anyOf(Is.is(Opcodes.FCONST_0), Is.is(Opcodes.FCONST_1), Is.is(Opcodes.FCONST_2)));
+		assertThat(vsNew.getOpCode(), anyOf(Is.is(Opcodes.FCONST_0), Is.is(Opcodes.FCONST_1), Is.is(Opcodes.FCONST_2), Is.is(Opcodes.POP)));
 		// Verify other properties remain the same
 		assertThat(vsNew.getClassName(), Is.is(vs.getClassName()));
 		assertThat(vsNew.getMethodName(), Is.is(vs.getMethodName()));
@@ -157,12 +157,54 @@ public class FLoadInstructionVisitorTest {
 		Random random = new Random();
 		FLoadInstructionVisitor v=new FLoadInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
-		assertThat(vsNew.getOpCode(), anyOf(Is.is(Opcodes.FCONST_0), Is.is(Opcodes.FCONST_1), Is.is(Opcodes.FCONST_2)));
+		assertThat(vsNew.getOpCode(), anyOf(Is.is(Opcodes.FCONST_0), Is.is(Opcodes.FCONST_1), Is.is(Opcodes.FCONST_2), Is.is(Opcodes.POP)));
 		// Verify other properties remain the same
 		assertThat(vsNew.getClassName(), Is.is(vs.getClassName()));
 		assertThat(vsNew.getMethodName(), Is.is(vs.getMethodName()));
 		assertThat(vsNew.getMethodDesc(), Is.is(vs.getMethodDesc()));
 		assertThat(vsNew.getCount(), Is.is(vs.getCount()));
 		assertThat(vsNew.getLineNumber(), Is.is(vs.getLineNumber()));
+	}
+	
+	/**
+	 * Test method to verify POP can be selected as a mutation target.
+	 */
+	@Test
+	public final void testIsMatchFLoadCanMutateToPop() {
+		VisitStatus vs=new VisitStatus("Class", "method", "()F", 10, 1);
+		int opCode=Opcodes.FLOAD;
+		vs.setOpCode(opCode);
+		
+		// Run many times to check what mutations we get
+		boolean foundPop = false;
+		boolean foundFConst0 = false;
+		boolean foundFConst1 = false; 
+		boolean foundFConst2 = false;
+		
+		for (int i = 0; i < 1000; i++) { // More iterations to find all values
+			Random random = new Random(System.nanoTime() + i); // Use different seed strategy
+			FLoadInstructionVisitor v=new FLoadInstructionVisitor(random);
+			VisitStatus vsNew=v.isMatch(vs);
+			if (vsNew.getOpCode() == Opcodes.POP) {
+				foundPop = true;
+			} else if (vsNew.getOpCode() == Opcodes.FCONST_0) {
+				foundFConst0 = true;
+			} else if (vsNew.getOpCode() == Opcodes.FCONST_1) {
+				foundFConst1 = true;
+			} else if (vsNew.getOpCode() == Opcodes.FCONST_2) {
+				foundFConst2 = true;
+			}
+			
+			// Stop early if we found all
+			if (foundPop && foundFConst0 && foundFConst1 && foundFConst2) {
+				break;
+			}
+		}
+		
+		// Verify all possible mutations can occur
+		assertThat("FCONST_0 should be a possible mutation target", foundFConst0, is(true));
+		assertThat("FCONST_1 should be a possible mutation target", foundFConst1, is(true));
+		assertThat("FCONST_2 should be a possible mutation target", foundFConst2, is(true));
+		assertThat("POP should be a possible mutation target", foundPop, is(true));
 	}
 }
