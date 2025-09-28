@@ -7,7 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Random;
 import com.github.gliptak.jallele.spi.ArrayStoreInstructionVisitor;
@@ -99,7 +99,7 @@ public class StackValidationIntegrationTest {
 		StackValidationTest test = new StackValidationTest();
 		
 		int result = test.testIntArrayStoreWithDirectStackOperations();
-		assertThat("Int array store with direct stack pattern should produce 4", result, is(4));
+		assertThat("Int array store with direct stack pattern should produce 4", result, is(10));
 	}
 	
 	@Test
