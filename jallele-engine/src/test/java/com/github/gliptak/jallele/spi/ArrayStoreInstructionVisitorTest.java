@@ -78,7 +78,7 @@ public class ArrayStoreInstructionVisitorTest {
 	@Test
 	public final void testIsMatchLastore() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()V", 10, 1);
-		int opCode=0x50; // lastore
+		int opCode=Opcodes.LASTORE;
 		vs.setOpCode(opCode);
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
@@ -98,7 +98,7 @@ public class ArrayStoreInstructionVisitorTest {
 	@Test
 	public final void testIsMatchDastore() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()V", 10, 1);
-		int opCode=0x52; // dastore
+		int opCode=Opcodes.DASTORE;
 		vs.setOpCode(opCode);
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
@@ -118,7 +118,7 @@ public class ArrayStoreInstructionVisitorTest {
 	@Test
 	public final void testIsMatchIastore() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()V", 10, 1);
-		int opCode=0x4f; // iastore
+		int opCode=Opcodes.IASTORE;
 		vs.setOpCode(opCode);
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
@@ -138,7 +138,7 @@ public class ArrayStoreInstructionVisitorTest {
 	@Test
 	public final void testIsMatchFastore() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()V", 10, 1);
-		int opCode=0x51; // fastore
+		int opCode=Opcodes.FASTORE;
 		vs.setOpCode(opCode);
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
@@ -158,7 +158,7 @@ public class ArrayStoreInstructionVisitorTest {
 	@Test
 	public final void testIsMatchAastore() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()V", 10, 1);
-		int opCode=0x53; // aastore
+		int opCode=Opcodes.AASTORE;
 		vs.setOpCode(opCode);
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
@@ -178,7 +178,7 @@ public class ArrayStoreInstructionVisitorTest {
 	@Test
 	public final void testIsMatchBasstore() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()V", 10, 1);
-		int opCode=0x54; // bastore
+		int opCode=Opcodes.BASTORE;
 		vs.setOpCode(opCode);
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
@@ -198,7 +198,7 @@ public class ArrayStoreInstructionVisitorTest {
 	@Test
 	public final void testIsMatchCastore() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()V", 10, 1);
-		int opCode=0x55; // castore
+		int opCode=Opcodes.CASTORE;
 		vs.setOpCode(opCode);
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
@@ -218,7 +218,7 @@ public class ArrayStoreInstructionVisitorTest {
 	@Test
 	public final void testIsMatchSastore() {
 		VisitStatus vs=new VisitStatus("Class", "method", "()V", 10, 1);
-		int opCode=0x56; // sastore
+		int opCode=Opcodes.SASTORE;
 		vs.setOpCode(opCode);
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
