@@ -74,6 +74,11 @@ public class ArrayStoreInstructionVisitorTest {
 
 	/**
 	 * Test method for {@link com.github.gliptak.jallele.spi.ArrayStoreInstructionVisitor#isMatch(com.github.gliptak.jallele.VisitStatus)}.
+	 * 
+	 * Tests that LASTORE is correctly mutated to POP2.
+	 * Stack effect: LASTORE consumes arrayref(1) + index(1) + long_value(2) = 4 slots
+	 *              POP2 consumes 2 slots
+	 *              Net: leaves arrayref + index (2 slots) on stack
 	 */
 	@Test
 	public final void testIsMatchLastore() {
@@ -114,6 +119,11 @@ public class ArrayStoreInstructionVisitorTest {
 
 	/**
 	 * Test method for {@link com.github.gliptak.jallele.spi.ArrayStoreInstructionVisitor#isMatch(com.github.gliptak.jallele.VisitStatus)}.
+	 * 
+	 * Tests that IASTORE is correctly mutated to POP2.
+	 * Stack effect: IASTORE consumes arrayref(1) + index(1) + int_value(1) = 3 slots
+	 *              POP2 consumes 2 slots  
+	 *              Net: leaves arrayref (1 slot) on stack
 	 */
 	@Test
 	public final void testIsMatchIastore() {
