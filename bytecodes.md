@@ -70,15 +70,15 @@
 | TBD | fastore | 51 |   | arreyref, index, value → | stores a float in an array |
 | TBD | fcmpg | 96 |   | value1, value2 → result | compares two floats |
 | TBD | fcmpl | 95 |   | value1, value2 → result | compares two floats |
-| TBD | fconst_0 | 0b |   | → 0.0f | pushes 0.0f on the stack |
-| TBD | fconst_1 | 0c |   | → 1.0f | pushes 1.0f on the stack |
-| TBD | fconst_2 | 0d |   | → 2.0f | pushes 2.0f on the stack |
+| FConstInstructionVisitor | fconst_0 | 0b |   | → 0.0f | pushes 0.0f on the stack |
+| FConstInstructionVisitor | fconst_1 | 0c |   | → 1.0f | pushes 1.0f on the stack |
+| FConstInstructionVisitor | fconst_2 | 0d |   | → 2.0f | pushes 2.0f on the stack |
 | FloatOpInstructionVisitor | fdiv | 6e |   | value1, value2 → result | divides two floats |
-| TBD | fload | 17 | index | → value | loads a float value from a local variable #index |
-| TBD | fload_0 | 22 |   | → value | loads a float value from local variable 0 |
-| TBD | fload_1 | 23 |   | → value | loads a float value from local variable 1 |
-| TBD | fload_2 | 24 |   | → value | loads a float value from local variable 2 |
-| TBD | fload_3 | 25 |   | → value | loads a float value from local variable 3 |
+| FLoadInstructionVisitor | fload | 17 | index | → value | loads a float value from a local variable #index |
+| FLoadInstructionVisitor | fload_0 | 22 |   | → value | loads a float value from local variable 0 |
+| FLoadInstructionVisitor | fload_1 | 23 |   | → value | loads a float value from local variable 1 |
+| FLoadInstructionVisitor | fload_2 | 24 |   | → value | loads a float value from local variable 2 |
+| FLoadInstructionVisitor | fload_3 | 25 |   | → value | loads a float value from local variable 3 |
 | FloatOpInstructionVisitor | fmul | 6a |   | value1, value2 → result | multiplies two floats |
 | NegInstructionVisitor | fneg | 76 |   | value → result | negates a float |
 | FloatOpInstructionVisitor | frem | 72 |   | value1, value2 → result | gets the remainder from a division between two floats |
@@ -130,11 +130,11 @@
 | IfNullInstructionVisitor | ifnonnull | c7 | branchbyte1, branchbyte2 | value → | if value is not null, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | IfNullInstructionVisitor | ifnull | c6 | branchbyte1, branchbyte2 | value → | if value is null, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | IincInstructionVisitor | iinc | 84 | index, const | [No change] | increment local variable #index by signed byte const |
-| TBD | iload | 15 | index | → value | loads an int value from a variable #index |
-| TBD | iload_0 | 1a |   | → value | loads an int value from variable 0 |
-| TBD | iload_1 | 1b |   | → value | loads an int value from variable 1 |
-| TBD | iload_2 | 1c |   | → value | loads an int value from variable 2 |
-| TBD | iload_3 | 1d |   | → value | loads an int value from variable 3 |
+| ILoadInstructionVisitor | iload | 15 | index | → value | loads an int value from a variable #index |
+| ILoadInstructionVisitor | iload_0 | 1a |   | → value | loads an int value from variable 0 |
+| ILoadInstructionVisitor | iload_1 | 1b |   | → value | loads an int value from variable 1 |
+| ILoadInstructionVisitor | iload_2 | 1c |   | → value | loads an int value from variable 2 |
+| ILoadInstructionVisitor | iload_3 | 1d |   | → value | loads an int value from variable 3 |
 | IntegerOpInstructionVisitor | imul | 68 |   | value1, value2 → result | multiply two integers |
 | NegInstructionVisitor | ineg | 74 |   | value → result | negate int |
 | TBD | instanceof | c1 | indexbyte1, indexbyte2 | objectref → result | determines if an object objectref is of a given type, identified by class reference index in constant pool (indexbyte1 << 8 + indexbyte2) |
