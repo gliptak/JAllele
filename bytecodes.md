@@ -174,11 +174,11 @@
 | TBD | ldc_w | 13 | indexbyte1, indexbyte2 | → value | pushes a constant #index from a constant pool (String, int or float) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2) |
 | TBD | ldc2_w | 14 | indexbyte1, indexbyte2 | → value | pushes a constant #index from a constant pool (double or long) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2) |
 | LongOpInstructionVisitor | ldiv | 6d |   | value1, value2 → result | divide two longs |
-| TBD | lload | 16 | index | → value | load a long value from a local variable #index |
-| TBD | lload_0 | 1e |   | → value | load a long value from a local variable 0 |
-| TBD | lload_1 | 1f |   | → value | load a long value from a local variable 1 |
-| TBD | lload_2 | 20 |   | → value | load a long value from a local variable 2 |
-| TBD | lload_3 | 21 |   | → value | load a long value from a local variable 3 |
+| LLoadInstructionVisitor | lload | 16 | index | → value | load a long value from a local variable #index |
+| LLoadInstructionVisitor | lload_0 | 1e |   | → value | load a long value from a local variable 0 |
+| LLoadInstructionVisitor | lload_1 | 1f |   | → value | load a long value from a local variable 1 |
+| LLoadInstructionVisitor | lload_2 | 20 |   | → value | load a long value from a local variable 2 |
+| LLoadInstructionVisitor | lload_3 | 21 |   | → value | load a long value from a local variable 3 |
 | LongOpInstructionVisitor | lmul | 69 |   | value1, value2 → result | multiplies two longs |
 | NegInstructionVisitor | lneg | 75 |   | value → result | negates a long |
 | TBD | lookupswitch | ab | <0-3 bytes padding>, defaultbyte1, defaultbyte2, defaultbyte3, defaultbyte4, npairs1, npairs2, npairs3, npairs4, match-offset pairs... | key → | a target address is looked up from a table using a key and execution continues from the instruction at that address |
