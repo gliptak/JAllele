@@ -69,6 +69,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 		visitors.add(new LLoadInstructionVisitor(random));
 		visitors.add(new FLoadInstructionVisitor(random));
 		visitors.add(new ILoadInstructionVisitor(random));
+		visitors.add(new IStoreInstructionVisitor(random));
 	}
 
 	public void recordMatches() throws Exception {
