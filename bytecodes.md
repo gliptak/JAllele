@@ -14,11 +14,11 @@
 | TBD | anewarray | bd | indexbyte1, indexbyte2 | count → arrayref | creates a new array of references of length count and component type identified by the class reference index (indexbyte1 << 8 + indexbyte2) in the constant pool |
 | TBD | areturn | b0 |   | objectref → [empty] | returns a reference from a method |
 | TBD | arraylength | be |   | arrayref → length | gets the length of an array |
-| TBD | astore | 3a | index | objectref → | stores a reference into a local variable #index |
-| TBD | astore_0 | 4b |   | objectref → | stores a reference into local variable 0 |
-| TBD | astore_1 | 4c |   | objectref → | stores a reference into local variable 1 |
-| TBD | astore_2 | 4d |   | objectref → | stores a reference into local variable 2 |
-| TBD | astore_3 | 4e |   | objectref → | stores a reference into local variable 3 |
+| AStoreInstructionVisitor | astore | 3a | index | objectref → | stores a reference into a local variable #index |
+| AStoreInstructionVisitor | astore_0 | 4b |   | objectref → | stores a reference into local variable 0 |
+| AStoreInstructionVisitor | astore_1 | 4c |   | objectref → | stores a reference into local variable 1 |
+| AStoreInstructionVisitor | astore_2 | 4d |   | objectref → | stores a reference into local variable 2 |
+| AStoreInstructionVisitor | astore_3 | 4e |   | objectref → | stores a reference into local variable 3 |
 | TBD | athrow | bf |   | objectref → [empty], objectref | throws an error or exception (notice that the rest of the stack is cleared, leaving only a reference to the Throwable) |
 | **B** | | | | | |
 | TBD | baload | 33 |   | arrayref, index → value | loads a byte or Boolean value from an array |
@@ -49,11 +49,11 @@
 | NegInstructionVisitor | dneg | 77 |   | value → result | negates a double |
 | DoubleOpInstructionVisitor | drem | 73 |   | value1, value2 → result | gets the remainder from a division between two doubles |
 | TBD | dreturn | af |   | value → [empty] | returns a double from a method |
-| TBD | dstore | 39 | index | value → | stores a double value into a local variable #index |
-| TBD | dstore_0 | 47 |   | value → | stores a double into local variable 0 |
-| TBD | dstore_1 | 48 |   | value → | stores a double into local variable 1 |
-| TBD | dstore_2 | 49 |   | value → | stores a double into local variable 2 |
-| TBD | dstore_3 | 4a |   | value → | stores a double into local variable 3 |
+| DStoreInstructionVisitor | dstore | 39 | index | value → | stores a double value into a local variable #index |
+| DStoreInstructionVisitor | dstore_0 | 47 |   | value → | stores a double into local variable 0 |
+| DStoreInstructionVisitor | dstore_1 | 48 |   | value → | stores a double into local variable 1 |
+| DStoreInstructionVisitor | dstore_2 | 49 |   | value → | stores a double into local variable 2 |
+| DStoreInstructionVisitor | dstore_3 | 4a |   | value → | stores a double into local variable 3 |
 | DoubleOpInstructionVisitor | dsub | 67 |   | value1, value2 → result | subtracts a double from another |
 | TBD | dup | 59 |   | value → value, value | duplicates the value on top of the stack |
 | TBD | dup_x1 | 5a |   | value2, value1 → value1, value2, value1 | inserts a copy of the top value into the stack two values from the top |
@@ -83,11 +83,11 @@
 | NegInstructionVisitor | fneg | 76 |   | value → result | negates a float |
 | FloatOpInstructionVisitor | frem | 72 |   | value1, value2 → result | gets the remainder from a division between two floats |
 | TBD | freturn | ae |   | value → [empty] | returns a float |
-| TBD | fstore | 38 | index | value → | stores a float value into a local variable #index |
-| TBD | fstore_0 | 43 |   | value → | stores a float value into local variable 0 |
-| TBD | fstore_1 | 44 |   | value → | stores a float value into local variable 1 |
-| TBD | fstore_2 | 45 |   | value → | stores a float value into local variable 2 |
-| TBD | fstore_3 | 46 |   | value → | stores a float value into local variable 3 |
+| FStoreInstructionVisitor | fstore | 38 | index | value → | stores a float value into a local variable #index |
+| FStoreInstructionVisitor | fstore_0 | 43 |   | value → | stores a float value into local variable 0 |
+| FStoreInstructionVisitor | fstore_1 | 44 |   | value → | stores a float value into local variable 1 |
+| FStoreInstructionVisitor | fstore_2 | 45 |   | value → | stores a float value into local variable 2 |
+| FStoreInstructionVisitor | fstore_3 | 46 |   | value → | stores a float value into local variable 3 |
 | FloatOpInstructionVisitor | fsub | 66 |   | value1, value2 → result | subtracts two floats |
 | **G** | | | | | |
 | TBD | getfield | b4 | index1, index2 | objectref → value | gets a field value of an object objectref, where the field is identified by field reference in the constant pool index (index1 << 8 + index2) |
@@ -187,11 +187,11 @@
 | TBD | lreturn | ad |   | value → [empty] | returns a long value |
 | LongShiftInstructionVisitor | lshl | 79 |   | value1, value2 → result | bitwise shift left of a long value1 by value2 positions |
 | LongShiftInstructionVisitor | lshr | 7b |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions |
-| TBD | lstore | 37 | index | value → | store a long value in a local variable #index |
-| TBD | lstore_0 | 3f |   | value → | store a long value in a local variable 0 |
-| TBD | lstore_1 | 40 |   | value → | store a long value in a local variable 1 |
-| TBD | lstore_2 | 41 |   | value → | store a long value in a local variable 2 |
-| TBD | lstore_3 | 42 |   | value → | store a long value in a local variable 3 |
+| LStoreInstructionVisitor | lstore | 37 | index | value → | store a long value in a local variable #index |
+| LStoreInstructionVisitor | lstore_0 | 3f |   | value → | store a long value in a local variable 0 |
+| LStoreInstructionVisitor | lstore_1 | 40 |   | value → | store a long value in a local variable 1 |
+| LStoreInstructionVisitor | lstore_2 | 41 |   | value → | store a long value in a local variable 2 |
+| LStoreInstructionVisitor | lstore_3 | 42 |   | value → | store a long value in a local variable 3 |
 | LongOpInstructionVisitor | lsub | 65 |   | value1, value2 → result | subtract two longs |
 | LongShiftInstructionVisitor | lushr | 7d |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions, unsigned |
 | LongOpInstructionVisitor | lxor | 83 |   | value1, value2 → result | bitwise exclusive or of two longs |
