@@ -53,20 +53,10 @@ public class StackValidationTest {
      * If array store mutation leaves extra values, the iadd will use wrong operands.
      */
     public int testIntArrayStoreWithDirectStackOperations() {
-        int[] array = new int[3];
-        
-        // Step 1: iconst_5 loads 5 to stack
-        // Step 2: iastore consumes arrayref, index, value (3 slots)
-        //         When mutated to POP2, leaves 1 value on stack (arrayref)
-        array[0] = 5; // iconst_5, iastore → mutation leaves arrayref on stack
-        
-        // Step 3: iconst_3 loads 3 to stack
-        // Step 4: iconst_7 loads 7 to stack 
-        // Step 5: iadd should consume 3 and 7 to produce 10
-        //         But if mutation left extra value, iadd might use that instead
-        int result = 3 + 7; // Expected: 10, but will fail if stack corruption occurs
-        
-        return result; // Should be 10 if stack is clean, wrong value if corrupted
+        int result = 1;
+        int[] array = new int[1];
+        array[0] = 2; // iconst_3, iastore → mutation leaves arrayref on stack
+        return result + 3; // Should be 4 if stack is clean, wrong value if corrupted
     }
     
     /**
