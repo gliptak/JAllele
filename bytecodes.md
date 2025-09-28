@@ -4,7 +4,7 @@
 |-----------------|----------|--------------|-------------|------------------------|-------------|
 | **A** | | | | | |
 | TBD | aaload | 32 |   | arrayref, index → value | loads onto the stack a reference from an array |
-| TBD | aastore | 53 |   | arrayref, index, value → | stores into a reference to an array |
+| ArrayStoreInstructionVisitor | aastore | 53 |   | arrayref, index, value → | stores into a reference to an array |
 | TBD | aconst_null | 01 |   | → null | pushes a null reference onto the stack |
 | ALoadInstructionVisitor | aload | 19 | index | → objectref | loads a reference onto the stack from a local variable #index |
 | ALoadInstructionVisitor | aload_0 | 2a |   | → objectref | loads a reference onto the stack from local variable 0 |
@@ -22,11 +22,11 @@
 | TBD | athrow | bf |   | objectref → [empty], objectref | throws an error or exception (notice that the rest of the stack is cleared, leaving only a reference to the Throwable) |
 | **B** | | | | | |
 | TBD | baload | 33 |   | arrayref, index → value | loads a byte or Boolean value from an array |
-| TBD | bastore | 54 |   | arrayref, index, value → | stores a byte or Boolean value into an array |
+| ArrayStoreInstructionVisitor | bastore | 54 |   | arrayref, index, value → | stores a byte or Boolean value into an array |
 | IPushInstructionVisitor | bipush | 10 | byte | → value | pushes a byte onto the stack as an integer value |
 | **C** | | | | | |
 | TBD | caload | 34 |   | arrayref, index → value | loads a char from an array |
-| TBD | castore | 55 |   | arrayref, index, value → | stores a char into an array |
+| ArrayStoreInstructionVisitor | castore | 55 |   | arrayref, index, value → | stores a char into an array |
 | TBD | checkcast | c0 | indexbyte1, indexbyte2 | objectref → objectref | checks whether an objectref is of a certain type, the class reference of which is in the constant pool at index (indexbyte1 << 8 + indexbyte2) |
 | **D** | | | | | |
 | TBD | d2f | 90 |   | value → result | converts a double to a float |
@@ -34,7 +34,7 @@
 | TBD | d2l | 8f |   | value → result | converts a double to a long |
 | DoubleOpInstructionVisitor | dadd | 63 |   | value1, value2 → result | adds two doubles |
 | TBD | daload | 31 |   | arrayref, index → value | loads a double from an array |
-| TBD | dastore | 52 |   | arrayref, index, value → | stores a double into an array |
+| ArrayStoreInstructionVisitor | dastore | 52 |   | arrayref, index, value → | stores a double into an array |
 | TBD | dcmpg | 98 |   | value1, value2 → result | compares two doubles |
 | TBD | dcmpl | 97 |   | value1, value2 → result | compares two doubles |
 | DConstInstructionVisitor | dconst_0 | 0e |   | → 0.0 | pushes the constant 0.0 onto the stack |
@@ -67,7 +67,7 @@
 | TBD | f2l | 8c |   | value → result | converts a float to a long |
 | FloatOpInstructionVisitor | fadd | 62 |   | value1, value2 → result | adds two floats |
 | TBD | faload | 30 |   | arrayref, index → value | loads a float from an array |
-| TBD | fastore | 51 |   | arreyref, index, value → | stores a float in an array |
+| ArrayStoreInstructionVisitor | fastore | 51 |   | arrayref, index, value → | stores a float in an array |
 | TBD | fcmpg | 96 |   | value1, value2 → result | compares two floats |
 | TBD | fcmpl | 95 |   | value1, value2 → result | compares two floats |
 | FConstInstructionVisitor | fconst_0 | 0b |   | → 0.0f | pushes 0.0f on the stack |
@@ -104,7 +104,7 @@
 | IntegerOpInstructionVisitor | iadd | 60 |   | value1, value2 → result | adds two ints together |
 | TBD | iaload | 2e |   | arrayref, index → value | loads an int from an array |
 | IntegerOpInstructionVisitor | iand | 7e |   | value1, value2 → result | performs a bitwise and on two integers |
-| TBD | iastore | 4f |   | arrayref, index, value → | stores an int into an array |
+| ArrayStoreInstructionVisitor | iastore | 4f |   | arrayref, index, value → | stores an int into an array |
 | IConstInstructionVisitor | iconst_m1 | 02 |   | → -1 | loads the int value -1 onto the stack |
 | IConstInstructionVisitor | iconst_0 | 03 |   | → 0 | loads the int value 0 onto the stack |
 | IConstInstructionVisitor | iconst_1 | 04 |   | → 1 | loads the int value 1 onto the stack |
@@ -166,7 +166,7 @@
 | LongOpInstructionVisitor | ladd | 61 |   | value1, value2 → result | add two longs |
 | TBD | laload | 2f |   | arrayref, index → value | load a long from an array |
 | LongOpInstructionVisitor | land | 7f |   | value1, value2 → result | bitwise and of two longs |
-| TBD | lastore | 50 |   | arrayref, index, value → | store a long to an array |
+| ArrayStoreInstructionVisitor | lastore | 50 |   | arrayref, index, value → | store a long to an array |
 | TBD | lcmp | 94 |   | value1, value2 → result | compares two longs values |
 | LConstInstructionVisitor | lconst_0 | 09 |   | → 0L | pushes the long 0 onto the stack |
 | LConstInstructionVisitor | lconst_1 | 0a |   | → 1L | pushes the long 1 onto the stack |
@@ -213,7 +213,7 @@
 | TBD | return | b1 |   | → [empty] | return void from method |
 | **S** | | | | | |
 | TBD | saload | 35 |   | arrayref, index → value | load short from array |
-| TBD | sastore | 56 |   | arrayref, index, value → | store short to array |
+| ArrayStoreInstructionVisitor | sastore | 56 |   | arrayref, index, value → | store short to array |
 | IPushInstructionVisitor | sipush | 11 | byte1, byte2 | → value | pushes a signed integer (byte1 << 8 + byte2) onto the stack |
 | TBD | swap | 5f |   | value2, value1 → value1, value2 | swaps two top words on the stack (note that value1 and value2 must not be double or long) |
 | **T** | | | | | |
