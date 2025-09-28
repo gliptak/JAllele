@@ -99,66 +99,61 @@ public class StackValidationIntegrationTest {
 		StackValidationTest test = new StackValidationTest();
 		
 		int result = test.testIntArrayStoreWithDirectStackOperations();
-		assertThat("Int array store with direct stack pattern should produce 4", result, is(10));
+		assertThat("Expected iconst_1 + iconst_3 = 4, but got different result indicating stack corruption", 
+				   result, is(4));
 	}
 	
 	@Test
 	public final void testLongArrayStoreStackBehaviorWithDirectInstructions() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test using direct long operations (lconst_*, ladd) with precise pattern
-		// lconst_1 → lastore → lconst_0 + 5L → ladd (should produce 5L)
 		long result = test.testLongArrayStoreWithDirectStackOperations();
-		assertThat("Long array store with direct stack pattern should produce 5L", result, is(5L));
+		assertThat("Expected lconst_0 + 5L = 5L, but got different result indicating stack corruption", 
+				   result, is(5L));
 	}
 	
 	@Test
 	public final void testDoubleArrayStoreStackBehaviorWithDirectInstructions() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test using direct double operations (dconst_*, dadd) with precise pattern
-		// dconst_1 → dastore → dconst_0 + 2.0 → dadd (should produce 2.0)
 		double result = test.testDoubleArrayStoreWithDirectStackOperations();
-		assertThat("Double array store with direct stack pattern should produce 2.0", result, is(2.0));
+		assertThat("Expected dconst_0 + 2.0 = 2.0, but got different result indicating stack corruption", 
+				   result, is(2.0));
 	}
 	
 	@Test
 	public final void testSequentialArrayOperationsWithDirectArithmetic() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test multiple array operations with immediate arithmetic validation
-		// Each array store followed by immediate arithmetic to detect stack corruption
 		int result = test.testSequentialArrayOperationsWithDirectArithmetic();
-		assertThat("Sequential array operations with direct arithmetic should produce 13", result, is(13));
+		assertThat("Expected sequential arithmetic (4+6) + (1+2) = 13, but got different result indicating stack corruption", 
+				   result, is(13));
 	}
 	
 	@Test
 	public final void testImmediateArithmeticAfterArrayStoreWithDirectInstructions() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test the precise pattern: iconst_1 → iastore → iconst_2 + iconst_3 → iadd
-		// Most direct test of stack corruption detection
 		int result = test.testImmediateArithmeticAfterArrayStore();
-		assertThat("Immediate arithmetic after array store should produce exactly 5", result, is(5));
+		assertThat("Expected iconst_2 + iconst_3 = 5 after array store, but got different result indicating stack corruption", 
+				   result, is(5));
 	}
 	
 	@Test
 	public final void testStringArrayStoreWithStackValidation() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test string array store followed by immediate integer arithmetic
-		// ldc "test" → aastore → iconst_7 + iconst_8 → iadd (should produce 15)
 		int result = test.testStringArrayStoreWithStackValidation();
-		assertThat("String array store should not corrupt integer arithmetic", result, is(15));
+		assertThat("Expected integer arithmetic 7 + 8 = 15 after string array store, but got different result indicating stack corruption", 
+				   result, is(15));
 	}
 	
 	@Test
 	public final void testMixedDirectStackOperationsAfterArrayStore() {
 		StackValidationTest test = new StackValidationTest();
 		
-		// Test multiple array stores with immediate arithmetic after each
-		// Amplifies stack corruption effects through multiple operations
 		int result = test.testMixedDirectStackOperations();
-		assertThat("Mixed direct stack operations should produce 15", result, is(15));
+		assertThat("Expected mixed arithmetic operations (2+2) + (3+3) + (1+4) = 15, but got different result indicating stack corruption", 
+				   result, is(15));
 	}
 }

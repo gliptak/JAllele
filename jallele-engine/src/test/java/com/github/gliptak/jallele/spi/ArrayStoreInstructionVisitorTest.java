@@ -63,7 +63,8 @@ public class ArrayStoreInstructionVisitorTest {
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
-		assertThat(vsNew.getOpCode(), Is.is(opCode)); // unchanged
+		assertThat("Expected non-array-store instruction to remain unchanged, but opcode was modified", 
+				   vsNew.getOpCode(), is(opCode)); // unchanged
 		// Verify other properties remain the same
 		assertThat(vsNew.getClassName(), Is.is(vs.getClassName()));
 		assertThat(vsNew.getMethodName(), Is.is(vs.getMethodName()));
@@ -88,7 +89,8 @@ public class ArrayStoreInstructionVisitorTest {
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
-		assertThat(vsNew.getOpCode(), Is.is(Opcodes.POP2));
+		assertThat("Expected LASTORE to be mutated to POP2, but got different opcode", 
+				   vsNew.getOpCode(), is(Opcodes.POP2));
 		// Verify other properties remain the same
 		assertThat(vsNew.getClassName(), Is.is(vs.getClassName()));
 		assertThat(vsNew.getMethodName(), Is.is(vs.getMethodName()));
@@ -133,7 +135,8 @@ public class ArrayStoreInstructionVisitorTest {
 		Random random = new Random();
 		ArrayStoreInstructionVisitor v=new ArrayStoreInstructionVisitor(random);
 		VisitStatus vsNew=v.isMatch(vs);
-		assertThat(vsNew.getOpCode(), Is.is(Opcodes.POP2));
+		assertThat("Expected IASTORE to be mutated to POP2, but got different opcode", 
+				   vsNew.getOpCode(), is(Opcodes.POP2));
 		// Verify other properties remain the same
 		assertThat(vsNew.getClassName(), Is.is(vs.getClassName()));
 		assertThat(vsNew.getMethodName(), Is.is(vs.getMethodName()));
