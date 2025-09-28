@@ -148,11 +148,11 @@
 | TBD | ireturn | ac |   | value → [empty] | returns an integer from a method |
 | IntegerOpInstructionVisitor | ishl | 78 |   | value1, value2 → result | int shift left |
 | IntegerOpInstructionVisitor | ishr | 7a |   | value1, value2 → result | int arithmetic shift right |
-| TBD | istore | 36 | index | value → | store int value into variable #index |
-| TBD | istore_0 | 3b |   | value → | store int value into variable 0 |
-| TBD | istore_1 | 3c |   | value → | store int value into variable 1 |
-| TBD | istore_2 | 3d |   | value → | store int value into variable 2 |
-| TBD | istore_3 | 3e |   | value → | store int value into variable 3 |
+| IStoreInstructionVisitor | istore | 36 | index | value → | store int value into variable #index |
+| IStoreInstructionVisitor | istore_0 | 3b |   | value → | store int value into variable 0 |
+| IStoreInstructionVisitor | istore_1 | 3c |   | value → | store int value into variable 1 |
+| IStoreInstructionVisitor | istore_2 | 3d |   | value → | store int value into variable 2 |
+| IStoreInstructionVisitor | istore_3 | 3e |   | value → | store int value into variable 3 |
 | IntegerOpInstructionVisitor | isub | 64 |   | value1, value2 → result | int subtract |
 | IntegerOpInstructionVisitor | iushr | 7c |   | value1, value2 → result | int logical shift right |
 | IntegerOpInstructionVisitor | ixor | 82 |   | value1, value2 → result | int xor |
