@@ -28,6 +28,12 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Build with Gradle
         run: ./gradlew build
+      - name: Upload jallele-cmdline-test JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: jallele-cmdline-test-java-${{ matrix.java }}
+          path: jallele-cmdline/build/libs/jallele-cmdline-test-*.jar
+          if-no-files-found: error
       - name: Generate code coverage report
         run: ./gradlew jacocoRootReport
       - name: Upload coverage to Codecov
