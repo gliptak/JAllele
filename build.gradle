@@ -12,6 +12,7 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'eclipse'
     apply plugin: 'jacoco'
+    apply plugin: 'maven-publish'
 
     group = 'com.github.gliptak.jallele'
     version = '0.1-SNAPSHOT'
@@ -34,6 +35,52 @@ subprojects {
     }
     
     test.finalizedBy jacocoTestReport
+    
+    // Publishing configuration for GitHub Package Registry
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+                
+                pom {
+                    name = project.name
+                    description = 'JAllele is a mutation testing tool for Java'
+                    url = 'https://github.com/gliptak/JAllele'
+                    
+                    licenses {
+                        license {
+                            name = 'GNU General Public License v3.0'
+                            url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
+                        }
+                    }
+                    
+                    developers {
+                        developer {
+                            id = 'gliptak'
+                            name = 'Gábor Lipták'
+                        }
+                    }
+                    
+                    scm {
+                        connection = 'scm:git:git://github.com/gliptak/JAllele.git'
+                        developerConnection = 'scm:git:ssh://github.com:gliptak/JAllele.git'
+                        url = 'https://github.com/gliptak/JAllele/tree/main'
+                    }
+                }
+            }
+        }
+        
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/gliptak/JAllele")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+                }
+            }
+        }
+    }
 }
 
 task jacocoRootReport(type: JacocoReport) {

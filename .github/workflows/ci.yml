@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: write
       id-token: write
     strategy:
       fail-fast: false
@@ -35,3 +36,9 @@ jobs:
         with:
           files: ./build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
           fail_ci_if_error: true
+      - name: Publish snapshot to GitHub Package Registry
+        if: matrix.java == '17' && github.event_name == 'pull_request'
+        run: ./gradlew publish
+        env:
+          USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -28,7 +28,7 @@ Usage
 --------
 
 Currently a command line access is made available.
-The libraries have to be built, as they are not yet published to a Maven repository.
+The libraries have to be built locally, though snapshot versions are automatically published to [GitHub Package Registry](https://github.com/gliptak/JAllele/packages) for pull requests.
 ```
 $ ./gradlew build
 ```
