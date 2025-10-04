@@ -29,6 +29,8 @@ public class ClassRandomizer implements ClassFileTransformer {
 	private final Random random;
 
 	private List<String> sources=new ArrayList<String>();
+
+	private List<String> processed=new ArrayList<String>();
 	
 	private final List<InstructionVisitor> visitors=new ArrayList<InstructionVisitor>();
 
@@ -78,7 +80,9 @@ public class ClassRandomizer implements ClassFileTransformer {
 		recording=true;
 		Agent.addTransformer(this, true);
 		for (String source: sources){
-			Agent.restransform(Class.forName(source));
+			if (!processed.contains(source)) {
+			  Agent.restransform(Class.forName(source));
+			}
 		}
 		recording=false;
 	}
@@ -104,16 +108,19 @@ public class ClassRandomizer implements ClassFileTransformer {
 	public byte[] transform(ClassLoader loader, String className,
 			Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
 			byte[] classfileBuffer) throws IllegalClassFormatException {
-		logger.fine("Transform called for " + className);
 		byte[] transformed = null;
 		
 		String classNameWithDots=className.replaceAll("/", ".");
 		if (sources.contains(classNameWithDots)){
 			try {
-			    transformed = process(className, classfileBuffer);
+                logger.fine("Transform called for " + className + (recording?" (recording)":""));
+				transformed = process(className, classfileBuffer);
+				if (recording) {
+                    processed.add(classNameWithDots);
+				}
 			} catch (Exception e) {
 				throw new IllegalClassFormatException(e.getMessage());
-			}			
+			}
 		}
 
 		return transformed;
