@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Label;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.reflect.Field;
@@ -23,6 +24,19 @@ import java.lang.reflect.Method;
  * Test class to improve coverage for ClassRandomizer.java methods
  */
 public class ClassRandomizerEngineTest {
+	
+	/**
+	 * Simple test class for bytecode transformation - kept simple to work with ASM5
+	 */
+	public static class SimpleTestClass {
+		public int getValue() {
+			return 1;
+		}
+		
+		public int add(int a, int b) {
+			return a + b;
+		}
+	}
 
 	private ClassRandomizer classRandomizer;
 	private MockTestRunner mockRunner;
@@ -404,6 +418,8 @@ public class ClassRandomizerEngineTest {
 			assertThat(processedSources.size(), is(0));
 		}
 	}
+
+
 
 	/**
 	 * Mock test runner for testing
