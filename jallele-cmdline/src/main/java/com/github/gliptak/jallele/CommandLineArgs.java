@@ -28,6 +28,9 @@ public class CommandLineArgs {
 	@Option(name="-testng", aliases={"--testng"}, usage="run with TestNG")
 	private boolean runTestNG=false;
 
+	@Option(name="-h", aliases={"--help"}, usage="print this help message", help=true)
+	private boolean help=false;
+
 	@Argument
     private List<String> arguments = new ArrayList<String>();
 
@@ -71,5 +74,12 @@ public class CommandLineArgs {
 	 */
 	public List<String> getArguments() {
 		return arguments;
+	}
+
+	/**
+	 * @return the help
+	 */
+	public boolean isHelp() {
+		return help;
 	}
 }

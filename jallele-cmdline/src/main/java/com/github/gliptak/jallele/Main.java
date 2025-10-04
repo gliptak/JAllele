@@ -118,6 +118,11 @@ public class Main {
 		CmdLineParser parser = new CmdLineParser(bean);
 	    try {
 			parser.parseArgument(args);
+			if (bean.isHelp()) {
+				System.out.println("java -jar jallele.jar [options...] ...");
+				parser.printUsage(System.out);
+				return 1;
+			}
 			if (bean.getArguments().size()>0){
 				throw new CmdLineException("unparsable arguments: "+bean.getArguments().toString());
 			}

@@ -136,6 +136,34 @@ public class MainTest {
 	}
 
 	@Test
+	public final void testParseArgumentsHelpShort() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"-h"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(1));
+		assertThat(bean.isHelp(), Is.is(true));
+	}
+
+	@Test
+	public final void testParseArgumentsHelpLong() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--help"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(1));
+		assertThat(bean.isHelp(), Is.is(true));
+	}
+
+	@Test
+	public final void testExecuteWithHelp() throws Exception {
+		Main m = new Main();
+		String[] args={"-h"};
+		int exitCode = m.execute(args);
+		assertThat(exitCode, Is.is(1));
+	}
+
+	@Test
 	public final void testExecuteWithParseFailure() throws Exception {
 		Main m = new Main();
 		String[] args={"-wrong"};
