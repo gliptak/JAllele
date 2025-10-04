@@ -116,12 +116,15 @@ public class ClassRandomizer implements ClassFileTransformer {
 		if (sources.contains(classNameWithDots)){
 			// Prevent reprocessing during recording phase
 			if (recording && processedSources.contains(classNameWithDots)){
+				logger.fine("Skipping already processed class during recording: " + className);
 				return transformed;
 			}
 			try {
+			    logger.fine("Transforming class: " + className);
 			    transformed = process(className, classfileBuffer);
 			    if (recording){
 			    	processedSources.add(classNameWithDots);
+			    	logger.fine("Recorded transformation for class: " + className);
 			    }
 			} catch (Exception e) {
 				throw new IllegalClassFormatException(e.getMessage());
