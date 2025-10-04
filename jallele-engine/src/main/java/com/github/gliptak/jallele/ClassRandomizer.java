@@ -7,8 +7,10 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import com.github.gliptak.jallele.spi.*;
@@ -39,6 +41,8 @@ public class ClassRandomizer implements ClassFileTransformer {
 	private VisitStatus[] currentStatusPair=null;
 
 	private final TestRunner runner;
+	
+	private Set<String> processedSources=new HashSet<String>();
 	
 	public ClassRandomizer(List<String> sources, TestRunner runner){
 		this.sources=sources;
@@ -75,6 +79,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 	public void recordMatches() throws Exception {
 		// reset ...
 		matches=new ArrayList<VisitStatus[]>();
+		processedSources=new HashSet<String>();
 		recording=true;
 		Agent.addTransformer(this, true);
 		for (String source: sources){
@@ -109,8 +114,18 @@ public class ClassRandomizer implements ClassFileTransformer {
 		
 		String classNameWithDots=className.replaceAll("/", ".");
 		if (sources.contains(classNameWithDots)){
+			// Prevent reprocessing during recording phase
+			if (recording && processedSources.contains(classNameWithDots)){
+				logger.fine("Skipping already processed class during recording: " + className);
+				return transformed;
+			}
 			try {
+			    logger.fine("Transforming class: " + className);
 			    transformed = process(className, classfileBuffer);
+			    if (recording){
+			    	processedSources.add(classNameWithDots);
+			    	logger.fine("Recorded transformation for class: " + className);
+			    }
 			} catch (Exception e) {
 				throw new IllegalClassFormatException(e.getMessage());
 			}			

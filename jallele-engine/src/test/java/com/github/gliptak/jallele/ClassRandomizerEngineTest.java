@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Label;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.reflect.Field;
@@ -23,6 +24,19 @@ import java.lang.reflect.Method;
  * Test class to improve coverage for ClassRandomizer.java methods
  */
 public class ClassRandomizerEngineTest {
+	
+	/**
+	 * Simple test class for bytecode transformation - kept simple to work with ASM5
+	 */
+	public static class SimpleTestClass {
+		public int getValue() {
+			return 1;
+		}
+		
+		public int add(int a, int b) {
+			return a + b;
+		}
+	}
 
 	private ClassRandomizer classRandomizer;
 	private MockTestRunner mockRunner;
@@ -304,6 +318,108 @@ public class ClassRandomizerEngineTest {
 		sources.add("com.example.TestClass");
 		classRandomizer.transform(null, "com.example.TestClass", null, null, invalidBytecode);
 	}
+
+	/**
+	 * Test that processedSources prevents reprocessing during recording phase
+	 */
+	@Test
+	public final void testPreventReprocessingDuringRecording() throws Exception {
+		// Set recording mode to true
+		Field recordingField = ClassRandomizer.class.getDeclaredField("recording");
+		recordingField.setAccessible(true);
+		recordingField.setBoolean(classRandomizer, true);
+		
+		// Get the processedSources field
+		Field processedSourcesField = ClassRandomizer.class.getDeclaredField("processedSources");
+		processedSourcesField.setAccessible(true);
+		@SuppressWarnings("unchecked")
+		java.util.Set<String> processedSources = (java.util.Set<String>) processedSourcesField.get(classRandomizer);
+		
+		try {
+			// Manually mark the class as already processed
+			processedSources.add("com.example.TestClass");
+			
+			// Create a dummy bytecode - doesn't matter if it's valid since we're testing the early return
+			byte[] dummyBytecode = new byte[]{(byte)0xCA, (byte)0xFE, (byte)0xBA, (byte)0xBE, 0, 0, 0, 52};
+			
+			// Call transform for a class that's already in processedSources - should NOT reprocess
+			byte[] result = classRandomizer.transform(null, "com/example/TestClass", null, null, dummyBytecode);
+			
+			// Should return null because it was already processed
+			assertThat(result, is(nullValue()));
+			
+		} finally {
+			// Clean up - reset recording to false
+			recordingField.setBoolean(classRandomizer, false);
+			processedSources.clear();
+		}
+	}
+
+	/**
+	 * Test that recordMatches initializes processedSources
+	 */
+	@Test
+	public final void testRecordMatchesInitializesProcessedSources() throws Exception {
+		// Get the processedSources field
+		Field processedSourcesField = ClassRandomizer.class.getDeclaredField("processedSources");
+		processedSourcesField.setAccessible(true);
+		
+		// Manually add an entry to processedSources
+		@SuppressWarnings("unchecked")
+		java.util.Set<String> processedSources = (java.util.Set<String>) processedSourcesField.get(classRandomizer);
+		processedSources.add("com.example.DummyClass");
+		
+		// Verify it was added
+		assertThat(processedSources.size(), is(1));
+		
+		try {
+			// Call recordMatches - this will reset processedSources
+			classRandomizer.recordMatches();
+		} catch (Exception e) {
+			// Expected to fail due to Agent not being available
+			// The important thing is that processedSources was reset before the failure
+		}
+		
+		// Verify that processedSources was reset (cleared) by recordMatches
+		@SuppressWarnings("unchecked")
+		java.util.Set<String> processedSourcesAfter = (java.util.Set<String>) processedSourcesField.get(classRandomizer);
+		assertThat(processedSourcesAfter.size(), is(0));
+	}
+
+	/**
+	 * Test that transform does not track processed sources when not in recording mode
+	 */
+	@Test
+	public final void testNoTrackingWhenNotRecording() throws Exception {
+		// Ensure recording is false (should be default)
+		Field recordingField = ClassRandomizer.class.getDeclaredField("recording");
+		recordingField.setAccessible(true);
+		recordingField.setBoolean(classRandomizer, false);
+		
+		// Get the processedSources field
+		Field processedSourcesField = ClassRandomizer.class.getDeclaredField("processedSources");
+		processedSourcesField.setAccessible(true);
+		@SuppressWarnings("unchecked")
+		java.util.Set<String> processedSources = (java.util.Set<String>) processedSourcesField.get(classRandomizer);
+		processedSources.clear();
+		
+		try {
+			// Create a dummy bytecode
+			byte[] dummyBytecode = new byte[]{(byte)0xCA, (byte)0xFE, (byte)0xBA, (byte)0xBE, 0, 0, 0, 52};
+			
+			// Call transform when not recording
+			classRandomizer.transform(null, "com/example/TestClass", null, null, dummyBytecode);
+			
+			// Verify that processedSources was NOT updated (still empty)
+			assertThat(processedSources.size(), is(0));
+			
+		} catch (Exception e) {
+			// May fail due to invalid bytecode, but processedSources should still be empty
+			assertThat(processedSources.size(), is(0));
+		}
+	}
+
+
 
 	/**
 	 * Mock test runner for testing
