@@ -157,4 +157,48 @@ public class MethodRandomizerVisitorTest {
 		assertThat(record.getMessage(), containsString("ILOAD"));
 		assertThat(record.getMessage(), containsString("1"));
 	}
+	
+	/**
+	 * Test method to verify getOpcodeName handles invalid opcodes
+	 */
+	@Test
+	public final void testInvalidOpcodeHandling() {
+		TestRunner runner = new EngineJUnit4Runner(new ArrayList<String>());
+		ClassRandomizer cr = new ClassRandomizer(new ArrayList<String>(), runner);
+		MethodVisitor mv = new MethodVisitor(Opcodes.ASM5) {};
+		MethodRandomizerVisitor visitor = new MethodRandomizerVisitor(
+			"TestClass", "testMethod", "()V", mv, cr);
+		
+		// Execute visitInsn with an invalid opcode (negative value)
+		visitor.visitInsn(-1);
+		
+		// Verify logging occurred with UNKNOWN for invalid opcode
+		assertThat(logRecords.size(), is(1));
+		LogRecord record = logRecords.get(0);
+		assertThat(record.getLevel(), is(Level.FINER));
+		assertThat(record.getMessage(), containsString("visitInsn"));
+		assertThat(record.getMessage(), containsString("UNKNOWN"));
+	}
+	
+	/**
+	 * Test method to verify getOpcodeName handles out of range opcodes
+	 */
+	@Test
+	public final void testOutOfRangeOpcodeHandling() {
+		TestRunner runner = new EngineJUnit4Runner(new ArrayList<String>());
+		ClassRandomizer cr = new ClassRandomizer(new ArrayList<String>(), runner);
+		MethodVisitor mv = new MethodVisitor(Opcodes.ASM5) {};
+		MethodRandomizerVisitor visitor = new MethodRandomizerVisitor(
+			"TestClass", "testMethod", "()V", mv, cr);
+		
+		// Execute visitInsn with an out of range opcode (very large value)
+		visitor.visitInsn(9999);
+		
+		// Verify logging occurred with UNKNOWN for out of range opcode
+		assertThat(logRecords.size(), is(1));
+		LogRecord record = logRecords.get(0);
+		assertThat(record.getLevel(), is(Level.FINER));
+		assertThat(record.getMessage(), containsString("visitInsn"));
+		assertThat(record.getMessage(), containsString("UNKNOWN"));
+	}
 }
