@@ -12,6 +12,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      pull-requests: write
       id-token: write
     strategy:
       fail-fast: false
@@ -29,6 +30,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
       - name: Upload jallele-cmdline-test JAR
+        id: UploadJAR
         if: matrix.java == '17'
         uses: actions/upload-artifact@v4
         with:
@@ -49,3 +51,10 @@ jobs:
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Post artifact download link
+        if: matrix.java == '17' && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            Download artifact: [jallele-cmdline-test JAR](${{ steps.UploadJAR.outputs.artifact-url }})
