@@ -24,7 +24,9 @@ public class IntegerOpInstructionVisitor extends InstructionVisitor {
 			do {
 				selected=(int)Math.floor(random.nextDouble()*values.length);
 			} while (which==selected);
+			int fromOpCode = vs.getOpCode();
 			newVs.setOpCode(values[selected]);
+			logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(values[selected])));
 		}
 		
 		return newVs;

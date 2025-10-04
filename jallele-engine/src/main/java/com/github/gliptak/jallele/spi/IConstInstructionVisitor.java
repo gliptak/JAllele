@@ -19,16 +19,19 @@ public class IConstInstructionVisitor extends InstructionVisitor {
 	public VisitStatus isMatch(VisitStatus vs) {
 		VisitStatus newVs=new VisitStatus(vs);
 		if (ArrayUtils.contains(values, vs.getOpCode())){
+			int fromOpCode = vs.getOpCode();
 			if (Opcodes.ICONST_1 == vs.getOpCode()){
 				// TODO: is there a better way to process booleans?
 				newVs.setOpCode(Opcodes.ICONST_0);
+				logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(Opcodes.ICONST_0)));
 			} else {
 				int which=ArrayUtils.indexOf(values, vs.getOpCode());
 				int selected=-1;
 				do {
 					selected=(int)Math.floor(random.nextDouble()*values.length);
 				} while (which==selected);
-				newVs.setOpCode(values[selected]);				
+				newVs.setOpCode(values[selected]);
+				logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(values[selected])));
 			}
 		}
 		

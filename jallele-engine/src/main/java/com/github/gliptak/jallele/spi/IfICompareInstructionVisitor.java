@@ -19,6 +19,7 @@ public class IfICompareInstructionVisitor extends InstructionVisitor {
     public VisitStatus isMatch(VisitStatus vs) {
 		VisitStatus newVs=new VisitStatus(vs);
 		if (ArrayUtils.contains(values, vs.getOpCode())){
+			int fromOpCode = vs.getOpCode();
 			switch (vs.getOpCode()) {
 				case Opcodes.IF_ICMPEQ:
 					newVs.setOpCode(Opcodes.IF_ICMPNE);
@@ -41,6 +42,7 @@ public class IfICompareInstructionVisitor extends InstructionVisitor {
 				default:
 					throw new IllegalArgumentException("opcode "+vs.getOpCode()+" not processed");
 			}
+			logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(newVs.getOpCode())));
 		}
 		
 		return newVs;

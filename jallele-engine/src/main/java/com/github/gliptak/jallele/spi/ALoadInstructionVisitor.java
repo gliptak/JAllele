@@ -25,7 +25,9 @@ public class ALoadInstructionVisitor extends InstructionVisitor {
 		VisitStatus newVs=new VisitStatus(vs);
 		if (ArrayUtils.contains(values, vs.getOpCode())){
 			// Mutate any aload instruction to aconst_null
+			int fromOpCode = vs.getOpCode();
 			newVs.setOpCode(Opcodes.ACONST_NULL);
+			logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(Opcodes.ACONST_NULL)));
 		}
 		
 		return newVs;

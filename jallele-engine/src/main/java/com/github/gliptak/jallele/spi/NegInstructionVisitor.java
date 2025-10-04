@@ -26,7 +26,9 @@ public class NegInstructionVisitor extends InstructionVisitor {
 			// For negation instructions, the most meaningful mutation is to remove 
 			// the negation entirely - this tests whether the code correctly handles
 			// both positive and negative values of the same magnitude
+			int fromOpCode = vs.getOpCode();
 			newVs.setOpCode(Opcodes.NOP); // Replace with no-operation
+			logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(Opcodes.NOP)));
 		}
 		
 		return newVs;

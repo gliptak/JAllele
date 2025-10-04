@@ -25,7 +25,9 @@ public class AStoreInstructionVisitor extends InstructionVisitor {
 		VisitStatus newVs=new VisitStatus(vs);
 		if (ArrayUtils.contains(values, vs.getOpCode())){
 			// Mutate any astore instruction to pop to discard the reference value instead of storing it
+			int fromOpCode = vs.getOpCode();
 			newVs.setOpCode(Opcodes.POP);
+			logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(Opcodes.POP)));
 		}
 		
 		return newVs;

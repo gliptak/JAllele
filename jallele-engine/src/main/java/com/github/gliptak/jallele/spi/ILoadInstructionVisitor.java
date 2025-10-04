@@ -28,7 +28,9 @@ public class ILoadInstructionVisitor extends InstructionVisitor {
 			int[] constValues = {Opcodes.ICONST_0, Opcodes.ICONST_1, Opcodes.ICONST_2, 
 								Opcodes.ICONST_3, Opcodes.ICONST_4, Opcodes.ICONST_5, Opcodes.ICONST_M1};
 			int selected = (int)Math.floor(random.nextDouble() * constValues.length);
+			int fromOpCode = vs.getOpCode();
 			newVs.setOpCode(constValues[selected]);
+			logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(constValues[selected])));
 		}
 		
 		return newVs;
