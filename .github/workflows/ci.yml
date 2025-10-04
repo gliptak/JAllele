@@ -29,6 +29,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
       - name: Upload jallele-cmdline-test JAR
+        if: matrix.java == '17'
         uses: actions/upload-artifact@v4
         with:
           name: jallele-cmdline-test-java-${{ matrix.java }}
