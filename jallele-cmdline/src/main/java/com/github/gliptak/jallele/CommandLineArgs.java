@@ -31,6 +31,9 @@ public class CommandLineArgs {
 	@Option(name="-h", aliases={"--help"}, usage="print this help message", help=true)
 	private boolean help=false;
 
+	@Option(name="-loglevel", aliases={"--log-level"}, usage="set log level (OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL)")
+	private String logLevel="WARNING";
+
 	@Argument
     private List<String> arguments = new ArrayList<String>();
 
@@ -81,5 +84,12 @@ public class CommandLineArgs {
 	 */
 	public boolean isHelp() {
 		return help;
+	}
+
+	/**
+	 * @return the logLevel
+	 */
+	public String getLogLevel() {
+		return logLevel;
 	}
 }
