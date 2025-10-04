@@ -314,4 +314,54 @@ public class MainTest {
 		// Should complete successfully even if some randomized runs fail
 		assertThat(exitCode, Is.is(0));
 	}
+
+	@Test
+	public final void testParseArgumentsWithLogLevel() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", "--sources", "Main", "--tests", "MainTest", "--log-level", "FINE"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+		assertThat(bean.getLogLevel(), Is.is("FINE"));
+	}
+
+	@Test
+	public final void testParseArgumentsWithLogLevelShort() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", "--sources", "Main", "--tests", "MainTest", "-loglevel", "INFO"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+		assertThat(bean.getLogLevel(), Is.is("INFO"));
+	}
+
+	@Test
+	public final void testParseArgumentsWithDefaultLogLevel() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", "--sources", "Main", "--tests", "MainTest"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+		assertThat(bean.getLogLevel(), Is.is("WARNING"));
+	}
+
+	@Test
+	public final void testConfigureLoggingWithValidLevel() {
+		Main m = new Main();
+		// Test that configureLogging doesn't throw an exception with valid log levels
+		m.configureLogging("FINE");
+		m.configureLogging("INFO");
+		m.configureLogging("WARNING");
+		m.configureLogging("SEVERE");
+		m.configureLogging("OFF");
+		m.configureLogging("ALL");
+	}
+
+	@Test
+	public final void testConfigureLoggingWithInvalidLevel() {
+		Main m = new Main();
+		// Test that configureLogging handles invalid log level gracefully
+		m.configureLogging("INVALID");
+		// Should not throw exception, just print error to stderr
+	}
 }

@@ -44,6 +44,17 @@ $ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele
 --sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassTestNGTest
 ```
 
+### Logging
+
+You can control the logging level using the `--log-level` or `-loglevel` option. The default log level is `WARNING`.
+Supported log levels: `OFF`, `SEVERE`, `WARNING`, `INFO`, `CONFIG`, `FINE`, `FINER`, `FINEST`, `ALL`.
+
+Example with detailed logging:
+```
+$ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --junit --count 10 \
+--sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassJUnitTest --log-level FINE
+```
+
 Contributions, issues, pull requests are welcome.
 
 ## Notes

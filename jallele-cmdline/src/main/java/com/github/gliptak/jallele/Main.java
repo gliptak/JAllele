@@ -3,6 +3,9 @@ package com.github.gliptak.jallele;
 import java.io.PrintStream;
 import java.security.Permission;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.internal.JUnitSystem;
@@ -29,6 +32,7 @@ public class Main {
 	    if (rc!=0){
 	    	return rc;
 	    }
+	    configureLogging(bean.getLogLevel());
 	    if (bean.isRunJUnit()) {
 		    rc=runJUnitTests(bean.getCount(), bean.getSources(), bean.getTests());
 	    }
@@ -108,6 +112,26 @@ public class Main {
 	    }
 	    System.out.println("results "+expectedFailure+"/"+count+" ("+((float)expectedFailure/count)+")");
 		return 0;
+	}
+
+	/**
+	 * Configure logging level based on command line argument
+	 * 
+	 * @param logLevelStr the log level string (OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL)
+	 */
+	protected void configureLogging(String logLevelStr) {
+		try {
+			Level level = Level.parse(logLevelStr.toUpperCase());
+			Logger rootLogger = Logger.getLogger("");
+			rootLogger.setLevel(level);
+			for (Handler handler : rootLogger.getHandlers()) {
+				handler.setLevel(level);
+			}
+			// Also set level for the main logger
+			logger.setLevel(level);
+		} catch (IllegalArgumentException e) {
+			System.err.println("Invalid log level: " + logLevelStr + ". Using WARNING as default.");
+		}
 	}
 
 	/**
