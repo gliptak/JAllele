@@ -70,34 +70,34 @@ public class Main {
 		}
 
 	    // first run to succeed
-	    logger.fine("first run start");
+	    logger.fine("First run start");
 		runner.runTests();
 		if (runner.getFailureCount()!=0){
-			System.out.println("first run failed");
+			logger.severe("First run failed");
 			if (useSecurityManager) {
 				System.setSecurityManager(securityManager);
 			}
 			return 1;
 		}
-	    logger.fine("first run complete");
+	    logger.fine("First run complete");
 		
-	    logger.fine("record matches start");
+	    logger.fine("Record matches start");
 		Agent.attach();
 		ClassRandomizer cr=new ClassRandomizer(sources, runner);
 		cr.recordMatches();
-	    logger.fine("record matches complete");
+	    logger.fine("Record matches complete");
 
         // second run to succeed
-	    logger.fine("second run start");
+	    logger.fine("Second run start");
 		runner.runTests();
 		if (runner.getFailureCount()!=0){
-			System.out.println("second run failed");
+			logger.severe("Second run failed");
 			if (useSecurityManager) {
 				System.setSecurityManager(securityManager);
 			}
 			return 1;
 		}
-	    logger.fine("second run complete");		
+	    logger.fine("Second run complete");		
 		
 		int expectedFailure=0;
 	    for (int current=0; current<count; current++){
@@ -110,7 +110,7 @@ public class Main {
 	    if (useSecurityManager) {
 	    	System.setSecurityManager(securityManager);
 	    }
-	    System.out.println("results "+expectedFailure+"/"+count+" ("+((float)expectedFailure/count)+")");
+	    logger.info("Results: "+expectedFailure+"/"+count+" ("+((float)expectedFailure/count)+")");
 		return 0;
 	}
 
