@@ -109,7 +109,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 	public byte[] transform(ClassLoader loader, String className,
 			Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
 			byte[] classfileBuffer) throws IllegalClassFormatException {
-		logger.fine("Transform called for " + className);
+		logger.finer("Transform called for " + className);
 		byte[] transformed = null;
 		
 		String classNameWithDots=className.replaceAll("/", ".");
