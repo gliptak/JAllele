@@ -27,7 +27,9 @@ public class LLoadInstructionVisitor extends InstructionVisitor {
 			// Mutate any lload instruction to lconst_0 or lconst_1 randomly
 			int[] constValues = {Opcodes.LCONST_0, Opcodes.LCONST_1};
 			int selected = (int)Math.floor(random.nextDouble() * constValues.length);
+			int fromOpCode = vs.getOpCode();
 			newVs.setOpCode(constValues[selected]);
+			logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(constValues[selected])));
 		}
 		
 		return newVs;

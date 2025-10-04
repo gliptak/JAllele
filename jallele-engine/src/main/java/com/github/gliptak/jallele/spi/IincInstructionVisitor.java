@@ -31,6 +31,7 @@ public class IincInstructionVisitor extends InstructionVisitor {
 				newOperand = random.nextInt(256) - 128; // Generate -128 to 127
 			} while (newOperand == currentOperand);
 			newVs.setOperand(newOperand);
+			logger.fine(String.format("Transform: %s operand %d -> %d", getOpcodeName(vs.getOpCode()), currentOperand, newOperand));
 		}
 		
 		return newVs;

@@ -27,7 +27,9 @@ public class FLoadInstructionVisitor extends InstructionVisitor {
 			// Mutate any fload instruction to fconst_0, fconst_1 or fconst_2 randomly
 			int[] constValues = {Opcodes.FCONST_0, Opcodes.FCONST_1, Opcodes.FCONST_2};
 			int selected = (int)Math.floor(random.nextDouble() * constValues.length);
+			int fromOpCode = vs.getOpCode();
 			newVs.setOpCode(constValues[selected]);
+			logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(constValues[selected])));
 		}
 		
 		return newVs;

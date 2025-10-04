@@ -27,7 +27,9 @@ public class DLoadInstructionVisitor extends InstructionVisitor {
 			// Mutate any dload instruction to dconst_0 or dconst_1 randomly
 			int[] constValues = {Opcodes.DCONST_0, Opcodes.DCONST_1};
 			int selected = (int)Math.floor(random.nextDouble() * constValues.length);
+			int fromOpCode = vs.getOpCode();
 			newVs.setOpCode(constValues[selected]);
+			logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(constValues[selected])));
 		}
 		
 		return newVs;

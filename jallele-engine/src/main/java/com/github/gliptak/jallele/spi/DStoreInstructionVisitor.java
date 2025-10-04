@@ -25,7 +25,9 @@ public class DStoreInstructionVisitor extends InstructionVisitor {
 		VisitStatus newVs=new VisitStatus(vs);
 		if (ArrayUtils.contains(values, vs.getOpCode())){
 			// Mutate any dstore instruction to pop2 to discard the double value instead of storing it
+			int fromOpCode = vs.getOpCode();
 			newVs.setOpCode(Opcodes.POP2);
+			logger.fine(String.format("Transform: %s -> %s", getOpcodeName(fromOpCode), getOpcodeName(Opcodes.POP2)));
 		}
 		
 		return newVs;
