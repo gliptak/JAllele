@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.util.Printer;
 
 import static java.lang.String.format;
 
@@ -40,12 +41,24 @@ public class MethodRandomizerVisitor extends MethodVisitor {
 		this.cr=cr;
 	}
 
+	/**
+	 * Get human-readable name for an opcode
+	 * @param opCode the opcode value
+	 * @return the opcode name
+	 */
+	private String getOpcodeName(int opCode) {
+		if (opCode >= 0 && opCode < Printer.OPCODES.length) {
+			return Printer.OPCODES[opCode];
+		}
+		return "UNKNOWN(" + opCode + ")";
+	}
+
 	/* (non-Javadoc)
 	 * @see org.objectweb.asm.MethodAdapter#visitInsn(int)
 	 */
 	@Override
 	public void visitInsn(int opCode) {
-		logger.fine(format("visitInsn %x/%d", opCode, opCode));
+		logger.finer(format("visitInsn %s", getOpcodeName(opCode)));
 		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count, currentLine);
 		vs.setOpCode(opCode);
 		VisitStatus newVs=cr.visit(vs);
@@ -55,7 +68,7 @@ public class MethodRandomizerVisitor extends MethodVisitor {
 
 	@Override
 	public void visitIntInsn(int opCode, int operand) {
-		logger.fine(format("visitIntInsn %x/%d %d", opCode, opCode, operand));
+		logger.finer(format("visitIntInsn %s %d", getOpcodeName(opCode), operand));
 		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count, currentLine);
 		vs.setOpCode(opCode);
 		vs.setOperand(operand);
@@ -69,7 +82,7 @@ public class MethodRandomizerVisitor extends MethodVisitor {
 	 */
 	@Override
 	public void visitJumpInsn(int opCode, Label label) {
-		logger.fine(format("visitInsn %x/%d %s", opCode, opCode, label));
+		logger.finer(format("visitJumpInsn %s %s", getOpcodeName(opCode), label));
 		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count, currentLine);
 		vs.setOpCode(opCode);
 		vs.setLabel(label);
@@ -80,7 +93,7 @@ public class MethodRandomizerVisitor extends MethodVisitor {
 
 	@Override
 	public void visitVarInsn(int opCode, int var) {
-		logger.fine(format("visitVarInsn %x/%d %d", opCode, opCode, var));
+		logger.finer(format("visitVarInsn %s %d", getOpcodeName(opCode), var));
 		VisitStatus vs=new VisitStatus(className, methodName, methodDesc, count, currentLine);
 		vs.setOpCode(opCode);
 		vs.setOperand(var);
