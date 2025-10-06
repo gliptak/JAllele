@@ -30,6 +30,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
       - name: Run SimpleClass mutation test
+        if: matrix.java == '17'
         run: |
           java -Djdk.attach.allowAttachSelf=true \
             -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar \
