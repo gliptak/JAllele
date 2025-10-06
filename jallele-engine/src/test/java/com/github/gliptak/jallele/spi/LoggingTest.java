@@ -59,39 +59,6 @@ public class LoggingTest {
 	}
 	
 	/**
-	 * Test method to verify FStoreInstructionVisitor logs transformation
-	 */
-	@Test
-	public final void testFStoreInstructionVisitorLogging() {
-		VisitStatus vs = new VisitStatus("TestClass", "testMethod", "()F", 10, 1);
-		vs.setOpCode(Opcodes.FSTORE);
-		
-		Random random = new Random();
-		FStoreInstructionVisitor visitor = new FStoreInstructionVisitor(random);
-		
-		// Set up logging
-		Logger logger = Logger.getLogger(FStoreInstructionVisitor.class.getName());
-		logger.addHandler(testHandler);
-		logger.setLevel(Level.FINE);
-		
-		// Execute transformation
-		VisitStatus newVs = visitor.isMatch(vs);
-		
-		// Verify transformation occurred
-		assertThat(newVs.getOpCode(), is(Opcodes.POP));
-		
-		// Verify logging occurred
-		assertThat(logRecords.size(), is(1));
-		LogRecord record = logRecords.get(0);
-		assertThat(record.getLevel(), is(Level.FINE));
-		assertThat(record.getMessage(), containsString("Transform:"));
-		assertThat(record.getMessage(), containsString("FSTORE"));
-		assertThat(record.getMessage(), containsString("POP"));
-		
-		logger.removeHandler(testHandler);
-	}
-	
-	/**
 	 * Test method to verify IfInstructionVisitor logs transformation
 	 */
 	@Test

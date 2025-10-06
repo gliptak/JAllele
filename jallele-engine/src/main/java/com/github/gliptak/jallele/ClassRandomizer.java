@@ -52,28 +52,38 @@ public class ClassRandomizer implements ClassFileTransformer {
 	}
 
 	protected void initVisitors(Random random) {
+		// Constant instruction visitors
 		visitors.add(new IConstInstructionVisitor(random));
-		visitors.add(new IfInstructionVisitor(random));
-		visitors.add(new IfNullInstructionVisitor(random));
 		visitors.add(new LConstInstructionVisitor(random));
 		visitors.add(new DConstInstructionVisitor(random));
 		visitors.add(new FConstInstructionVisitor(random));
+		
+		// Conditional instruction visitors
+		visitors.add(new IfInstructionVisitor(random));
+		visitors.add(new IfNullInstructionVisitor(random));
 		visitors.add(new IfACompareInstructionVisitor(random));
 		visitors.add(new IfICompareInstructionVisitor(random));
+		
+		// Arithmetic operation visitors
 		visitors.add(new DoubleOpInstructionVisitor(random));
 		visitors.add(new FloatOpInstructionVisitor(random));
 		visitors.add(new IntegerOpInstructionVisitor(random));
 		visitors.add(new LongOpInstructionVisitor(random));
 		visitors.add(new LongShiftInstructionVisitor(random));
 		visitors.add(new NegInstructionVisitor(random));
+		
+		// Other instruction visitors
 		visitors.add(new IPushInstructionVisitor(random));
 		visitors.add(new IincInstructionVisitor(random));
-		visitors.add(new ALoadInstructionVisitor(random));
-		visitors.add(new DLoadInstructionVisitor(random));
-		visitors.add(new LLoadInstructionVisitor(random));
-		visitors.add(new FLoadInstructionVisitor(random));
-		visitors.add(new ILoadInstructionVisitor(random));
-		visitors.add(new IStoreInstructionVisitor(random));
+		
+		// Note: All Load instruction visitors (ALOAD, ILOAD, DLOAD, FLOAD, LLOAD) have been deleted.
+		// They replaced LOAD instructions (which read from local variables) with CONST instructions (which push constants).
+		// This is incompatible with JVM bytecode verification because the verifier tracks local variable initialization
+		// and stack map frames. Replacing a LOAD with a CONST creates verification errors.
+		
+		// Note: All Store instruction visitors (ASTORE, DSTORE, FSTORE, ISTORE, LSTORE) have been deleted.
+		// They replaced STORE with POP operations, which causes verification errors when the stored variable
+		// is later read, as the verifier sees the variable slot as uninitialized.
 	}
 
 	public void recordMatches() throws Exception {

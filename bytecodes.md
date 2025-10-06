@@ -1,24 +1,30 @@
 # JAllele mapping of Java bytecode instructions
 
+**Note:** All Load instruction visitors (ALoad, ILoad, DLoad, FLoad, LLoad) and Store instruction visitors (AStore, IStore, DStore, FStore, LStore) have been **DELETED** because they violate JVM bytecode verification rules:
+- Load visitors replaced LOAD instructions (reads from local variables) with CONST instructions (pushes constants), creating stack map frame inconsistencies
+- Store visitors replaced STORE instructions (writes to local variables) with POP instructions (discards values), leaving variable slots uninitialized
+
+Currently active instruction visitors: IConst, LConst, DConst, FConst, If, IfNull, IfACompare, IfICompare, DoubleOp, FloatOp, IntegerOp, LongOp, LongShift, Neg, IPush, Iinc
+
 | JAllele Handler | Mnemonic | Opcode (hex) | Other bytes | Stack [before]→[after] | Description |
 |-----------------|----------|--------------|-------------|------------------------|-------------|
 | **A** | | | | | |
 | TBD | aaload | 32 |   | arrayref, index → value | loads onto the stack a reference from an array |
 | TBD | aastore | 53 |   | arrayref, index, value → | stores into a reference to an array |
 | TBD | aconst_null | 01 |   | → null | pushes a null reference onto the stack |
-| ALoadInstructionVisitor | aload | 19 | index | → objectref | loads a reference onto the stack from a local variable #index |
-| ALoadInstructionVisitor | aload_0 | 2a |   | → objectref | loads a reference onto the stack from local variable 0 |
-| ALoadInstructionVisitor | aload_1 | 2b |   | → objectref | loads a reference onto the stack from local variable 1 |
-| ALoadInstructionVisitor | aload_2 | 2c |   | → objectref | loads a reference onto the stack from local variable 2 |
-| ALoadInstructionVisitor | aload_3 | 2d |   | → objectref | loads a reference onto the stack from local variable 3 |
+| DELETED (was ALoadInstructionVisitor) | aload | 19 | index | → objectref | loads a reference onto the stack from a local variable #index |
+| DELETED (was ALoadInstructionVisitor) | aload_0 | 2a |   | → objectref | loads a reference onto the stack from local variable 0 |
+| DELETED (was ALoadInstructionVisitor) | aload_1 | 2b |   | → objectref | loads a reference onto the stack from local variable 1 |
+| DELETED (was ALoadInstructionVisitor) | aload_2 | 2c |   | → objectref | loads a reference onto the stack from local variable 2 |
+| DELETED (was ALoadInstructionVisitor) | aload_3 | 2d |   | → objectref | loads a reference onto the stack from local variable 3 |
 | TBD | anewarray | bd | indexbyte1, indexbyte2 | count → arrayref | creates a new array of references of length count and component type identified by the class reference index (indexbyte1 << 8 + indexbyte2) in the constant pool |
 | TBD | areturn | b0 |   | objectref → [empty] | returns a reference from a method |
 | TBD | arraylength | be |   | arrayref → length | gets the length of an array |
-| AStoreInstructionVisitor | astore | 3a | index | objectref → | stores a reference into a local variable #index |
-| AStoreInstructionVisitor | astore_0 | 4b |   | objectref → | stores a reference into local variable 0 |
-| AStoreInstructionVisitor | astore_1 | 4c |   | objectref → | stores a reference into local variable 1 |
-| AStoreInstructionVisitor | astore_2 | 4d |   | objectref → | stores a reference into local variable 2 |
-| AStoreInstructionVisitor | astore_3 | 4e |   | objectref → | stores a reference into local variable 3 |
+| DELETED (was AStoreInstructionVisitor) | astore | 3a | index | objectref → | stores a reference into a local variable #index |
+| DELETED (was AStoreInstructionVisitor) | astore_0 | 4b |   | objectref → | stores a reference into local variable 0 |
+| DELETED (was AStoreInstructionVisitor) | astore_1 | 4c |   | objectref → | stores a reference into local variable 1 |
+| DELETED (was AStoreInstructionVisitor) | astore_2 | 4d |   | objectref → | stores a reference into local variable 2 |
+| DELETED (was AStoreInstructionVisitor) | astore_3 | 4e |   | objectref → | stores a reference into local variable 3 |
 | TBD | athrow | bf |   | objectref → [empty], objectref | throws an error or exception (notice that the rest of the stack is cleared, leaving only a reference to the Throwable) |
 | **B** | | | | | |
 | TBD | baload | 33 |   | arrayref, index → value | loads a byte or Boolean value from an array |
@@ -40,20 +46,20 @@
 | DConstInstructionVisitor | dconst_0 | 0e |   | → 0.0 | pushes the constant 0.0 onto the stack |
 | DConstInstructionVisitor | dconst_1 | 0f |   | → 1.0 | pushes the constant 1.0 onto the stack |
 | DoubleOpInstructionVisitor | ddiv | 6f |   | value1, value2 → result | divides two doubles |
-| DLoadInstructionVisitor | dload | 18 | index | → value | loads a double value from a local variable #index |
-| DLoadInstructionVisitor | dload_0 | 26 |   | → value | loads a double from local variable 0 |
-| DLoadInstructionVisitor | dload_1 | 27 |   | → value | loads a double from local variable 1 |
-| DLoadInstructionVisitor | dload_2 | 28 |   | → value | loads a double from local variable 2 |
-| DLoadInstructionVisitor | dload_3 | 29 |   | → value | loads a double from local variable 3 |
+| DELETED (was DLoadInstructionVisitor) | dload | 18 | index | → value | loads a double value from a local variable #index |
+| DELETED (was DLoadInstructionVisitor) | dload_0 | 26 |   | → value | loads a double from local variable 0 |
+| DELETED (was DLoadInstructionVisitor) | dload_1 | 27 |   | → value | loads a double from local variable 1 |
+| DELETED (was DLoadInstructionVisitor) | dload_2 | 28 |   | → value | loads a double from local variable 2 |
+| DELETED (was DLoadInstructionVisitor) | dload_3 | 29 |   | → value | loads a double from local variable 3 |
 | DoubleOpInstructionVisitor | dmul | 6b |   | value1, value2 → result | multiplies two doubles |
 | NegInstructionVisitor | dneg | 77 |   | value → result | negates a double |
 | DoubleOpInstructionVisitor | drem | 73 |   | value1, value2 → result | gets the remainder from a division between two doubles |
 | TBD | dreturn | af |   | value → [empty] | returns a double from a method |
-| DStoreInstructionVisitor | dstore | 39 | index | value → | stores a double value into a local variable #index |
-| DStoreInstructionVisitor | dstore_0 | 47 |   | value → | stores a double into local variable 0 |
-| DStoreInstructionVisitor | dstore_1 | 48 |   | value → | stores a double into local variable 1 |
-| DStoreInstructionVisitor | dstore_2 | 49 |   | value → | stores a double into local variable 2 |
-| DStoreInstructionVisitor | dstore_3 | 4a |   | value → | stores a double into local variable 3 |
+| DELETED (was DStoreInstructionVisitor) | dstore | 39 | index | value → | stores a double value into a local variable #index |
+| DELETED (was DStoreInstructionVisitor) | dstore_0 | 47 |   | value → | stores a double into local variable 0 |
+| DELETED (was DStoreInstructionVisitor) | dstore_1 | 48 |   | value → | stores a double into local variable 1 |
+| DELETED (was DStoreInstructionVisitor) | dstore_2 | 49 |   | value → | stores a double into local variable 2 |
+| DELETED (was DStoreInstructionVisitor) | dstore_3 | 4a |   | value → | stores a double into local variable 3 |
 | DoubleOpInstructionVisitor | dsub | 67 |   | value1, value2 → result | subtracts a double from another |
 | TBD | dup | 59 |   | value → value, value | duplicates the value on top of the stack |
 | TBD | dup_x1 | 5a |   | value2, value1 → value1, value2, value1 | inserts a copy of the top value into the stack two values from the top |
@@ -74,20 +80,20 @@
 | FConstInstructionVisitor | fconst_1 | 0c |   | → 1.0f | pushes 1.0f on the stack |
 | FConstInstructionVisitor | fconst_2 | 0d |   | → 2.0f | pushes 2.0f on the stack |
 | FloatOpInstructionVisitor | fdiv | 6e |   | value1, value2 → result | divides two floats |
-| FLoadInstructionVisitor | fload | 17 | index | → value | loads a float value from a local variable #index |
-| FLoadInstructionVisitor | fload_0 | 22 |   | → value | loads a float value from local variable 0 |
-| FLoadInstructionVisitor | fload_1 | 23 |   | → value | loads a float value from local variable 1 |
-| FLoadInstructionVisitor | fload_2 | 24 |   | → value | loads a float value from local variable 2 |
-| FLoadInstructionVisitor | fload_3 | 25 |   | → value | loads a float value from local variable 3 |
+| DELETED (was FLoadInstructionVisitor) | fload | 17 | index | → value | loads a float value from a local variable #index |
+| DELETED (was FLoadInstructionVisitor) | fload_0 | 22 |   | → value | loads a float value from local variable 0 |
+| DELETED (was FLoadInstructionVisitor) | fload_1 | 23 |   | → value | loads a float value from local variable 1 |
+| DELETED (was FLoadInstructionVisitor) | fload_2 | 24 |   | → value | loads a float value from local variable 2 |
+| DELETED (was FLoadInstructionVisitor) | fload_3 | 25 |   | → value | loads a float value from local variable 3 |
 | FloatOpInstructionVisitor | fmul | 6a |   | value1, value2 → result | multiplies two floats |
 | NegInstructionVisitor | fneg | 76 |   | value → result | negates a float |
 | FloatOpInstructionVisitor | frem | 72 |   | value1, value2 → result | gets the remainder from a division between two floats |
 | TBD | freturn | ae |   | value → [empty] | returns a float |
-| FStoreInstructionVisitor | fstore | 38 | index | value → | stores a float value into a local variable #index |
-| FStoreInstructionVisitor | fstore_0 | 43 |   | value → | stores a float value into local variable 0 |
-| FStoreInstructionVisitor | fstore_1 | 44 |   | value → | stores a float value into local variable 1 |
-| FStoreInstructionVisitor | fstore_2 | 45 |   | value → | stores a float value into local variable 2 |
-| FStoreInstructionVisitor | fstore_3 | 46 |   | value → | stores a float value into local variable 3 |
+| DELETED (was FStoreInstructionVisitor) | fstore | 38 | index | value → | stores a float value into a local variable #index |
+| DELETED (was FStoreInstructionVisitor) | fstore_0 | 43 |   | value → | stores a float value into local variable 0 |
+| DELETED (was FStoreInstructionVisitor) | fstore_1 | 44 |   | value → | stores a float value into local variable 1 |
+| DELETED (was FStoreInstructionVisitor) | fstore_2 | 45 |   | value → | stores a float value into local variable 2 |
+| DELETED (was FStoreInstructionVisitor) | fstore_3 | 46 |   | value → | stores a float value into local variable 3 |
 | FloatOpInstructionVisitor | fsub | 66 |   | value1, value2 → result | subtracts two floats |
 | **G** | | | | | |
 | TBD | getfield | b4 | index1, index2 | objectref → value | gets a field value of an object objectref, where the field is identified by field reference in the constant pool index (index1 << 8 + index2) |
@@ -130,11 +136,11 @@
 | IfNullInstructionVisitor | ifnonnull | c7 | branchbyte1, branchbyte2 | value → | if value is not null, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | IfNullInstructionVisitor | ifnull | c6 | branchbyte1, branchbyte2 | value → | if value is null, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) |
 | IincInstructionVisitor | iinc | 84 | index, const | [No change] | increment local variable #index by signed byte const |
-| ILoadInstructionVisitor | iload | 15 | index | → value | loads an int value from a variable #index |
-| ILoadInstructionVisitor | iload_0 | 1a |   | → value | loads an int value from variable 0 |
-| ILoadInstructionVisitor | iload_1 | 1b |   | → value | loads an int value from variable 1 |
-| ILoadInstructionVisitor | iload_2 | 1c |   | → value | loads an int value from variable 2 |
-| ILoadInstructionVisitor | iload_3 | 1d |   | → value | loads an int value from variable 3 |
+| DELETED (was ILoadInstructionVisitor) | iload | 15 | index | → value | loads an int value from a variable #index |
+| DELETED (was ILoadInstructionVisitor) | iload_0 | 1a |   | → value | loads an int value from variable 0 |
+| DELETED (was ILoadInstructionVisitor) | iload_1 | 1b |   | → value | loads an int value from variable 1 |
+| DELETED (was ILoadInstructionVisitor) | iload_2 | 1c |   | → value | loads an int value from variable 2 |
+| DELETED (was ILoadInstructionVisitor) | iload_3 | 1d |   | → value | loads an int value from variable 3 |
 | IntegerOpInstructionVisitor | imul | 68 |   | value1, value2 → result | multiply two integers |
 | NegInstructionVisitor | ineg | 74 |   | value → result | negate int |
 | TBD | instanceof | c1 | indexbyte1, indexbyte2 | objectref → result | determines if an object objectref is of a given type, identified by class reference index in constant pool (indexbyte1 << 8 + indexbyte2) |
@@ -148,11 +154,11 @@
 | TBD | ireturn | ac |   | value → [empty] | returns an integer from a method |
 | IntegerOpInstructionVisitor | ishl | 78 |   | value1, value2 → result | int shift left |
 | IntegerOpInstructionVisitor | ishr | 7a |   | value1, value2 → result | int arithmetic shift right |
-| IStoreInstructionVisitor | istore | 36 | index | value → | store int value into variable #index |
-| IStoreInstructionVisitor | istore_0 | 3b |   | value → | store int value into variable 0 |
-| IStoreInstructionVisitor | istore_1 | 3c |   | value → | store int value into variable 1 |
-| IStoreInstructionVisitor | istore_2 | 3d |   | value → | store int value into variable 2 |
-| IStoreInstructionVisitor | istore_3 | 3e |   | value → | store int value into variable 3 |
+| DELETED (was IStoreInstructionVisitor) | istore | 36 | index | value → | store int value into variable #index |
+| DELETED (was IStoreInstructionVisitor) | istore_0 | 3b |   | value → | store int value into variable 0 |
+| DELETED (was IStoreInstructionVisitor) | istore_1 | 3c |   | value → | store int value into variable 1 |
+| DELETED (was IStoreInstructionVisitor) | istore_2 | 3d |   | value → | store int value into variable 2 |
+| DELETED (was IStoreInstructionVisitor) | istore_3 | 3e |   | value → | store int value into variable 3 |
 | IntegerOpInstructionVisitor | isub | 64 |   | value1, value2 → result | int subtract |
 | IntegerOpInstructionVisitor | iushr | 7c |   | value1, value2 → result | int logical shift right |
 | IntegerOpInstructionVisitor | ixor | 82 |   | value1, value2 → result | int xor |
@@ -174,11 +180,11 @@
 | TBD | ldc_w | 13 | indexbyte1, indexbyte2 | → value | pushes a constant #index from a constant pool (String, int or float) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2) |
 | TBD | ldc2_w | 14 | indexbyte1, indexbyte2 | → value | pushes a constant #index from a constant pool (double or long) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2) |
 | LongOpInstructionVisitor | ldiv | 6d |   | value1, value2 → result | divide two longs |
-| LLoadInstructionVisitor | lload | 16 | index | → value | load a long value from a local variable #index |
-| LLoadInstructionVisitor | lload_0 | 1e |   | → value | load a long value from a local variable 0 |
-| LLoadInstructionVisitor | lload_1 | 1f |   | → value | load a long value from a local variable 1 |
-| LLoadInstructionVisitor | lload_2 | 20 |   | → value | load a long value from a local variable 2 |
-| LLoadInstructionVisitor | lload_3 | 21 |   | → value | load a long value from a local variable 3 |
+| DELETED (was LLoadInstructionVisitor) | lload | 16 | index | → value | load a long value from a local variable #index |
+| DELETED (was LLoadInstructionVisitor) | lload_0 | 1e |   | → value | load a long value from a local variable 0 |
+| DELETED (was LLoadInstructionVisitor) | lload_1 | 1f |   | → value | load a long value from a local variable 1 |
+| DELETED (was LLoadInstructionVisitor) | lload_2 | 20 |   | → value | load a long value from a local variable 2 |
+| DELETED (was LLoadInstructionVisitor) | lload_3 | 21 |   | → value | load a long value from a local variable 3 |
 | LongOpInstructionVisitor | lmul | 69 |   | value1, value2 → result | multiplies two longs |
 | NegInstructionVisitor | lneg | 75 |   | value → result | negates a long |
 | TBD | lookupswitch | ab | <0-3 bytes padding>, defaultbyte1, defaultbyte2, defaultbyte3, defaultbyte4, npairs1, npairs2, npairs3, npairs4, match-offset pairs... | key → | a target address is looked up from a table using a key and execution continues from the instruction at that address |
@@ -187,11 +193,11 @@
 | TBD | lreturn | ad |   | value → [empty] | returns a long value |
 | LongShiftInstructionVisitor | lshl | 79 |   | value1, value2 → result | bitwise shift left of a long value1 by value2 positions |
 | LongShiftInstructionVisitor | lshr | 7b |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions |
-| LStoreInstructionVisitor | lstore | 37 | index | value → | store a long value in a local variable #index |
-| LStoreInstructionVisitor | lstore_0 | 3f |   | value → | store a long value in a local variable 0 |
-| LStoreInstructionVisitor | lstore_1 | 40 |   | value → | store a long value in a local variable 1 |
-| LStoreInstructionVisitor | lstore_2 | 41 |   | value → | store a long value in a local variable 2 |
-| LStoreInstructionVisitor | lstore_3 | 42 |   | value → | store a long value in a local variable 3 |
+| DELETED (was LStoreInstructionVisitor) | lstore | 37 | index | value → | store a long value in a local variable #index |
+| DELETED (was LStoreInstructionVisitor) | lstore_0 | 3f |   | value → | store a long value in a local variable 0 |
+| DELETED (was LStoreInstructionVisitor) | lstore_1 | 40 |   | value → | store a long value in a local variable 1 |
+| DELETED (was LStoreInstructionVisitor) | lstore_2 | 41 |   | value → | store a long value in a local variable 2 |
+| DELETED (was LStoreInstructionVisitor) | lstore_3 | 42 |   | value → | store a long value in a local variable 3 |
 | LongOpInstructionVisitor | lsub | 65 |   | value1, value2 → result | subtract two longs |
 | LongShiftInstructionVisitor | lushr | 7d |   | value1, value2 → result | bitwise shift right of a long value1 by value2 positions, unsigned |
 | LongOpInstructionVisitor | lxor | 83 |   | value1, value2 → result | bitwise exclusive or of two longs |

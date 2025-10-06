@@ -29,6 +29,15 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Build with Gradle
         run: ./gradlew build
+      - name: Run SimpleClass mutation test
+        if: matrix.java == '17'
+        run: |
+          java -Djdk.attach.allowAttachSelf=true \
+            -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar \
+            --junit --count 30 \
+            --sources com.github.gliptak.jallele.SimpleClass \
+            --tests com.github.gliptak.jallele.SimpleClassJUnitTest \
+            --log-level FINE
       - name: Upload jallele-cmdline-test JAR
         id: UploadJAR
         if: matrix.java == '17'
