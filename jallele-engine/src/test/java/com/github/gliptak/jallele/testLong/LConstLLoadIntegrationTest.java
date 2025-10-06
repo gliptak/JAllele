@@ -10,8 +10,20 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
- * Integration test to demonstrate LConstInstructionVisitor and LLoadInstructionVisitor functionality.
- * This test ensures our new visitors don't break the execution of long operations.
+ * Integration test to demonstrate LConstInstructionVisitor functionality.
+ * 
+ * NOTE: LLoadInstructionVisitor was DELETED because lconst* mutations are NOT compatible with lload* instructions.
+ * 
+ * Why lconst* is incompatible with lload*:
+ * - lload instructions read long values from local variables and push them onto the operand stack
+ * - lconst instructions push constant long values (0L, 1L) onto the operand stack
+ * - Replacing lload with lconst violates JVM bytecode verification rules because:
+ *   1. It creates stack map frame inconsistencies (the JVM verifier expects specific local variable usage patterns)
+ *   2. It changes program semantics by replacing a variable read with a constant, breaking data flow
+ *   3. Local variable slots that should be initialized by lload would become uninitialized
+ * 
+ * This test ensures LConstInstructionVisitor correctly mutates between lconst_0 and lconst_1
+ * without attempting to mutate lload instructions.
  */
 public class LConstLLoadIntegrationTest {
 

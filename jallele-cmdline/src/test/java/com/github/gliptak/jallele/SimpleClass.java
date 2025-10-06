@@ -6,7 +6,8 @@ package com.github.gliptak.jallele;
  */
 public class SimpleClass {
 
-	// Integer operations - tests IConst, IntegerOp, IPush, Iinc, IStore visitors
+	// Integer operations - tests IConst, IntegerOp, IPush, Iinc visitors
+	// Note: ILoad and IStore visitors were deleted (CONST/LOAD mutations violate JVM verification)
 	public int twoTimes(int i){
 		return 2*i;
 	}
@@ -22,7 +23,8 @@ public class SimpleClass {
 		return result;       // ILOAD, IRETURN
 	}
 	
-	// Long operations - tests LConst, LongOp, LongShift, LStore visitors
+	// Long operations - tests LConst, LongOp, LongShift visitors
+	// Note: LLoad and LStore visitors were deleted (CONST/LOAD mutations violate JVM verification)
 	public long longOperations(long a, long b) {
 		long result = a + b;  // LADD, LSTORE
 		result = result << 2; // LSHL, LLOAD, ICONST
@@ -30,7 +32,8 @@ public class SimpleClass {
 		return result;        // LLOAD, LRETURN
 	}
 	
-	// Double operations - tests DConst, DoubleOp, DLoad, DStore visitors
+	// Double operations - tests DConst, DoubleOp visitors
+	// Note: DLoad and DStore visitors were deleted (CONST/LOAD mutations violate JVM verification)
 	public double doubleOperations(double a, double b) {
 		double result = a + b;  // DADD, DSTORE
 		result = result * 2.0;  // DMUL, DLOAD, DCONST
@@ -38,7 +41,8 @@ public class SimpleClass {
 		return result;          // DLOAD, DRETURN
 	}
 	
-	// Float operations - tests FConst, FloatOp, FLoad, FStore visitors
+	// Float operations - tests FConst, FloatOp visitors
+	// Note: FLoad and FStore visitors were deleted (CONST/LOAD mutations violate JVM verification)
 	public float floatOperations(float a, float b) {
 		float result = a + b;  // FADD, FSTORE
 		result = result * 2.0f; // FMUL, FLOAD, FCONST
@@ -46,7 +50,8 @@ public class SimpleClass {
 		return result;          // FLOAD, FRETURN
 	}
 	
-	// Reference operations - tests AStore, IfNull, IfACompare visitors
+	// Reference operations - tests IfNull, IfACompare visitors
+	// Note: ALoad and AStore visitors were deleted (CONST/LOAD mutations violate JVM verification)
 	public String referenceOperations(String str1, String str2) {
 		String result = str1;  // ALOAD, ASTORE
 		if (result == null) {  // IFNULL

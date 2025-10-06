@@ -4,6 +4,12 @@
 - Load visitors replaced LOAD instructions (reads from local variables) with CONST instructions (pushes constants), creating stack map frame inconsistencies
 - Store visitors replaced STORE instructions (writes to local variables) with POP instructions (discards values), leaving variable slots uninitialized
 
+**Why CONST* mutations are incompatible with LOAD* instructions (e.g., fconst* with fload*):**
+- LOAD instructions (fload, iload, etc.) read values from local variable slots and push them onto the operand stack
+- CONST instructions (fconst, iconst, etc.) push constant values onto the operand stack without reading from local variables
+- Replacing a LOAD with a CONST breaks the JVM's stack map frame verification because the verifier tracks which local variable slots are initialized and used
+- This mutation would fundamentally change program semantics by replacing a variable reference with a constant, violating the mutation testing principle of creating equivalent but slightly different code
+
 Currently active instruction visitors: IConst, LConst, DConst, FConst, If, IfNull, IfACompare, IfICompare, DoubleOp, FloatOp, IntegerOp, LongOp, LongShift, Neg, IPush, Iinc
 
 | JAllele Handler | Mnemonic | Opcode (hex) | Other bytes | Stack [before]→[after] | Description |

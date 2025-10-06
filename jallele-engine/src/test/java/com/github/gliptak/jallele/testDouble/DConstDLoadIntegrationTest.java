@@ -10,8 +10,20 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
- * Integration test to demonstrate DConstInstructionVisitor and DLoadInstructionVisitor functionality.
- * This test ensures our new visitors don't break the execution of double operations.
+ * Integration test to demonstrate DConstInstructionVisitor functionality.
+ * 
+ * NOTE: DLoadInstructionVisitor was DELETED because dconst* mutations are NOT compatible with dload* instructions.
+ * 
+ * Why dconst* is incompatible with dload*:
+ * - dload instructions read double values from local variables and push them onto the operand stack
+ * - dconst instructions push constant double values (0.0, 1.0) onto the operand stack
+ * - Replacing dload with dconst violates JVM bytecode verification rules because:
+ *   1. It creates stack map frame inconsistencies (the JVM verifier expects specific local variable usage patterns)
+ *   2. It changes program semantics by replacing a variable read with a constant, breaking data flow
+ *   3. Local variable slots that should be initialized by dload would become uninitialized
+ * 
+ * This test ensures DConstInstructionVisitor correctly mutates between dconst_0 and dconst_1
+ * without attempting to mutate dload instructions.
  */
 public class DConstDLoadIntegrationTest {
 

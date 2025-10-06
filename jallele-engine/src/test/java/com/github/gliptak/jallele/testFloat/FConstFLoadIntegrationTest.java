@@ -10,8 +10,20 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
- * Integration test to demonstrate FConstInstructionVisitor and FLoadInstructionVisitor functionality.
- * This test ensures our new visitors don't break the execution of float operations.
+ * Integration test to demonstrate FConstInstructionVisitor functionality.
+ * 
+ * NOTE: FLoadInstructionVisitor was DELETED because fconst* mutations are NOT compatible with fload* instructions.
+ * 
+ * Why fconst* is incompatible with fload*:
+ * - fload instructions read float values from local variables and push them onto the operand stack
+ * - fconst instructions push constant float values (0.0f, 1.0f, 2.0f) onto the operand stack
+ * - Replacing fload with fconst violates JVM bytecode verification rules because:
+ *   1. It creates stack map frame inconsistencies (the JVM verifier expects specific local variable usage patterns)
+ *   2. It changes program semantics by replacing a variable read with a constant, breaking data flow
+ *   3. Local variable slots that should be initialized by fload would become uninitialized
+ * 
+ * This test ensures FConstInstructionVisitor correctly mutates between fconst_0, fconst_1, and fconst_2
+ * without attempting to mutate fload instructions.
  */
 public class FConstFLoadIntegrationTest {
 
