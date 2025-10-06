@@ -6,6 +6,189 @@
 
 Currently active instruction visitors: IConst, LConst, DConst, FConst, If, IfNull, IfACompare, IfICompare, DoubleOp, FloatOp, IntegerOp, LongOp, LongShift, Neg, IPush, Iinc
 
+## Proposed Stack-Frame Preserving Mutation Approaches for TBD Bytecodes
+
+The following mutation approaches preserve stack frame integrity by maintaining the same stack depth and compatible types, avoiding JVM bytecode verification failures.
+
+### 1. Type Conversion Operations (value → result)
+**Pattern:** Replace one type conversion with another that has the same input type and stack effect.
+
+#### IntNarrowInstructionVisitor (proposed)
+Mutates integer narrowing conversions:
+- **i2b** (int to byte) ↔ **i2c** (int to char) ↔ **i2s** (int to short)
+- Stack effect: `value → result` (both int on stack)
+- All three take an int and produce an int with different range constraints
+- Safe mutation: these are semantically different but stack-compatible
+
+#### IntConversionInstructionVisitor (proposed)
+Mutates integer widening/conversion:
+- **i2f** (int to float) ↔ **i2l** (int to long) ↔ **i2d** (int to double)
+- Stack effect: `value → result`
+- Note: Output types differ (float is 1 word, long/double are 2 words), so this group needs careful consideration
+- **Safer subgroups:**
+  - **i2f** alone (int → float, both 1 word)
+  - **i2l** ↔ **i2d** (int → 2-word types)
+
+#### FloatConversionInstructionVisitor (proposed)
+Mutates float conversions:
+- **f2i** (float to int) - single candidate, cannot mutate within group
+- **f2l** (float to long) ↔ **f2d** (float to double) - both produce 2-word results
+- Stack effect: `value → result`
+
+#### DoubleConversionInstructionVisitor (proposed)
+Mutates double conversions:
+- **d2i** (double to int) ↔ **d2f** (double to float) - both produce 1-word results
+- **d2l** (double to long) - single candidate
+- Stack effect: `value → result` (input is 2-word double)
+
+#### LongConversionInstructionVisitor (proposed)
+Mutates long conversions:
+- **l2i** (long to int) ↔ **l2f** (long to float) - both produce 1-word results  
+- **l2d** (long to double) - single candidate (2-word result)
+- Stack effect: `value → result` (input is 2-word long)
+
+### 2. Comparison Operations (value1, value2 → result)
+**Pattern:** Replace comparison with another comparison that differs in edge case handling.
+
+#### DoubleCompareInstructionVisitor (proposed)
+Already partially covered by DoubleOpInstructionVisitor, but could be separate:
+- **dcmpg** ↔ **dcmpl**
+- Stack effect: `value1, value2 → result` (two doubles → int)
+- Differ only in NaN handling: dcmpg pushes 1, dcmpl pushes -1 for NaN
+- Perfect for mutation testing: tests if code properly handles NaN cases
+
+#### FloatCompareInstructionVisitor (proposed)
+- **fcmpg** ↔ **fcmpl**
+- Stack effect: `value1, value2 → result` (two floats → int)
+- Same NaN handling difference as double compare
+
+#### LongCompareInstructionVisitor (proposed)
+- **lcmp** - single candidate, no mutation partner
+- Stack effect: `value1, value2 → result` (two longs → int)
+
+### 3. Array Operations
+
+#### ArrayLoadInstructionVisitor (proposed) - LIMITED APPLICABILITY
+Group array load operations by element type size:
+- **1-word references:** aaload (object reference)
+- **1-word primitives:** baload (byte/boolean), caload (char), iaload (int), faload (float), saload (short)
+- **2-word primitives:** daload (double), laload (long)
+
+⚠️ **CAUTION:** Mutating between different array load types would cause type mismatches and verification errors:
+- Example: `iaload` on a `byte[]` would fail at runtime
+- **NOT RECOMMENDED** for general mutation due to array type constraints
+- Could only work if mutation framework can ensure array element types match the operation
+
+#### ArrayStoreInstructionVisitor (proposed) - LIMITED APPLICABILITY
+Similar concerns as ArrayLoad:
+- **1-word references:** aastore
+- **1-word primitives:** bastore, castore, iastore, fastore, sastore
+- **2-word primitives:** dastore, lastore
+
+⚠️ **CAUTION:** Same type safety issues as array loads
+- **NOT RECOMMENDED** for general mutation
+
+### 4. Stack Manipulation Operations
+
+#### StackDupInstructionVisitor (proposed) - COMPLEX
+Group dup operations by stack effect:
+- **dup** (value → value, value): duplicates top 1-word value
+- **dup_x1** (value2, value1 → value1, value2, value1): insert copy below top value
+- **dup_x2** (value3, value2, value1 → value1, value3, value2, value1): insert copy 2 levels down
+- **dup2** ({value2, value1} → {value2, value1}, {value2, value1}): duplicate top 2 words
+- **dup2_x1**, **dup2_x2**: similar variations
+
+⚠️ **CAUTION:** Very risky mutations:
+- Changing dup variants alters where duplicated values appear on stack
+- Downstream code expects specific stack layout
+- Could cause verification errors or runtime failures
+- **NOT RECOMMENDED** unless very carefully analyzed
+
+#### StackSwapInstructionVisitor (proposed) - VERY LIMITED
+- **swap** ↔ **swap** (identity mutation, no value)
+- **swap** cannot be safely mutated to other operations
+- Stack effect: `value2, value1 → value1, value2`
+- **NOT RECOMMENDED** - no mutation partners
+
+#### StackPopInstructionVisitor (proposed) - DANGEROUS
+- **pop** (discards 1-word value) vs **pop2** (discards 2-word value or two 1-word values)
+- Different stack effects
+- **NOT RECOMMENDED** - changes stack depth, will break verification
+
+### 5. Constant Operations
+
+#### AConstInstructionVisitor (proposed)
+- **aconst_null** - pushes null reference
+- Could theoretically be in a group with other reference-pushing operations
+- However, no safe mutation partners exist (null is unique)
+- **NOT RECOMMENDED** - no safe mutations
+
+### 6. Operations That Cannot Be Safely Mutated
+
+The following TBD bytecodes **cannot** have stack-frame preserving mutations:
+
+#### Return Operations
+- **areturn**, **dreturn**, **freturn**, **ireturn**, **lreturn**, **return**
+- Each has specific type requirements matching method signature
+- Mutating would cause verification errors
+- **NOT MUTATABLE**
+
+#### Control Flow Operations  
+- **goto**, **goto_w**: unconditional jumps
+- **jsr**, **jsr_w**, **ret**: subroutine calls (deprecated)
+- **tableswitch**, **lookupswitch**: multi-way branches
+- Mutating destinations would create invalid control flow
+- **NOT MUTATABLE**
+
+#### Object/Array Creation
+- **new**, **newarray**, **anewarray**, **multianewarray**
+- Type specifications required for correct operation
+- **NOT MUTATABLE** safely
+
+#### Field/Method Access
+- **getfield**, **getstatic**, **putfield**, **putstatic**
+- **invokevirtual**, **invokespecial**, **invokestatic**, **invokeinterface**, **invokedynamic**
+- Require specific constant pool entries
+- **NOT MUTATABLE** safely
+
+#### Type Operations
+- **checkcast**, **instanceof**
+- Type-specific operations
+- **NOT MUTATABLE** safely
+
+#### Exception Handling
+- **athrow**: throws exception
+- **NOT MUTATABLE** safely
+
+#### Synchronization
+- **monitorenter**, **monitorexit**
+- Must be properly paired
+- **NOT MUTATABLE** safely
+
+#### Miscellaneous
+- **arraylength**: specific operation on arrays
+- **nop**: no operation (identity, no mutation value)
+- **wide**: modifier for other instructions
+- **NOT MUTATABLE** safely
+
+## Summary of Recommended Mutations
+
+**High Priority (Safe & Valuable):**
+1. ✅ IntNarrowInstructionVisitor: i2b ↔ i2c ↔ i2s
+2. ✅ DoubleCompareInstructionVisitor: dcmpg ↔ dcmpl  
+3. ✅ FloatCompareInstructionVisitor: fcmpg ↔ fcmpl
+
+**Medium Priority (Safe with Subgrouping):**
+4. ⚠️ IntConversionInstructionVisitor: Subgroup i2l ↔ i2d (both 2-word outputs)
+5. ⚠️ FloatConversionInstructionVisitor: f2l ↔ f2d (both 2-word outputs)
+6. ⚠️ DoubleConversionInstructionVisitor: d2i ↔ d2f (both 1-word outputs)
+7. ⚠️ LongConversionInstructionVisitor: l2i ↔ l2f (both 1-word outputs)
+
+**Not Recommended:**
+- ❌ Array load/store operations (type safety issues)
+- ❌ Stack manipulation (dup, swap, pop - too risky)
+- ❌ Control flow, object creation, method invocation, etc. (not stack-frame preserving)
+
 | JAllele Handler | Mnemonic | Opcode (hex) | Other bytes | Stack [before]→[after] | Description |
 |-----------------|----------|--------------|-------------|------------------------|-------------|
 | **A** | | | | | |
