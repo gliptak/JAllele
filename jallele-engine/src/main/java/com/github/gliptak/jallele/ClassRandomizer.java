@@ -68,11 +68,11 @@ public class ClassRandomizer implements ClassFileTransformer {
 		visitors.add(new NegInstructionVisitor(random));
 		visitors.add(new IPushInstructionVisitor(random));
 		visitors.add(new IincInstructionVisitor(random));
-		visitors.add(new ALoadInstructionVisitor(random));
+		// ALoadInstructionVisitor removed - causes VerifyError by replacing ALOAD with ACONST_NULL
 		visitors.add(new DLoadInstructionVisitor(random));
 		visitors.add(new LLoadInstructionVisitor(random));
 		visitors.add(new FLoadInstructionVisitor(random));
-		visitors.add(new ILoadInstructionVisitor(random));
+		// ILoadInstructionVisitor removed - causes VerifyError by replacing ILOAD with ICONST
 		visitors.add(new IStoreInstructionVisitor(random));
 	}
 
