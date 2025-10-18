@@ -123,437 +123,175 @@ java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
 | `*Test` | `MyTest`<br>`SimpleTest` | `com.example.sub.MyTest` |
 | `com.example.*.Test` | `com.example.MyTest`<br>`com.example.SimpleTest` | `com.example.sub.MyTest` |
 
-## Real-World Examples with TestNG
+## Real-World Examples: Testing Popular Open-Source Libraries
 
-Here are two complete working examples using TestNG that you can try. These demonstrate JAllele's TestNG support with library-style projects.
+JAllele can be used to validate test coverage strength of real open-source libraries. Here are detailed instructions for testing two popular libraries that use TestNG.
 
-### Example 1: String Utilities Library
+### Example 1: Testing JCommander (Command-Line Parsing Library)
 
-This example demonstrates a utility library similar to Apache Commons Lang.
+[JCommander](https://github.com/cbeust/jcommander) is a popular command-line parsing library used by many Java projects. It uses TestNG for its test suite and provides excellent mutation testing opportunities.
 
-#### Step 1: Create the StringUtils Project
+#### Step 1: Clone and Build JCommander
 
 ```bash
-# Create project structure
-mkdir -p stringutils-project/src/main/java/com/example/utils
-mkdir -p stringutils-project/src/test/java/com/example/utils
-cd stringutils-project
+# Clone the repository
+git clone https://github.com/cbeust/jcommander.git
+cd jcommander
 
-# Create StringUtils.java
-cat > src/main/java/com/example/utils/StringUtils.java << 'EOF'
-package com.example.utils;
-
-public class StringUtils {
-    public static boolean isEmpty(String str) {
-        return str == null || str.length() == 0;
-    }
-    
-    public static boolean isNotEmpty(String str) {
-        return !isEmpty(str);
-    }
-    
-    public static String defaultString(String str) {
-        return str == null ? "" : str;
-    }
-    
-    public static String defaultString(String str, String defaultStr) {
-        return str == null ? defaultStr : str;
-    }
-    
-    public static String capitalize(String str) {
-        if (isEmpty(str)) {
-            return str;
-        }
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
-    
-    public static String reverse(String str) {
-        if (str == null) {
-            return null;
-        }
-        return new StringBuilder(str).reverse().toString();
-    }
-    
-    public static int countMatches(String str, char ch) {
-        if (isEmpty(str)) {
-            return 0;
-        }
-        int count = 0;
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == ch) {
-                count++;
-            }
-        }
-        return count;
-    }
-}
-EOF
-
-# Create StringUtilsTest.java
-cat > src/test/java/com/example/utils/StringUtilsTest.java << 'EOF'
-package com.example.utils;
-
-import org.testng.annotations.Test;
-import static org.junit.Assert.*;
-
-public class StringUtilsTest {
-    
-    @Test
-    public void testIsEmpty() {
-        assertTrue(StringUtils.isEmpty(null));
-        assertTrue(StringUtils.isEmpty(""));
-        assertFalse(StringUtils.isEmpty(" "));
-        assertFalse(StringUtils.isEmpty("test"));
-    }
-    
-    @Test
-    public void testIsNotEmpty() {
-        assertFalse(StringUtils.isNotEmpty(null));
-        assertFalse(StringUtils.isNotEmpty(""));
-        assertTrue(StringUtils.isNotEmpty(" "));
-        assertTrue(StringUtils.isNotEmpty("test"));
-    }
-    
-    @Test
-    public void testDefaultString() {
-        assertEquals("", StringUtils.defaultString(null));
-        assertEquals("", StringUtils.defaultString(""));
-        assertEquals("test", StringUtils.defaultString("test"));
-    }
-    
-    @Test
-    public void testDefaultStringWithDefault() {
-        assertEquals("default", StringUtils.defaultString(null, "default"));
-        assertEquals("", StringUtils.defaultString("", "default"));
-        assertEquals("test", StringUtils.defaultString("test", "default"));
-    }
-    
-    @Test
-    public void testCapitalize() {
-        assertNull(StringUtils.capitalize(null));
-        assertEquals("", StringUtils.capitalize(""));
-        assertEquals("Test", StringUtils.capitalize("test"));
-        assertEquals("Test", StringUtils.capitalize("Test"));
-        assertEquals("TEST", StringUtils.capitalize("TEST"));
-    }
-    
-    @Test
-    public void testReverse() {
-        assertNull(StringUtils.reverse(null));
-        assertEquals("", StringUtils.reverse(""));
-        assertEquals("tset", StringUtils.reverse("test"));
-        assertEquals("GNtseT", StringUtils.reverse("TestNG"));
-    }
-    
-    @Test
-    public void testCountMatches() {
-        assertEquals(0, StringUtils.countMatches(null, 'a'));
-        assertEquals(0, StringUtils.countMatches("", 'a'));
-        assertEquals(2, StringUtils.countMatches("test", 't'));
-        assertEquals(2, StringUtils.countMatches("hello", 'l'));
-        assertEquals(0, StringUtils.countMatches("hello", 'x'));
-    }
-}
-EOF
-
-# Create pom.xml
-cat > pom.xml << 'EOF'
-<project xmlns="http://maven.apache.org/POM/4.0.0">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
-    <artifactId>stringutils</artifactId>
-    <version>1.0.0</version>
-    
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>7.7.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-</project>
-EOF
-
-# Compile the project
-mvn clean test-compile
+# Build the project (uses Gradle)
+./gradlew clean compileJava compileTestJava
 ```
 
-#### Step 2: Run JAllele Mutation Testing
+**What gets built:**
+- Main classes: `build/classes/java/main/`
+- Test classes: `build/classes/java/test/`
+- 43 test classes covering command-line parsing functionality
+
+#### Step 2: Run JAllele Against Specific Classes
+
+Test a core class like `JCommander.java`:
 
 ```bash
-java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
-  --count 20 \
+java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
+  --count 50 \
   --testng \
-  --source-path target/classes \
-  --source-patterns 'com.example.utils.**' \
-  --test-path target/test-classes \
-  --test-patterns 'com.example.utils.**Test' \
+  --source-path build/classes/java/main \
+  --source-patterns 'com.beust.jcommander.JCommander' \
+  --test-path build/classes/java/test \
+  --test-patterns 'com.beust.jcommander.**Test' \
   --log-level INFO
 ```
 
-**Expected Output:**
-- JAllele will discover the StringUtils class and StringUtilsTest
-- It will introduce 20 mutations to the StringUtils methods
-- The TestNG tests should detect most mutations
-- You'll see detailed mutation testing results
+#### Step 3: Run JAllele Against Multiple Classes
 
-### Example 2: Math Utilities Library
-
-This example demonstrates a mathematical utility library similar to Apache Commons Math.
-
-#### Step 1: Create the MathUtils Project
+Test the entire parameters package:
 
 ```bash
-# Create project structure
-mkdir -p mathutils-project/src/main/java/com/example/math
-mkdir -p mathutils-project/src/test/java/com/example/math
-cd mathutils-project
-
-# Create MathUtils.java
-cat > src/main/java/com/example/math/MathUtils.java << 'EOF'
-package com.example.math;
-
-public class MathUtils {
-    public static int gcd(int a, int b) {
-        a = Math.abs(a);
-        b = Math.abs(b);
-        while (b != 0) {
-            int temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return a;
-    }
-    
-    public static int lcm(int a, int b) {
-        if (a == 0 || b == 0) {
-            return 0;
-        }
-        return Math.abs(a * b) / gcd(a, b);
-    }
-    
-    public static boolean isPrime(int n) {
-        if (n <= 1) {
-            return false;
-        }
-        if (n <= 3) {
-            return true;
-        }
-        if (n % 2 == 0 || n % 3 == 0) {
-            return false;
-        }
-        for (int i = 5; i * i <= n; i += 6) {
-            if (n % i == 0 || n % (i + 2) == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    public static int factorial(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("Negative numbers not allowed");
-        }
-        if (n == 0 || n == 1) {
-            return 1;
-        }
-        int result = 1;
-        for (int i = 2; i <= n; i++) {
-            result *= i;
-        }
-        return result;
-    }
-    
-    public static double power(double base, int exponent) {
-        if (exponent == 0) {
-            return 1.0;
-        }
-        if (exponent < 0) {
-            return 1.0 / power(base, -exponent);
-        }
-        double result = 1.0;
-        for (int i = 0; i < exponent; i++) {
-            result *= base;
-        }
-        return result;
-    }
-}
-EOF
-
-# Create MathUtilsTest.java
-cat > src/test/java/com/example/math/MathUtilsTest.java << 'EOF'
-package com.example.math;
-
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-import static org.junit.Assert.*;
-
-public class MathUtilsTest {
-    
-    @DataProvider(name = "gcdData")
-    public Object[][] gcdData() {
-        return new Object[][] {
-            {12, 8, 4},
-            {54, 24, 6},
-            {100, 50, 50},
-            {7, 13, 1},
-            {0, 5, 5}
-        };
-    }
-    
-    @Test(dataProvider = "gcdData")
-    public void testGcd(int a, int b, int expected) {
-        assertEquals(expected, MathUtils.gcd(a, b));
-    }
-    
-    @DataProvider(name = "lcmData")
-    public Object[][] lcmData() {
-        return new Object[][] {
-            {12, 8, 24},
-            {3, 7, 21},
-            {10, 15, 30},
-            {0, 5, 0}
-        };
-    }
-    
-    @Test(dataProvider = "lcmData")
-    public void testLcm(int a, int b, int expected) {
-        assertEquals(expected, MathUtils.lcm(a, b));
-    }
-    
-    @DataProvider(name = "primeData")
-    public Object[][] primeData() {
-        return new Object[][] {
-            {2, true},
-            {3, true},
-            {4, false},
-            {17, true},
-            {20, false},
-            {1, false},
-            {0, false}
-        };
-    }
-    
-    @Test(dataProvider = "primeData")
-    public void testIsPrime(int n, boolean expected) {
-        assertEquals(expected, MathUtils.isPrime(n));
-    }
-    
-    @Test
-    public void testFactorial() {
-        assertEquals(1, MathUtils.factorial(0));
-        assertEquals(1, MathUtils.factorial(1));
-        assertEquals(120, MathUtils.factorial(5));
-        assertEquals(5040, MathUtils.factorial(7));
-    }
-    
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testFactorialNegative() {
-        MathUtils.factorial(-1);
-    }
-    
-    @Test
-    public void testPower() {
-        assertEquals(8.0, MathUtils.power(2.0, 3), 0.001);
-        assertEquals(25.0, MathUtils.power(5.0, 2), 0.001);
-        assertEquals(1.0, MathUtils.power(2.0, 0), 0.001);
-        assertEquals(0.25, MathUtils.power(2.0, -2), 0.001);
-    }
-}
-EOF
-
-# Create pom.xml
-cat > pom.xml << 'EOF'
-<project xmlns="http://maven.apache.org/POM/4.0.0">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
-    <artifactId>mathutils</artifactId>
-    <version>1.0.0</version>
-    
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>7.7.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-</project>
-EOF
-
-# Compile the project
-mvn clean test-compile
-```
-
-#### Step 2: Run JAllele Mutation Testing
-
-```bash
-java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
-  --count 25 \
+java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
+  --count 100 \
   --testng \
-  --source-path target/classes \
-  --source-patterns 'com.example.math.**' \
-  --test-path target/test-classes \
-  --test-patterns 'com.example.math.**Test' \
+  --source-path build/classes/java/main \
+  --source-patterns 'com.beust.jcommander.Parameter*' \
+  --test-path build/classes/java/test \
+  --test-patterns 'com.beust.jcommander.**Test' \
   --log-level INFO
 ```
 
-**Expected Output:**
-- JAllele will discover the MathUtils class and MathUtilsTest
-- It will introduce 25 mutations to the MathUtils methods
-- The TestNG tests (including data-driven tests) should detect most mutations
-- You'll see comprehensive mutation testing results
+**Expected Results:**
+- JAllele will discover JCommander's source classes and TestNG test classes
+- Mutations will be introduced to test parsing logic, validation, and error handling
+- The test suite should catch most mutations, revealing test coverage quality
+- Results will show mutation detection rate (e.g., `Results: 82/100 (0.82)`)
 
-### Key Features Demonstrated
+**Key Classes to Test:**
+- `com.beust.jcommander.JCommander` - Main parser class
+- `com.beust.jcommander.ParameterDescription` - Parameter metadata
+- `com.beust.jcommander.DefaultUsageFormatter` - Usage text formatting
+- `com.beust.jcommander.Parameterized` - Parameter binding logic
 
-Both examples showcase:
-- **TestNG Integration**: Using `--testng` flag with JAllele
-- **Realistic Library Code**: Utility classes similar to popular open-source libraries (Apache Commons Lang, Apache Commons Math)
-- **Comprehensive Testing**: Multiple test methods covering edge cases
-- **Data-Driven Testing**: TestNG's `@DataProvider` feature (in MathUtils example)
-- **Pattern-Based Discovery**: Using `--source-patterns` and `--test-patterns`
-- **Public Test Classes**: Following JUnit/TestNG best practices for test visibility
+### Example 2: Testing TestNG Core (Testing Framework)
 
-### Important Notes on TestNG Examples
+[TestNG](https://github.com/testng-team/testng) is a popular testing framework that, naturally, uses itself for testing. This provides an excellent opportunity to validate the test coverage of a widely-used library.
 
-**TestNG and JUnit Interoperability**: The examples above use TestNG's `@Test` annotations with JUnit's assertion methods (`import static org.junit.Assert.*`). This is a common pattern that works well because:
-- JAllele's test JAR bundles both JUnit and TestNG
-- JUnit assertions are widely familiar and work seamlessly with TestNG
-- It avoids SLF4J dependency issues that can occur with TestNG's own assertions
+#### Step 1: Clone and Build TestNG
 
-**Running the Examples**: To successfully run these examples with JAllele:
-1. Compile your project with Maven: `mvn clean test-compile`
-2. Ensure the test classes are public (required for TestNG)
-3. Use the command shown above with `--testng` flag
-4. Both dependencies (TestNG and JUnit) should be in your project's pom.xml
+```bash
+# Clone the repository
+git clone https://github.com/testng-team/testng.git
+cd testng
 
-**Why These Examples Matter**: While many popular Java open-source projects (like Apache Commons Lang, Google Guava) use JUnit for testing, these examples demonstrate:
-- How to structure library-style code similar to real open-source projects
-- How to use JAllele's TestNG support effectively
-- Common patterns found in utility libraries that are good candidates for mutation testing
+# Build the core module (uses Gradle)
+./gradlew :testng-core:compileJava :testng-core:compileTestJava
+```
+
+**What gets built:**
+- Main classes: `testng-core/build/classes/java/main/`
+- Test classes: `testng-core/build/classes/java/test/`
+- Multi-module project with testng-core being the main module
+
+#### Step 2: Run JAllele Against Core Utilities
+
+Test utility classes in the core module:
+
+```bash
+java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
+  --count 50 \
+  --testng \
+  --source-path testng-core/build/classes/java/main \
+  --source-patterns 'org.testng.internal.Utils' \
+  --test-path testng-core/build/classes/java/test \
+  --test-patterns 'org.testng.internal.UtilsTest' \
+  --log-level INFO
+```
+
+#### Step 3: Run JAllele Against Test Runners
+
+Test the method helper logic:
+
+```bash
+java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
+  --count 75 \
+  --testng \
+  --source-path testng-core/build/classes/java/main \
+  --source-patterns 'org.testng.internal.MethodHelper' \
+  --test-path testng-core/build/classes/java/test \
+  --test-patterns 'org.testng.internal.MethodHelperTest' \
+  --log-level INFO
+```
+
+**Expected Results:**
+- JAllele will test TestNG's own test infrastructure
+- Mutations will target core testing functionality, configuration, and execution logic
+- High mutation detection rates expected due to TestNG's comprehensive self-testing
+- Results reveal how well TestNG tests its own code
+
+**Key Classes to Test:**
+- `org.testng.internal.Utils` - Core utility methods
+- `org.testng.internal.MethodHelper` - Test method handling
+- `org.testng.internal.GroupsHelper` - Test group management
+- `org.testng.DependencyMap` - Test dependency tracking
+
+### Understanding the Results
+
+For both libraries, JAllele's output shows:
+
+**Mutation Detection Rate:**
+```
+Results: 82/100 (0.82)
+```
+- `82` mutations were caught by tests
+- `100` total mutations attempted
+- `0.82` (82%) detection rate indicates good test coverage
+
+**What a Good Score Means:**
+- **0.8-1.0 (80-100%)**: Excellent test coverage - tests catch most code changes
+- **0.6-0.8 (60-80%)**: Good coverage - most critical paths tested
+- **0.4-0.6 (40-60%)**: Moderate coverage - gaps in testing exist
+- **< 0.4 (< 40%)**: Weak coverage - significant testing gaps
+
+**Improving Coverage:**
+If mutations aren't caught, it indicates:
+1. Missing test cases for certain code paths
+2. Tests that check wrong conditions
+3. Dead code that isn't tested or needed
+
+### Tips for Testing Real Libraries
+
+1. **Start Small**: Test individual classes first before running against entire packages
+2. **Use Specific Patterns**: Target specific classes to get focused results
+3. **Increase Count Gradually**: Start with 20-50 mutations, then increase based on class complexity
+4. **Check Public Classes**: Ensure test classes are public (JAllele requirement)
+5. **Build First**: Always compile the library before running JAllele
+6. **Review Output**: Use `--log-level FINE` to see which classes are discovered
+
+### Benefits of Testing Real Libraries
+
+Testing popular open-source libraries with JAllele provides:
+- **Real-world validation** of mutation testing effectiveness
+- **Benchmark comparison** against well-tested codebases
+- **Learning opportunities** from seeing how popular projects test their code
+- **Coverage insights** that complement traditional code coverage tools
+- **Practical examples** of mutation testing in production-quality code
 
 ## Real-World Example: Your Own Project
 
