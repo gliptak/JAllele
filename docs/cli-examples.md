@@ -158,7 +158,7 @@ wget https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/2.0.16/slf4j-simple-2
 
 #### Step 3: Run JAllele Against Specific Classes
 
-Test a core class like `JCommander.java` using explicit class names:
+Test a core class like `ParameterDescription.java` using explicit class names:
 
 ```bash
 java -Djdk.attach.allowAttachSelf=true \
@@ -166,14 +166,20 @@ java -Djdk.attach.allowAttachSelf=true \
   com.github.gliptak.jallele.Main \
   --count 50 \
   --testng \
-  --source-classes com.beust.jcommander.JCommander \
+  --source-classes com.beust.jcommander.ParameterDescription \
   --test-classes com.beust.jcommander.JCommanderTest \
   --log-level INFO
 ```
 
-#### Step 4: Run JAllele Against Multiple Classes
+**Critical**: The `-cp` flag MUST include:
+1. `slf4j-simple-2.0.16.jar` (for TestNG logging)
+2. `build/classes/java/main` (compiled source classes)
+3. `build/classes/java/test` (compiled test classes)
+4. `/path/to/jallele.jar` (JAllele uber JAR)
 
-Test parameter handling classes:
+#### Step 4: Run JAllele With Pattern-Based Discovery
+
+If using `--source-path` and `--source-patterns`, you MUST still include the compiled classes in `-cp`:
 
 ```bash
 java -Djdk.attach.allowAttachSelf=true \
@@ -181,8 +187,10 @@ java -Djdk.attach.allowAttachSelf=true \
   com.github.gliptak.jallele.Main \
   --count 50 \
   --testng \
-  --source-classes com.beust.jcommander.ParameterDescription com.beust.jcommander.DefaultUsageFormatter \
-  --test-classes com.beust.jcommander.JCommanderTest com.beust.jcommander.DefaultUsageFormatterTest \
+  --source-path build/classes/java/main \
+  --source-patterns 'com.beust.jcommander.Parameter*' \
+  --test-path build/classes/java/test \
+  --test-patterns 'com.beust.jcommander.**Test' \
   --log-level INFO
 ```
 
@@ -196,11 +204,32 @@ java -Djdk.attach.allowAttachSelf=true \
 - **SLF4J Required**: TestNG needs SLF4J. Always include `slf4j-simple-2.0.16.jar` in the classpath
 - **Use -cp flag**: Must use `-cp` flag (not `-jar`) to include all dependencies in classpath
 - **Main class**: Call `com.github.gliptak.jallele.Main` directly instead of using `-jar`
-- **Explicit Class Names**: Use `--source-classes` and `--test-classes` for reliable results
+- **Compiled classes in -cp**: ALWAYS include `build/classes/java/main` and `build/classes/java/test` in `-cp`, even when using `--source-path`
+- **Explicit Class Names**: Use `--source-classes` and `--test-classes` for most reliable results
+
+**Troubleshooting "First run failed":**
+
+If you see `SEVERE: First run failed`, check:
+1. **Missing SLF4J**: Error mentions "No SLF4J providers" → Add `slf4j-simple-2.0.16.jar` to `-cp`
+2. **Missing compiled classes**: No other error but still fails → Add `build/classes/java/main:build/classes/java/test` to `-cp`
+3. **Test failures**: Some tests fail when run standalone → Try different source/test class combinations
+4. **Classpath order**: Put SLF4J first in `-cp` for best results
+
+**Working Example:**
+```bash
+# This complete command should work:
+java -Djdk.attach.allowAttachSelf=true \
+  -cp "slf4j-simple-2.0.16.jar:build/classes/java/main:build/classes/java/test:/path/to/jallele.jar" \
+  com.github.gliptak.jallele.Main \
+  --count 20 \
+  --testng \
+  --source-classes com.beust.jcommander.ParameterDescription \
+  --test-classes com.beust.jcommander.JCommanderTest \
+  --log-level INFO
+```
 
 **Key Classes to Test:**
-- `com.beust.jcommander.JCommander` - Main parser class
-- `com.beust.jcommander.ParameterDescription` - Parameter metadata
+- `com.beust.jcommander.ParameterDescription` - Parameter metadata (reliable for testing)
 - `com.beust.jcommander.DefaultUsageFormatter` - Usage text formatting
 - `com.beust.jcommander.converters.*` - Type converters
 
@@ -229,8 +258,9 @@ mvn clean test-compile -DskipTests
 Test the StringUtils class (one of the most used classes):
 
 ```bash
-CLASSPATH="target/classes:target/test-classes" \
-java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
+java -Djdk.attach.allowAttachSelf=true \
+  -cp "target/classes:target/test-classes:/path/to/jallele.jar" \
+  com.github.gliptak.jallele.Main \
   --count 50 \
   --junit \
   --source-classes org.apache.commons.lang3.StringUtils \
@@ -238,13 +268,19 @@ java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
   --log-level INFO
 ```
 
+**Critical**: The `-cp` flag MUST include:
+1. `target/classes` (compiled source classes)
+2. `target/test-classes` (compiled test classes)
+3. `/path/to/jallele.jar` (JAllele uber JAR)
+
 #### Step 3: Run JAllele Against Array Utilities
 
 Test array manipulation utilities:
 
 ```bash
-CLASSPATH="target/classes:target/test-classes" \
-java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
+java -Djdk.attach.allowAttachSelf=true \
+  -cp "target/classes:target/test-classes:/path/to/jallele.jar" \
+  com.github.gliptak.jallele.Main \
   --count 50 \
   --junit \
   --source-classes org.apache.commons.lang3.ArrayUtils \
@@ -257,8 +293,9 @@ java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
 Test several related utility classes together:
 
 ```bash
-CLASSPATH="target/classes:target/test-classes" \
-java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
+java -Djdk.attach.allowAttachSelf=true \
+  -cp "target/classes:target/test-classes:/path/to/jallele.jar" \
+  com.github.gliptak.jallele.Main \
   --count 100 \
   --junit \
   --source-classes org.apache.commons.lang3.StringUtils org.apache.commons.lang3.ArrayUtils org.apache.commons.lang3.ObjectUtils \
@@ -275,7 +312,9 @@ java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
 
 **Important Notes:**
 - **Package-Private Tests**: Apache Commons uses package-private test classes, so you must use `--source-classes` and `--test-classes` (explicit class names) instead of pattern-based discovery
-- **CLASSPATH Required**: Set CLASSPATH to include both `target/classes` and `target/test-classes`
+- **Use -cp flag**: Must use `-cp` flag (not `-jar`) to include compiled classes in classpath
+- **Main class**: Call `com.github.gliptak.jallele.Main` directly instead of using `-jar`
+- **Compiled classes in -cp**: Include `target/classes` and `target/test-classes` in `-cp`
 - **JUnit Framework**: Uses JUnit (not TestNG), so no SLF4J configuration needed
 
 **Key Classes to Test:**
