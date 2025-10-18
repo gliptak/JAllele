@@ -147,109 +147,143 @@ cd jcommander
 - Test classes: `build/classes/java/test/`
 - 43 test classes covering command-line parsing functionality
 
-#### Step 2: Run JAllele Against Specific Classes
+#### Step 2: Download SLF4J Implementation
 
-Test a core class like `JCommander.java`:
+TestNG requires SLF4J for logging. Download the SLF4J Simple implementation:
 
 ```bash
-java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
+# Download SLF4J Simple (lightweight implementation)
+wget https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/2.0.16/slf4j-simple-2.0.16.jar
+```
+
+#### Step 3: Run JAllele Against Specific Classes
+
+Test a core class like `JCommander.java` using explicit class names:
+
+```bash
+java -Djdk.attach.allowAttachSelf=true \
+  -cp "slf4j-simple-2.0.16.jar:build/classes/java/main:build/classes/java/test:/path/to/jallele.jar" \
+  com.github.gliptak.jallele.Main \
   --count 50 \
   --testng \
-  --source-path build/classes/java/main \
-  --source-patterns 'com.beust.jcommander.JCommander' \
-  --test-path build/classes/java/test \
-  --test-patterns 'com.beust.jcommander.**Test' \
+  --source-classes com.beust.jcommander.JCommander \
+  --test-classes com.beust.jcommander.JCommanderTest \
   --log-level INFO
 ```
 
-#### Step 3: Run JAllele Against Multiple Classes
+#### Step 4: Run JAllele Against Multiple Classes
 
-Test the entire parameters package:
+Test parameter handling classes:
 
 ```bash
-java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
-  --count 100 \
+java -Djdk.attach.allowAttachSelf=true \
+  -cp "slf4j-simple-2.0.16.jar:build/classes/java/main:build/classes/java/test:/path/to/jallele.jar" \
+  com.github.gliptak.jallele.Main \
+  --count 50 \
   --testng \
-  --source-path build/classes/java/main \
-  --source-patterns 'com.beust.jcommander.Parameter*' \
-  --test-path build/classes/java/test \
-  --test-patterns 'com.beust.jcommander.**Test' \
+  --source-classes com.beust.jcommander.ParameterDescription com.beust.jcommander.DefaultUsageFormatter \
+  --test-classes com.beust.jcommander.JCommanderTest com.beust.jcommander.DefaultUsageFormatterTest \
   --log-level INFO
 ```
 
 **Expected Results:**
-- JAllele will discover JCommander's source classes and TestNG test classes
-- Mutations will be introduced to test parsing logic, validation, and error handling
+- JAllele will test JCommander's parsing logic and test suite
+- Mutations will target command-line parsing, validation, and error handling
 - The test suite should catch most mutations, revealing test coverage quality
-- Results will show mutation detection rate (e.g., `Results: 82/100 (0.82)`)
+- Results will show mutation detection rate (e.g., `Results: 42/50 (0.84)`)
+
+**Important Notes:**
+- **SLF4J Required**: TestNG needs SLF4J. Always include `slf4j-simple-2.0.16.jar` in the classpath
+- **Use -cp flag**: Must use `-cp` flag (not `-jar`) to include all dependencies in classpath
+- **Main class**: Call `com.github.gliptak.jallele.Main` directly instead of using `-jar`
+- **Explicit Class Names**: Use `--source-classes` and `--test-classes` for reliable results
 
 **Key Classes to Test:**
 - `com.beust.jcommander.JCommander` - Main parser class
 - `com.beust.jcommander.ParameterDescription` - Parameter metadata
 - `com.beust.jcommander.DefaultUsageFormatter` - Usage text formatting
-- `com.beust.jcommander.Parameterized` - Parameter binding logic
+- `com.beust.jcommander.converters.*` - Type converters
 
-### Example 2: Testing TestNG Core (Testing Framework)
+### Example 2: Testing Apache Commons Lang (Utility Library with JUnit)
 
-[TestNG](https://github.com/testng-team/testng) is a popular testing framework that, naturally, uses itself for testing. This provides an excellent opportunity to validate the test coverage of a widely-used library.
+[Apache Commons Lang](https://github.com/apache/commons-lang) is one of the most widely-used Java utility libraries, providing highly reusable utility methods for String manipulation, number handling, reflection, and more. It uses JUnit for testing.
 
-#### Step 1: Clone and Build TestNG
+#### Step 1: Clone and Build Commons Lang
 
 ```bash
 # Clone the repository
-git clone https://github.com/testng-team/testng.git
-cd testng
+git clone https://github.com/apache/commons-lang.git
+cd commons-lang
 
-# Build the core module (uses Gradle)
-./gradlew :testng-core:compileJava :testng-core:compileTestJava
+# Build the project (uses Maven)
+mvn clean test-compile -DskipTests
 ```
 
 **What gets built:**
-- Main classes: `testng-core/build/classes/java/main/`
-- Test classes: `testng-core/build/classes/java/test/`
-- Multi-module project with testng-core being the main module
+- Main classes: `target/classes/`
+- Test classes: `target/test-classes/`
+- 267 test classes covering comprehensive utility functionality
 
-#### Step 2: Run JAllele Against Core Utilities
+#### Step 2: Run JAllele Against String Utilities
 
-Test utility classes in the core module:
+Test the StringUtils class (one of the most used classes):
 
 ```bash
+CLASSPATH="target/classes:target/test-classes" \
 java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
   --count 50 \
-  --testng \
-  --source-path testng-core/build/classes/java/main \
-  --source-patterns 'org.testng.internal.Utils' \
-  --test-path testng-core/build/classes/java/test \
-  --test-patterns 'org.testng.internal.UtilsTest' \
+  --junit \
+  --source-classes org.apache.commons.lang3.StringUtils \
+  --test-classes org.apache.commons.lang3.StringUtilsTest \
   --log-level INFO
 ```
 
-#### Step 3: Run JAllele Against Test Runners
+#### Step 3: Run JAllele Against Array Utilities
 
-Test the method helper logic:
+Test array manipulation utilities:
 
 ```bash
+CLASSPATH="target/classes:target/test-classes" \
 java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
-  --count 75 \
-  --testng \
-  --source-path testng-core/build/classes/java/main \
-  --source-patterns 'org.testng.internal.MethodHelper' \
-  --test-path testng-core/build/classes/java/test \
-  --test-patterns 'org.testng.internal.MethodHelperTest' \
+  --count 50 \
+  --junit \
+  --source-classes org.apache.commons.lang3.ArrayUtils \
+  --test-classes org.apache.commons.lang3.ArrayUtilsTest \
+  --log-level INFO
+```
+
+#### Step 4: Run JAllele Against Multiple Utility Classes
+
+Test several related utility classes together:
+
+```bash
+CLASSPATH="target/classes:target/test-classes" \
+java -Djdk.attach.allowAttachSelf=true -jar /path/to/jallele.jar \
+  --count 100 \
+  --junit \
+  --source-classes org.apache.commons.lang3.StringUtils org.apache.commons.lang3.ArrayUtils org.apache.commons.lang3.ObjectUtils \
+  --test-classes org.apache.commons.lang3.StringUtilsTest org.apache.commons.lang3.ArrayUtilsTest org.apache.commons.lang3.ObjectUtilsTest \
   --log-level INFO
 ```
 
 **Expected Results:**
-- JAllele will test TestNG's own test infrastructure
-- Mutations will target core testing functionality, configuration, and execution logic
-- High mutation detection rates expected due to TestNG's comprehensive self-testing
-- Results reveal how well TestNG tests its own code
+- JAllele will test Apache Commons Lang's core utility methods
+- Mutations will target string operations, array manipulations, and object comparisons
+- High mutation detection rates expected due to comprehensive test coverage
+- Results reveal test coverage quality of one of Java's most popular libraries
+- Typical results: `Results: 78/100 (0.78)` or better
+
+**Important Notes:**
+- **Package-Private Tests**: Apache Commons uses package-private test classes, so you must use `--source-classes` and `--test-classes` (explicit class names) instead of pattern-based discovery
+- **CLASSPATH Required**: Set CLASSPATH to include both `target/classes` and `target/test-classes`
+- **JUnit Framework**: Uses JUnit (not TestNG), so no SLF4J configuration needed
 
 **Key Classes to Test:**
-- `org.testng.internal.Utils` - Core utility methods
-- `org.testng.internal.MethodHelper` - Test method handling
-- `org.testng.internal.GroupsHelper` - Test group management
-- `org.testng.DependencyMap` - Test dependency tracking
+- `org.apache.commons.lang3.StringUtils` - String manipulation utilities
+- `org.apache.commons.lang3.ArrayUtils` - Array operation utilities
+- `org.apache.commons.lang3.ObjectUtils` - Object comparison and null-safe operations
+- `org.apache.commons.lang3.math.NumberUtils` - Number parsing and comparison
+- `org.apache.commons.lang3.time.DateUtils` - Date/time utilities
 
 ### Understanding the Results
 
