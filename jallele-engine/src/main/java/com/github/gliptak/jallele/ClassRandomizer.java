@@ -93,7 +93,12 @@ public class ClassRandomizer implements ClassFileTransformer {
 		recording=true;
 		Agent.addTransformer(this, true);
 		for (String source: sources){
-			Agent.restransform(Class.forName(source));
+			// Use thread context classloader to load classes from custom classpaths
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			if (classLoader == null) {
+				classLoader = ClassLoader.getSystemClassLoader();
+			}
+			Agent.restransform(Class.forName(source, true, classLoader));
 		}
 		recording=false;
 	}
@@ -104,12 +109,22 @@ public class ClassRandomizer implements ClassFileTransformer {
 		if (matches.size()>0){
 			currentStatusPair=matches.get(selected);
 			classNameWithDots=currentStatusPair[0].getClassName().replaceAll("/", ".");
-			Agent.restransform(Class.forName(classNameWithDots));
+			// Use thread context classloader to load classes from custom classpaths
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			if (classLoader == null) {
+				classLoader = ClassLoader.getSystemClassLoader();
+			}
+			Agent.restransform(Class.forName(classNameWithDots, true, classLoader));
 		}
 		runner.runTests();
 		if (matches.size()>0){
 			currentStatusPair=null;
-			Agent.restransform(Class.forName(classNameWithDots));
+			// Use thread context classloader to load classes from custom classpaths
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			if (classLoader == null) {
+				classLoader = ClassLoader.getSystemClassLoader();
+			}
+			Agent.restransform(Class.forName(classNameWithDots, true, classLoader));
 			return matches.get(selected);
 		} else {
 			return new VisitStatus[0];

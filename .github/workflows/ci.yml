@@ -35,8 +35,8 @@ jobs:
           java -Djdk.attach.allowAttachSelf=true \
             -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar \
             --junit --count 30 \
-            --sources com.github.gliptak.jallele.SimpleClass \
-            --tests com.github.gliptak.jallele.SimpleClassJUnitTest \
+            --source-classes com.github.gliptak.jallele.SimpleClass \
+            --test-classes com.github.gliptak.jallele.SimpleClassJUnitTest \
             --log-level FINE
       - name: Upload jallele-cmdline-test JAR
         id: UploadJAR
