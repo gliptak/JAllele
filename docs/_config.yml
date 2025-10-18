@@ -2,9 +2,17 @@
 title: JAllele
 description: Mutation testing tool for Java
 
-# GitHub repository information - enables "View on GitHub" link in the site header/navigation
-# This automatically adds a "View on GitHub" link in the site header that directs to the repository
+# GitHub repository information
 repository: gliptak/JAllele
 
-# Optional: You can also specify a theme
-# theme: jekyll-theme-cayman
+# Use Just the Docs theme which supports "Edit this page" links
+remote_theme: just-the-docs/just-the-docs
+
+# Configure the "Edit this page on GitHub" link
+# This will add an "Edit this page on GitHub" link to each documentation page
+gh_edit_link: true
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: "https://github.com/gliptak/JAllele"
+gh_edit_branch: "main"
+gh_edit_source: docs
+gh_edit_view_mode: "edit"
