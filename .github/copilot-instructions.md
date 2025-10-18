@@ -143,10 +143,9 @@ java -Djdk.attach.allowAttachSelf=true \
 
 ## Documentation
 
-- `README.md`: Main project documentation
+- `README.md`: Main project documentation (includes future work and development notes)
 - `bytecodes.md`: Comprehensive mapping of Java bytecode instructions to JAllele handlers
-- `TODO.md`: Future work and open questions
-- `docs/index.md`: Documentation site content
+- `docs/index.md`: Symlink to README.md for documentation site compatibility
 
 ## When Adding New Features
 
