@@ -18,11 +18,59 @@ Build the project:
 $ ./gradlew build
 ```
 
-Run JUnit sample:
+Run JUnit sample (legacy format):
 ```
 $ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --junit --count 10 \
 --sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassJUnitTest
 ```
+
+Run with classpath discovery (new format):
+```
+$ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --junit --count 10 \
+--source-path target/classes --source-patterns 'com.example.**' \
+--test-path target/test-classes --test-patterns 'com.example.**Test'
+```
+
+For more examples and detailed usage, see [CLI Examples](docs/cli-examples.md).
+
+## Command Line Interface
+
+JAllele supports two formats for specifying classes to test:
+
+### Legacy Format (Class Names)
+
+Directly specify class names:
+```bash
+--sources com.example.MyClass --tests com.example.MyClassTest
+```
+
+### New Format (Classpath + Patterns)
+
+Specify classpaths (directories or JAR files) and patterns to match classes:
+```bash
+--source-path target/classes --source-patterns 'com.example.**' \
+--test-path target/test-classes --test-patterns 'com.example.**Test'
+```
+
+#### Pattern Syntax
+
+- `*` - Matches any characters within a single package segment
+- `**` - Matches any number of package segments (including zero)
+
+Examples:
+- `com.example.**` - All classes in com.example and subpackages
+- `**Test` - All classes ending with "Test"
+- `com.example.*Utils` - Utility classes in com.example package only
+
+### Multi-Module Projects
+
+For projects with multiple modules, specify multiple paths:
+```bash
+--source-path module1/target/classes module2/target/classes module3/target/classes \
+--test-path module1/target/test-classes module2/target/test-classes module3/target/test-classes
+```
+
+See [CLI Examples](docs/cli-examples.md) for comprehensive examples including Apache Commons Lang and Google Guava.
 
 ## Contributing
 
