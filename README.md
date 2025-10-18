@@ -59,7 +59,7 @@ Contributions, issues, pull requests are welcome.
 
 ## Development
 
-Sources are on [Github](https://github.com/gliptak/JAllele).
+Sources are on [GitHub](https://github.com/gliptak/JAllele).
 
 ### Future Work
 
