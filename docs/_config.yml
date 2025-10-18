@@ -1,0 +1,9 @@
+# Jekyll configuration for GitHub Pages
+title: JAllele
+description: Mutation testing tool for Java
+
+# GitHub repository information - enables "View on GitHub" link
+repository: gliptak/JAllele
+
+# Optional: You can also specify a theme
+# theme: jekyll-theme-cayman
