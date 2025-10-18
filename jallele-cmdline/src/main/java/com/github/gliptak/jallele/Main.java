@@ -33,16 +33,65 @@ public class Main {
 	    	return rc;
 	    }
 	    configureLogging(bean.getLogLevel());
+	    
+	    // Discover source classes
+	    List<String> sourceClassNames = discoverSourceClasses(bean);
+	    logger.fine("Source classes: " + sourceClassNames);
+	    
+	    // Discover test classes
+	    List<String> testClassNames = discoverTestClasses(bean);
+	    logger.fine("Test classes: " + testClassNames);
+	    
 	    if (bean.isRunJUnit()) {
-		    rc=runJUnitTests(bean.getCount(), bean.getSources(), bean.getTests());
+		    rc=runJUnitTests(bean.getCount(), sourceClassNames, testClassNames);
 	    }
 	    if (rc!=0){
 	    	return rc;
 	    }
 	    if (bean.isRunTestNG()) {
-		    rc=runTestNGTests(bean.getCount(), bean.getSources(), bean.getTests());
+		    rc=runTestNGTests(bean.getCount(), sourceClassNames, testClassNames);
 	    }
 	    return rc;
+	}
+	
+	/**
+	 * Discover source classes from the command line arguments
+	 * 
+	 * @param bean command line arguments
+	 * @return list of fully qualified source class names
+	 */
+	protected List<String> discoverSourceClasses(CommandLineArgs bean) {
+		// If using legacy format or explicit class names, use those
+		if (!bean.getSourceClasses().isEmpty()) {
+			return bean.getSourceClasses();
+		}
+		
+		if (!bean.getSources().isEmpty()) {
+			return bean.getSources();
+		}
+		
+		// Otherwise, discover from classpath and patterns
+		return ClassDiscovery.discoverClasses(bean.getSourcePath(), bean.getSourcePatterns());
+	}
+	
+	/**
+	 * Discover test classes from the command line arguments
+	 * 
+	 * @param bean command line arguments
+	 * @return list of fully qualified test class names
+	 */
+	protected List<String> discoverTestClasses(CommandLineArgs bean) {
+		// If using legacy format or explicit class names, use those
+		if (!bean.getTestClasses().isEmpty()) {
+			return bean.getTestClasses();
+		}
+		
+		if (!bean.getTests().isEmpty()) {
+			return bean.getTests();
+		}
+		
+		// Otherwise, discover from classpath and patterns
+		return ClassDiscovery.discoverClasses(bean.getTestPath(), bean.getTestPatterns());
 	}
 
 	protected int runTestNGTests(int count, List<String> sources, List<String> tests) throws Exception {
@@ -145,6 +194,26 @@ public class Main {
 			if (bean.isHelp()) {
 				System.out.println("java -jar jallele.jar [options...] ...");
 				parser.printUsage(System.out);
+				System.out.println();
+				System.out.println("Examples:");
+				System.out.println("  Legacy class name format:");
+				System.out.println("    java -jar jallele.jar --count 10 --junit \\");
+				System.out.println("      --sources com.example.MyClass \\");
+				System.out.println("      --tests com.example.MyClassTest");
+				System.out.println();
+				System.out.println("  With classpath and patterns:");
+				System.out.println("    java -jar jallele.jar --count 10 --junit \\");
+				System.out.println("      --source-path target/classes \\");
+				System.out.println("      --source-patterns 'com.example.**' \\");
+				System.out.println("      --test-path target/test-classes \\");
+				System.out.println("      --test-patterns 'com.example.**Test'");
+				System.out.println();
+				System.out.println("  With JAR files:");
+				System.out.println("    java -jar jallele.jar --count 10 --junit \\");
+				System.out.println("      --source-path myproject.jar \\");
+				System.out.println("      --source-patterns 'com.example.**' \\");
+				System.out.println("      --test-path myproject-tests.jar \\");
+				System.out.println("      --test-patterns 'com.example.**Test'");
 				return 1;
 			}
 			if (bean.getArguments().size()>0){
@@ -153,6 +222,34 @@ public class Main {
 			if (!bean.isRunJUnit() && !bean.isRunTestNG()) {
 				throw new CmdLineException("one of JUnit or TestNG required");				
 			}
+			
+			// Validate that either legacy or new format is used, but not both
+			boolean hasLegacySources = bean.getSources().size() > 0 && bean.getSourceClasses().isEmpty();
+			boolean hasNewFormat = !bean.getSourcePath().isEmpty() || !bean.getSourceClasses().isEmpty();
+			
+			if (hasLegacySources && hasNewFormat && !bean.getSourceClasses().isEmpty()) {
+				throw new CmdLineException("cannot use both --sources and --source-classes");
+			}
+			
+			// Require at least one way to specify source classes
+			if (bean.getSources().isEmpty() && bean.getSourceClasses().isEmpty() && bean.getSourcePath().isEmpty()) {
+				throw new CmdLineException("must specify sources using --sources, --source-classes, or --source-path with --source-patterns");
+			}
+			
+			// Require at least one way to specify test classes
+			if (bean.getTests().isEmpty() && bean.getTestClasses().isEmpty() && bean.getTestPath().isEmpty()) {
+				throw new CmdLineException("must specify tests using --tests, --test-classes, or --test-path with --test-patterns");
+			}
+			
+			// If using classpath, require patterns
+			if (!bean.getSourcePath().isEmpty() && bean.getSourcePatterns().isEmpty() && bean.getSourceClasses().isEmpty()) {
+				throw new CmdLineException("--source-path requires --source-patterns or --source-classes");
+			}
+			
+			if (!bean.getTestPath().isEmpty() && bean.getTestPatterns().isEmpty() && bean.getTestClasses().isEmpty()) {
+				throw new CmdLineException("--test-path requires --test-patterns or --test-classes");
+			}
+			
 	        return 0;
 		} catch (CmdLineException e) {
 			System.err.println(e.getMessage());

@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import org.hamcrest.core.Is;
 import org.junit.After;
@@ -363,5 +364,141 @@ public class MainTest {
 		// Test that configureLogging handles invalid log level gracefully
 		m.configureLogging("INVALID");
 		// Should not throw exception, just print error to stderr
+	}
+	
+	@Test
+	public final void testParseArgumentsWithSourceClassesAndTestClasses() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", "--source-classes", "Main", "--test-classes", "MainTest"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+		assertThat(bean.getSourceClasses().size(), Is.is(1));
+		assertThat(bean.getTestClasses().size(), Is.is(1));
+	}
+	
+	@Test
+	public final void testParseArgumentsWithSourcePath() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", 
+			"--source-path", "target/classes", "--source-patterns", "com.example.**",
+			"--test-classes", "MainTest"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+		assertThat(bean.getSourcePath().size(), Is.is(1));
+		assertThat(bean.getSourcePatterns().size(), Is.is(1));
+	}
+	
+	@Test
+	public final void testParseArgumentsWithTestPath() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit",
+			"--source-classes", "Main",
+			"--test-path", "target/test-classes", "--test-patterns", "**Test"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+		assertThat(bean.getTestPath().size(), Is.is(1));
+		assertThat(bean.getTestPatterns().size(), Is.is(1));
+	}
+	
+	@Test
+	public final void testParseArgumentsWithBothSourceAndTestPath() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit",
+			"--source-path", "target/classes", "--source-patterns", "com.example.**",
+			"--test-path", "target/test-classes", "--test-patterns", "**Test"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+	}
+	
+	@Test
+	public final void testParseArgumentsWithSourcePathNoPattern() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit",
+			"--source-path", "target/classes",
+			"--test-classes", "MainTest"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(2)); // Should fail - source-path requires patterns or classes
+	}
+	
+	@Test
+	public final void testParseArgumentsWithTestPathNoPattern() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit",
+			"--source-classes", "Main",
+			"--test-path", "target/test-classes"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(2)); // Should fail - test-path requires patterns or classes
+	}
+	
+	@Test
+	public final void testParseArgumentsNoSourcesOrClasses() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", "--test-classes", "MainTest"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(2)); // Should fail - no sources specified
+	}
+	
+	@Test
+	public final void testParseArgumentsNoTestsOrClasses() {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", "--source-classes", "Main"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(2)); // Should fail - no tests specified
+	}
+	
+	@Test
+	public final void testDiscoverSourceClassesFromLegacySources() throws Exception {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", "--sources", "Main", "--tests", "MainTest"};
+		m.parseArguments(args, bean);
+		
+		List<String> sources = m.discoverSourceClasses(bean);
+		assertThat(sources.size(), Is.is(1));
+		assertThat(sources.get(0), Is.is("Main"));
+	}
+	
+	@Test
+	public final void testDiscoverSourceClassesFromNewFormat() throws Exception {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", "--source-classes", "Main", "--tests", "MainTest"};
+		m.parseArguments(args, bean);
+		
+		List<String> sources = m.discoverSourceClasses(bean);
+		assertThat(sources.size(), Is.is(1));
+		assertThat(sources.get(0), Is.is("Main"));
+	}
+	
+	@Test
+	public final void testDiscoverTestClassesFromLegacyTests() throws Exception {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", "--sources", "Main", "--tests", "MainTest"};
+		m.parseArguments(args, bean);
+		
+		List<String> tests = m.discoverTestClasses(bean);
+		assertThat(tests.size(), Is.is(1));
+		assertThat(tests.get(0), Is.is("MainTest"));
+	}
+	
+	@Test
+	public final void testDiscoverTestClassesFromNewFormat() throws Exception {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "1", "--junit", "--sources", "Main", "--test-classes", "MainTest"};
+		m.parseArguments(args, bean);
+		
+		List<String> tests = m.discoverTestClasses(bean);
+		assertThat(tests.size(), Is.is(1));
+		assertThat(tests.get(0), Is.is("MainTest"));
 	}
 }
