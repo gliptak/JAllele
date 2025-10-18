@@ -18,13 +18,13 @@ Build the project:
 $ ./gradlew build
 ```
 
-Run JUnit sample (legacy format):
+Run JUnit sample:
 ```
 $ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --junit --count 10 \
---sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassJUnitTest
+--source-classes com.github.gliptak.jallele.SimpleClass --test-classes com.github.gliptak.jallele.SimpleClassJUnitTest
 ```
 
-Run with classpath discovery (new format):
+Run with classpath discovery:
 ```
 $ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --junit --count 10 \
 --source-path target/classes --source-patterns 'com.example.**' \
@@ -37,14 +37,14 @@ For more examples and detailed usage, see [CLI Examples](docs/cli-examples.md).
 
 JAllele supports two formats for specifying classes to test:
 
-### Legacy Format (Class Names)
+### Explicit Class Names
 
 Directly specify class names:
 ```bash
---sources com.example.MyClass --tests com.example.MyClassTest
+--source-classes com.example.MyClass --test-classes com.example.MyClassTest
 ```
 
-### New Format (Classpath + Patterns)
+### Classpath + Patterns
 
 Specify classpaths (directories or JAR files) and patterns to match classes:
 ```bash

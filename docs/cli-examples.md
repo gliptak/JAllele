@@ -1,20 +1,18 @@
 # JAllele CLI Examples
 
-This document demonstrates the improved command-line interface for JAllele with real-world examples.
+This document demonstrates the command-line interface for JAllele with real-world examples.
 
-## Basic Usage (Legacy Format)
+## Basic Usage
 
-The traditional way to use JAllele with explicit class names:
+Specify classes explicitly:
 
 ```bash
 java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
   --count 10 \
   --junit \
-  --sources com.example.MyClass \
-  --tests com.example.MyClassTest
+  --source-classes com.example.MyClass \
+  --test-classes com.example.MyClassTest
 ```
-
-## New Classpath-Based Usage
 
 ### Example 1: Testing a Single Module Project
 

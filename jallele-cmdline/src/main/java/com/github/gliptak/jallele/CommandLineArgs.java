@@ -10,14 +10,6 @@ import org.kohsuke.args4j.spi.StringArrayOptionHandler;
 
 public class CommandLineArgs {
 	
-	@Option(name="-sources",aliases={"--sources"},
-			handler=StringArrayOptionHandler.class, usage="list of source class names (deprecated: use --source-classes)")
-	private String[] sources=new String[0];
-	
-	@Option(name="-tests",aliases={"--tests"},
-			handler=StringArrayOptionHandler.class, usage="list of test class names (deprecated: use --test-classes)")
-	private String[] tests=new String[0];
-	
 	@Option(name="-sourceclasses",aliases={"--source-classes"},
 			handler=StringArrayOptionHandler.class, usage="list of source class names")
 	private String[] sourceClasses=new String[0];
@@ -62,23 +54,17 @@ public class CommandLineArgs {
     private List<String> arguments = new ArrayList<String>();
 
 	/**
-	 * @return the sources (legacy support)
+	 * @return the source class names
 	 */
 	public List<String> getSources() {
-		if (sourceClasses.length > 0) {
-			return Arrays.asList(sourceClasses);
-		}
-		return Arrays.asList(sources);
+		return Arrays.asList(sourceClasses);
 	}
 
 	/**
-	 * @return the tests (legacy support)
+	 * @return the test class names
 	 */
 	public List<String> getTests() {
-		if (testClasses.length > 0) {
-			return Arrays.asList(testClasses);
-		}
-		return Arrays.asList(tests);
+		return Arrays.asList(testClasses);
 	}
 	
 	/**

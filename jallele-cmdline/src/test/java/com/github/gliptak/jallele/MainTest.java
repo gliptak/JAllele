@@ -34,8 +34,8 @@ public class MainTest {
 
 	@Test
 	public final void testMainJUnit() throws Exception {
-		String[] args={"--count", "10", "--junit", "--sources", SimpleClass.class.getName(),
-				"--tests", SimpleClassJUnitTest.class.getName()};
+		String[] args={"--count", "10", "--junit", "--source-classes", SimpleClass.class.getName(),
+				"--test-classes", SimpleClassJUnitTest.class.getName()};
 		Main m = new Main();
 		int exitCode = m.execute(args);
 		assertThat(exitCode, Is.is(0));
@@ -43,8 +43,8 @@ public class MainTest {
 
 	@Test
 	public final void testMainTestNG() throws Exception {
-		String[] args={"--count", "10", "--testng", "--sources", SimpleClass.class.getName(),
-				"--tests", SimpleClassTestNGTest.class.getName()};
+		String[] args={"--count", "10", "--testng", "--source-classes", SimpleClass.class.getName(),
+				"--test-classes", SimpleClassTestNGTest.class.getName()};
 		Main m = new Main();
 		int exitCode = m.execute(args);
 		assertThat(exitCode, Is.is(0));
@@ -81,21 +81,21 @@ public class MainTest {
 	public final void testParseArgumentsEach() {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--count", "1", "--testng", "--sources", "Main", "--tests", "MainTest Main1Test"};
+		String[] args={"--count", "1", "--testng", "--source-classes", "Main", "--test-classes", "MainTest", "Main1Test"};
 		int rc=m.parseArguments(args, bean);
 		assertThat(rc, Is.is(0));
 		assertThat(bean.getCount(), Is.is(1));
 		assertThat(bean.isRunJUnit(), Is.is(false));
 		assertThat(bean.isRunTestNG(), Is.is(true));
-		assertThat(bean.getSources().size(), Is.is(1));
-		assertThat(bean.getTests().size(), Is.is(2));
+		assertThat(bean.getSourceClasses().size(), Is.is(1));
+		assertThat(bean.getTestClasses().size(), Is.is(2));
 	}
 
 	@Test
 	public final void testParseArgumentsEachMoreArgs() {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--sources", "Main", "--tests", "MainTest Main1Test", "--count", "1", "stuff"};
+		String[] args={"--source-classes", "Main", "--test-classes", "MainTest", "Main1Test", "--count", "1", "stuff"};
 		int rc=m.parseArguments(args, bean);
 		assertThat(rc, Is.is(2));
 	}
@@ -104,12 +104,12 @@ public class MainTest {
 	public final void testParseArgumentsTwice() {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--count", "2", "--junit", "--sources", "Main Main1", "--tests", "MainTest"};
+		String[] args={"--count", "2", "--junit", "--source-classes", "Main", "Main1", "--test-classes", "MainTest"};
 		int rc=m.parseArguments(args, bean);
 		assertThat(rc, Is.is(0));
 		assertThat(bean.getCount(), Is.is(2));
-		assertThat(bean.getSources().size(), Is.is(2));
-		assertThat(bean.getTests().size(), Is.is(1));
+		assertThat(bean.getSourceClasses().size(), Is.is(2));
+		assertThat(bean.getTestClasses().size(), Is.is(1));
 	}
 
 	@Test
@@ -131,7 +131,7 @@ public class MainTest {
 	public final void testParseArgumentsNoFramework() {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--count", "1", "--sources", "Main", "--tests", "MainTest"};
+		String[] args={"--count", "1", "--source-classes", "Main", "--test-classes", "MainTest"};
 		int rc=m.parseArguments(args, bean);
 		assertThat(rc, Is.is(2));
 	}
@@ -200,8 +200,8 @@ public class MainTest {
 	public final void testExecuteWithJUnitFailure() throws Exception {
 		Main m = new Main();
 		// Using non-existent test class to trigger test failure
-		String[] args={"--count", "1", "--junit", "--sources", "NonExistentClass",
-				"--tests", "NonExistentTest"};
+		String[] args={"--count", "1", "--junit", "--source-classes", "NonExistentClass",
+				"--test-classes", "NonExistentTest"};
 		int exitCode = m.execute(args);
 		assertThat(exitCode, Is.is(1));
 	}
@@ -210,8 +210,8 @@ public class MainTest {
 	public final void testExecuteWithTestNGFailure() throws Exception {
 		Main m = new Main();
 		// Using non-existent test class to trigger test failure
-		String[] args={"--count", "1", "--testng", "--sources", "NonExistentClass",
-				"--tests", "NonExistentTest"};
+		String[] args={"--count", "1", "--testng", "--source-classes", "NonExistentClass",
+				"--test-classes", "NonExistentTest"};
 		int exitCode = m.execute(args);
 		assertThat(exitCode, Is.is(1));
 	}
@@ -223,8 +223,8 @@ public class MainTest {
 		System.setSecurityManager(new Main.NoExitSecurityManager());
 		
 		try {
-			String[] args={"--count", "1", "--junit", "--sources", SimpleClass.class.getName(),
-					"--tests", SimpleClassJUnitTest.class.getName()};
+			String[] args={"--count", "1", "--junit", "--source-classes", SimpleClass.class.getName(),
+					"--test-classes", SimpleClassJUnitTest.class.getName()};
 			Main.main(args);
 			fail("Expected ExitException to be thrown");
 		} catch (Main.ExitException ex) {
@@ -254,8 +254,8 @@ public class MainTest {
 	@Test
 	public final void testExecuteWithBothJUnitAndTestNG() throws Exception {
 		Main m = new Main();
-		String[] args={"--count", "1", "--junit", "--testng", "--sources", SimpleClass.class.getName(),
-				"--tests", SimpleClassJUnitTest.class.getName()};
+		String[] args={"--count", "1", "--junit", "--testng", "--source-classes", SimpleClass.class.getName(),
+				"--test-classes", SimpleClassJUnitTest.class.getName()};
 		int exitCode = m.execute(args);
 		// Should process JUnit first, then TestNG
 		assertThat(exitCode, Is.is(0));
@@ -265,8 +265,8 @@ public class MainTest {
 	public final void testExecuteWithJUnitFailureThenTestNG() throws Exception {
 		Main m = new Main();
 		// Use non-existent class for JUnit (should fail), but valid class for TestNG
-		String[] args={"--count", "1", "--junit", "--testng", "--sources", "NonExistentClass",
-				"--tests", "NonExistentTest"};
+		String[] args={"--count", "1", "--junit", "--testng", "--source-classes", "NonExistentClass",
+				"--test-classes", "NonExistentTest"};
 		int exitCode = m.execute(args);
 		// Should fail on JUnit and return early before reaching TestNG
 		assertThat(exitCode, Is.is(1));
@@ -295,8 +295,8 @@ public class MainTest {
 		FailingTest.reset();
 		
 		Main m = new Main();
-		String[] args={"--count", "1", "--junit", "--sources", FailingTest.class.getName(),
-				"--tests", FailingTest.class.getName()};
+		String[] args={"--count", "1", "--junit", "--source-classes", FailingTest.class.getName(),
+				"--test-classes", FailingTest.class.getName()};
 		int exitCode = m.execute(args);
 		
 		// The test should detect the second run failure
@@ -308,8 +308,8 @@ public class MainTest {
 		// Use a simple working test to get through the first two runs,
 		// then let randomization potentially cause failures
 		Main m = new Main();
-		String[] args={"--count", "10", "--junit", "--sources", SimpleClass.class.getName(),
-				"--tests", SimpleClassJUnitTest.class.getName()};
+		String[] args={"--count", "10", "--junit", "--source-classes", SimpleClass.class.getName(),
+				"--test-classes", SimpleClassJUnitTest.class.getName()};
 		int exitCode = m.execute(args);
 		
 		// Should complete successfully even if some randomized runs fail
@@ -320,7 +320,7 @@ public class MainTest {
 	public final void testParseArgumentsWithLogLevel() {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--count", "1", "--junit", "--sources", "Main", "--tests", "MainTest", "--log-level", "FINE"};
+		String[] args={"--count", "1", "--junit", "--source-classes", "Main", "--test-classes", "MainTest", "--log-level", "FINE"};
 		int rc=m.parseArguments(args, bean);
 		assertThat(rc, Is.is(0));
 		assertThat(bean.getLogLevel(), Is.is("FINE"));
@@ -330,7 +330,7 @@ public class MainTest {
 	public final void testParseArgumentsWithLogLevelShort() {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--count", "1", "--junit", "--sources", "Main", "--tests", "MainTest", "-loglevel", "INFO"};
+		String[] args={"--count", "1", "--junit", "--source-classes", "Main", "--test-classes", "MainTest", "-loglevel", "INFO"};
 		int rc=m.parseArguments(args, bean);
 		assertThat(rc, Is.is(0));
 		assertThat(bean.getLogLevel(), Is.is("INFO"));
@@ -340,7 +340,7 @@ public class MainTest {
 	public final void testParseArgumentsWithDefaultLogLevel() {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--count", "1", "--junit", "--sources", "Main", "--tests", "MainTest"};
+		String[] args={"--count", "1", "--junit", "--source-classes", "Main", "--test-classes", "MainTest"};
 		int rc=m.parseArguments(args, bean);
 		assertThat(rc, Is.is(0));
 		assertThat(bean.getLogLevel(), Is.is("WARNING"));
@@ -455,46 +455,22 @@ public class MainTest {
 	}
 	
 	@Test
-	public final void testDiscoverSourceClassesFromLegacySources() throws Exception {
-		CommandLineArgs bean = new CommandLineArgs();
-		Main m=new Main();
-		String[] args={"--count", "1", "--junit", "--sources", "Main", "--tests", "MainTest"};
-		m.parseArguments(args, bean);
-		
-		List<String> sources = m.discoverSourceClasses(bean);
-		assertThat(sources.size(), Is.is(1));
-		assertThat(sources.get(0), Is.is("Main"));
-	}
-	
-	@Test
 	public final void testDiscoverSourceClassesFromNewFormat() throws Exception {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--count", "1", "--junit", "--source-classes", "Main", "--tests", "MainTest"};
+		String[] args={"--count", "1", "--junit", "--source-classes", "Main", "--test-classes", "MainTest"};
 		m.parseArguments(args, bean);
 		
 		List<String> sources = m.discoverSourceClasses(bean);
 		assertThat(sources.size(), Is.is(1));
 		assertThat(sources.get(0), Is.is("Main"));
-	}
-	
-	@Test
-	public final void testDiscoverTestClassesFromLegacyTests() throws Exception {
-		CommandLineArgs bean = new CommandLineArgs();
-		Main m=new Main();
-		String[] args={"--count", "1", "--junit", "--sources", "Main", "--tests", "MainTest"};
-		m.parseArguments(args, bean);
-		
-		List<String> tests = m.discoverTestClasses(bean);
-		assertThat(tests.size(), Is.is(1));
-		assertThat(tests.get(0), Is.is("MainTest"));
 	}
 	
 	@Test
 	public final void testDiscoverTestClassesFromNewFormat() throws Exception {
 		CommandLineArgs bean = new CommandLineArgs();
 		Main m=new Main();
-		String[] args={"--count", "1", "--junit", "--sources", "Main", "--test-classes", "MainTest"};
+		String[] args={"--count", "1", "--junit", "--source-classes", "Main", "--test-classes", "MainTest"};
 		m.parseArguments(args, bean);
 		
 		List<String> tests = m.discoverTestClasses(bean);

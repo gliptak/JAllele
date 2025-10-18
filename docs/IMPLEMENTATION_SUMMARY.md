@@ -17,16 +17,12 @@ The original CLI only supported explicit class names, which was limiting for rea
 #### Source Classes
 - `--source-path` / `--source-classpath`: Specify directories or JAR files containing source classes
 - `--source-patterns`: Glob patterns to match source classes (e.g., `com.example.**`)
-- `--source-classes`: Explicit class names (new style, replaces `--sources`)
+- `--source-classes`: Explicit class names
 
 #### Test Classes
 - `--test-path` / `--test-classpath`: Specify directories or JAR files containing test classes
 - `--test-patterns`: Glob patterns to match test classes (e.g., `**Test`)
-- `--test-classes`: Explicit class names (new style, replaces `--tests`)
-
-#### Legacy Support
-- `--sources`: Still supported for backward compatibility
-- `--tests`: Still supported for backward compatibility
+- `--test-classes`: Explicit class names
 
 ### 2. Pattern Syntax
 
@@ -48,13 +44,12 @@ New utility class that:
 - Converts file paths to fully qualified class names
 
 #### Main Updates
-- Discovers classes using ClassDiscovery when new options are used
-- Falls back to legacy behavior when old options are used
+- Discovers classes using ClassDiscovery when classpath options are used
+- Falls back to explicit class names when provided
 - Validates that required combinations are provided
 
 #### CommandLineArgs Updates
-- Added new option fields
-- Maintained backward compatibility with legacy getters
+- Added new option fields for classpath and patterns
 - Added validation in Main.parseArguments()
 
 ### 4. Testing
@@ -67,13 +62,10 @@ New utility class that:
   - Multiple classpath entries
   - Error handling
 
-- `MainTest`: 13 new tests covering:
+- `MainTest`: Tests covering:
   - New command-line options
   - Class discovery integration
   - Validation logic
-  - Backward compatibility
-
-All existing tests continue to pass, ensuring backward compatibility.
 
 ### 5. Documentation
 
@@ -101,14 +93,14 @@ Executable demonstration script showing:
 
 ## Usage Examples
 
-### Before (Legacy)
+### Explicit Class Names
 ```bash
 java -jar jallele.jar --count 100 --junit \
-  --sources com.example.Class1 com.example.Class2 com.example.Class3 \
-  --tests com.example.Test1 com.example.Test2 com.example.Test3
+  --source-classes com.example.Class1 com.example.Class2 com.example.Class3 \
+  --test-classes com.example.Test1 com.example.Test2 com.example.Test3
 ```
 
-### After (Classpath + Patterns)
+### Classpath + Patterns
 ```bash
 java -jar jallele.jar --count 100 --junit \
   --source-path target/classes \
@@ -131,8 +123,7 @@ java -jar jallele.jar --count 100 --junit \
 1. **Ease of Use**: No need to manually list all classes
 2. **Flexibility**: Supports various project structures (Maven, Gradle, multi-module)
 3. **Maintainability**: Patterns automatically include new classes
-4. **Backward Compatibility**: Existing usage continues to work
-5. **Real-World Ready**: Tested with patterns matching popular projects
+4. **Real-World Ready**: Tested with patterns matching popular projects
 
 ## Files Changed
 
@@ -150,9 +141,8 @@ java -jar jallele.jar --count 100 --junit \
 
 ## Testing Results
 
-- All unit tests pass (18 new tests added)
+- All unit tests pass
 - All integration tests pass
-- Backward compatibility verified
 - CodeQL security scan: 0 issues
 - Demo script runs successfully
 
