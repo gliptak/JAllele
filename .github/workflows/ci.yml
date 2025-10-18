@@ -65,5 +65,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v5
         with:
           issue-number: ${{ github.event.number }}
+          body-includes: '<!-- artifact-download-comment -->'
           body: |
+            <!-- artifact-download-comment -->
             Download artifact: [jallele-cmdline-test JAR](${{ steps.UploadJAR.outputs.artifact-url }})
