@@ -1,9 +1,15 @@
 #!/bin/bash
 # Demo script showing JAllele CLI usage with different options
 # This script tests JAllele against its own test classes
+#
+# NOTE: This demo uses the test JAR which includes both the JAllele engine
+# and sample test classes (SimpleClass, SimpleClassJUnitTest) that can be used
+# to demonstrate mutation testing. In a real-world scenario, you would use
+# the production JAR and point to your project's target/classes directories.
 
 set -e
 
+# Using the test JAR for this demo as it includes sample classes
 JALLELE_JAR="jallele-cmdline/build/libs/jallele-cmdline-test-*.jar"
 JVM_OPTS="-Djdk.attach.allowAttachSelf=true"
 COUNT=5
@@ -43,6 +49,7 @@ echo "=========================================="
 echo ""
 
 echo "3. Classpath Discovery: Using exact patterns"
+echo "   (Note: Using test classes directory here for demo; in practice use target/classes)"
 echo "   Command: java $JVM_OPTS -jar $JALLELE_JAR --count $COUNT --junit \\"
 echo "            --source-path jallele-cmdline/build/classes/java/test \\"
 echo "            --source-patterns 'com.github.gliptak.jallele.SimpleClass' \\"
@@ -61,6 +68,7 @@ echo "=========================================="
 echo ""
 
 echo "4. Wildcard Patterns: Using ** to match across packages"
+echo "   (Note: Using test classes directory here for demo; in practice use target/classes)"
 echo "   Command: java $JVM_OPTS -jar $JALLELE_JAR --count $COUNT --junit \\"
 echo "            --source-path jallele-cmdline/build/classes/java/test \\"
 echo "            --source-patterns '**.SimpleClass' \\"
@@ -79,6 +87,7 @@ echo "=========================================="
 echo ""
 
 echo "5. Package Patterns: Testing all classes in a package"
+echo "   (Note: Using test classes directory here for demo; in practice use target/classes)"
 echo "   Command: java $JVM_OPTS -jar $JALLELE_JAR --count $COUNT --junit \\"
 echo "            --source-path jallele-cmdline/build/classes/java/test \\"
 echo "            --source-patterns 'com.github.gliptak.jallele.Simple*' \\"
@@ -104,6 +113,11 @@ echo "  ✓ New format with explicit class names"
 echo "  ✓ Classpath-based discovery with exact patterns"
 echo "  ✓ Wildcard patterns for flexible matching"
 echo "  ✓ Package-level pattern matching"
+echo ""
+echo "Note: This demo uses test classes for convenience. In real projects:"
+echo "  - Use target/classes or build/classes/java/main for source classes"
+echo "  - Use target/test-classes or build/classes/java/test for test classes"
+echo "  - See docs/cli-examples.md for production examples"
 echo ""
 echo "See docs/cli-examples.md for more examples including:"
 echo "  - Multi-module projects"
