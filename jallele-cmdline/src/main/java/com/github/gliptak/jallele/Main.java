@@ -252,6 +252,13 @@ public class Main {
 				System.out.println("      --test-path target/test-classes \\");
 				System.out.println("      --test-patterns 'com.example.**Test'");
 				System.out.println();
+				System.out.println("  With multiple paths/patterns:");
+				System.out.println("    java -jar jallele.jar --count 10 --junit \\");
+				System.out.println("      --source-path module1/target/classes module2/target/classes \\");
+				System.out.println("      --source-patterns 'com.example.**' 'org.other.**' \\");
+				System.out.println("      --test-path module1/target/test-classes module2/target/test-classes \\");
+				System.out.println("      --test-patterns 'com.example.**Test' 'org.other.**Test'");
+				System.out.println();
 				System.out.println("  With JAR files:");
 				System.out.println("    java -jar jallele.jar --count 10 --junit \\");
 				System.out.println("      --source-path myproject.jar \\");

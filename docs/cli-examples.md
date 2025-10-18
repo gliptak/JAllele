@@ -107,20 +107,9 @@ mvn clean test-compile
 
 ### Step 2: Run JAllele Mutation Testing
 
-Test all classes in the `org.apache.commons.lang3.math` package:
+**Note:** Some test classes in Apache Commons Lang are not public and cannot be run by JUnit. Use specific patterns to target public test classes.
 
-```bash
-java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
-  --count 200 \
-  --junit \
-  --source-path target/classes \
-  --source-patterns 'org.apache.commons.lang3.math.**' \
-  --test-path target/test-classes \
-  --test-patterns 'org.apache.commons.lang3.math.**Test' \
-  --log-level INFO
-```
-
-Test specific utility classes:
+Test specific public utility classes:
 
 ```bash
 java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
@@ -138,6 +127,13 @@ Test all utility classes (those ending with 'Utils'):
 ```bash
 java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
   --count 150 \
+  --junit \
+  --source-path target/classes \
+  --source-patterns 'org.apache.commons.lang3.*Utils' \
+  --test-path target/test-classes \
+  --test-patterns 'org.apache.commons.lang3.*UtilsTest' \
+  --log-level INFO
+```
   --junit \
   --source-path target/classes \
   --source-patterns 'org.apache.commons.lang3.*Utils' \
