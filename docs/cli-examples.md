@@ -531,11 +531,29 @@ java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
 
 Both examples showcase:
 - **TestNG Integration**: Using `--testng` flag with JAllele
-- **Realistic Library Code**: Utility classes similar to popular open-source libraries
+- **Realistic Library Code**: Utility classes similar to popular open-source libraries (Apache Commons Lang, Apache Commons Math)
 - **Comprehensive Testing**: Multiple test methods covering edge cases
 - **Data-Driven Testing**: TestNG's `@DataProvider` feature (in MathUtils example)
 - **Pattern-Based Discovery**: Using `--source-patterns` and `--test-patterns`
 - **Public Test Classes**: Following JUnit/TestNG best practices for test visibility
+
+### Important Notes on TestNG Examples
+
+**TestNG and JUnit Interoperability**: The examples above use TestNG's `@Test` annotations with JUnit's assertion methods (`import static org.junit.Assert.*`). This is a common pattern that works well because:
+- JAllele's test JAR bundles both JUnit and TestNG
+- JUnit assertions are widely familiar and work seamlessly with TestNG
+- It avoids SLF4J dependency issues that can occur with TestNG's own assertions
+
+**Running the Examples**: To successfully run these examples with JAllele:
+1. Compile your project with Maven: `mvn clean test-compile`
+2. Ensure the test classes are public (required for TestNG)
+3. Use the command shown above with `--testng` flag
+4. Both dependencies (TestNG and JUnit) should be in your project's pom.xml
+
+**Why These Examples Matter**: While many popular Java open-source projects (like Apache Commons Lang, Google Guava) use JUnit for testing, these examples demonstrate:
+- How to structure library-style code similar to real open-source projects
+- How to use JAllele's TestNG support effectively
+- Common patterns found in utility libraries that are good candidates for mutation testing
 
 ## Real-World Example: Your Own Project
 
