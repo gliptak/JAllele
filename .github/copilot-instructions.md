@@ -110,8 +110,8 @@ JUnit example:
 java -Djdk.attach.allowAttachSelf=true \
   -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar \
   --junit --count 10 \
-  --sources com.github.gliptak.jallele.SimpleClass \
-  --tests com.github.gliptak.jallele.SimpleClassJUnitTest \
+  --source-classes com.github.gliptak.jallele.SimpleClass \
+  --test-classes com.github.gliptak.jallele.SimpleClassJUnitTest \
   --log-level FINE
 ```
 
@@ -120,8 +120,8 @@ TestNG example:
 java -Djdk.attach.allowAttachSelf=true \
   -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar \
   --testng --count 10 \
-  --sources com.github.gliptak.jallele.SimpleClass \
-  --tests com.github.gliptak.jallele.SimpleClassTestNGTest
+  --source-classes com.github.gliptak.jallele.SimpleClass \
+  --test-classes com.github.gliptak.jallele.SimpleClassTestNGTest
 ```
 
 ## Dependencies

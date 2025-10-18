@@ -35,13 +35,13 @@ $ ./gradlew build
 Run JUnit sample (packaged into uberjar):
 ```
 $ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --junit --count 10 \
---sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassJUnitTest
+--source-classes com.github.gliptak.jallele.SimpleClass --test-classes com.github.gliptak.jallele.SimpleClassJUnitTest
 ```
 
 Run TestNG sample (packaged into uberjar):
 ```
 $ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --testng --count 10 \
---sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassTestNGTest
+--source-classes com.github.gliptak.jallele.SimpleClass --test-classes com.github.gliptak.jallele.SimpleClassTestNGTest
 ```
 
 ### Logging
@@ -52,7 +52,7 @@ Supported log levels: `OFF`, `SEVERE`, `WARNING`, `INFO`, `CONFIG`, `FINE`, `FIN
 Example with detailed logging:
 ```
 $ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --junit --count 10 \
---sources com.github.gliptak.jallele.SimpleClass --tests com.github.gliptak.jallele.SimpleClassJUnitTest --log-level FINE
+--source-classes com.github.gliptak.jallele.SimpleClass --test-classes com.github.gliptak.jallele.SimpleClassJUnitTest --log-level FINE
 ```
 
 Contributions, issues, pull requests are welcome.
