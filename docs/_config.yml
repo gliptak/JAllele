@@ -2,8 +2,8 @@
 title: JAllele
 description: Mutation testing tool for Java
 
-# GitHub repository information - enables "View on GitHub" link in the header
-# This automatically adds a link to the GitHub repository on the documentation site
+# GitHub repository information - enables "View on GitHub" link in the site header/navigation
+# This automatically adds a "View on GitHub" link in the site header that directs to the repository
 repository: gliptak/JAllele
 
 # Optional: You can also specify a theme
