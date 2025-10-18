@@ -62,6 +62,8 @@ Examples:
 - `**Test` - All classes ending with "Test"
 - `com.example.*Utils` - Utility classes in com.example package only
 
+**Note:** JUnit requires test classes to be public. Some projects (like Apache Commons Lang) use package-private test classes that cannot be run through JAllele's pattern-based discovery. In such cases, use explicit class names with `--source-classes` and `--test-classes`, or test your own projects where test classes are public.
+
 ### Multi-Module Projects
 
 For projects with multiple modules, specify multiple paths:

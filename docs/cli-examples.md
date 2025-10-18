@@ -107,38 +107,31 @@ mvn clean test-compile
 
 ### Step 2: Run JAllele Mutation Testing
 
-**Note:** Some test classes in Apache Commons Lang are not public and cannot be run by JUnit. Use specific patterns to target public test classes.
+**Note:** Apache Commons Lang uses package-private test classes that cannot be run directly by JUnit through JAllele. For demonstration purposes with Apache Commons Lang, you would need to use explicit class names for the few public test classes, or consider testing a different project.
 
-Test specific public utility classes:
+**Alternative:** Use JAllele with your own project where test classes are public, or test individual classes explicitly:
 
 ```bash
+# Example with explicit class names (if you know specific public test classes)
+java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
+  --count 100 \
+  --junit \
+  --source-classes org.apache.commons.lang3.StringUtils \
+  --test-classes org.apache.commons.lang3.StringUtilsTest \
+  --log-level INFO
+```
+
+**Better approach:** Test your own project with public test classes:
+
+```bash
+# Your project with public test classes
 java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
   --count 100 \
   --junit \
   --source-path target/classes \
-  --source-patterns 'org.apache.commons.lang3.StringUtils' \
+  --source-patterns 'com.yourproject.**' \
   --test-path target/test-classes \
-  --test-patterns 'org.apache.commons.lang3.StringUtilsTest' \
-  --log-level INFO
-```
-
-Test all utility classes (those ending with 'Utils'):
-
-```bash
-java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
-  --count 150 \
-  --junit \
-  --source-path target/classes \
-  --source-patterns 'org.apache.commons.lang3.*Utils' \
-  --test-path target/test-classes \
-  --test-patterns 'org.apache.commons.lang3.*UtilsTest' \
-  --log-level INFO
-```
-  --junit \
-  --source-path target/classes \
-  --source-patterns 'org.apache.commons.lang3.*Utils' \
-  --test-path target/test-classes \
-  --test-patterns 'org.apache.commons.lang3.*UtilsTest' \
+  --test-patterns 'com.yourproject.**Test' \
   --log-level INFO
 ```
 
