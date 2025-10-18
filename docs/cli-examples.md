@@ -123,78 +123,135 @@ java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
 | `*Test` | `MyTest`<br>`SimpleTest` | `com.example.sub.MyTest` |
 | `com.example.*.Test` | `com.example.MyTest`<br>`com.example.SimpleTest` | `com.example.sub.MyTest` |
 
-## Real-World Example: Simple Calculator Project
+## Real-World Examples with TestNG
 
-Here's a complete working example you can try:
+Here are two complete working examples using TestNG that you can try. These demonstrate JAllele's TestNG support with library-style projects.
 
-### Step 1: Create the Project
+### Example 1: String Utilities Library
+
+This example demonstrates a utility library similar to Apache Commons Lang.
+
+#### Step 1: Create the StringUtils Project
 
 ```bash
 # Create project structure
-mkdir -p calculator-project/src/main/java/com/example
-mkdir -p calculator-project/src/test/java/com/example
-cd calculator-project
+mkdir -p stringutils-project/src/main/java/com/example/utils
+mkdir -p stringutils-project/src/test/java/com/example/utils
+cd stringutils-project
 
-# Create Calculator.java
-cat > src/main/java/com/example/Calculator.java << 'EOF'
-package com.example;
+# Create StringUtils.java
+cat > src/main/java/com/example/utils/StringUtils.java << 'EOF'
+package com.example.utils;
 
-public class Calculator {
-    public int add(int a, int b) {
-        return a + b;
+public class StringUtils {
+    public static boolean isEmpty(String str) {
+        return str == null || str.length() == 0;
     }
     
-    public int subtract(int a, int b) {
-        return a - b;
+    public static boolean isNotEmpty(String str) {
+        return !isEmpty(str);
     }
     
-    public int multiply(int a, int b) {
-        return a * b;
+    public static String defaultString(String str) {
+        return str == null ? "" : str;
     }
     
-    public int divide(int a, int b) {
-        if (b == 0) throw new IllegalArgumentException("Division by zero");
-        return a / b;
+    public static String defaultString(String str, String defaultStr) {
+        return str == null ? defaultStr : str;
+    }
+    
+    public static String capitalize(String str) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+    
+    public static String reverse(String str) {
+        if (str == null) {
+            return null;
+        }
+        return new StringBuilder(str).reverse().toString();
+    }
+    
+    public static int countMatches(String str, char ch) {
+        if (isEmpty(str)) {
+            return 0;
+        }
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == ch) {
+                count++;
+            }
+        }
+        return count;
     }
 }
 EOF
 
-# Create CalculatorTest.java
-cat > src/test/java/com/example/CalculatorTest.java << 'EOF'
-package com.example;
+# Create StringUtilsTest.java
+cat > src/test/java/com/example/utils/StringUtilsTest.java << 'EOF'
+package com.example.utils;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 import static org.junit.Assert.*;
 
-public class CalculatorTest {
+public class StringUtilsTest {
+    
     @Test
-    public void testAdd() {
-        Calculator calc = new Calculator();
-        assertEquals(5, calc.add(2, 3));
+    public void testIsEmpty() {
+        assertTrue(StringUtils.isEmpty(null));
+        assertTrue(StringUtils.isEmpty(""));
+        assertFalse(StringUtils.isEmpty(" "));
+        assertFalse(StringUtils.isEmpty("test"));
     }
     
     @Test
-    public void testSubtract() {
-        Calculator calc = new Calculator();
-        assertEquals(1, calc.subtract(3, 2));
+    public void testIsNotEmpty() {
+        assertFalse(StringUtils.isNotEmpty(null));
+        assertFalse(StringUtils.isNotEmpty(""));
+        assertTrue(StringUtils.isNotEmpty(" "));
+        assertTrue(StringUtils.isNotEmpty("test"));
     }
     
     @Test
-    public void testMultiply() {
-        Calculator calc = new Calculator();
-        assertEquals(6, calc.multiply(2, 3));
+    public void testDefaultString() {
+        assertEquals("", StringUtils.defaultString(null));
+        assertEquals("", StringUtils.defaultString(""));
+        assertEquals("test", StringUtils.defaultString("test"));
     }
     
     @Test
-    public void testDivide() {
-        Calculator calc = new Calculator();
-        assertEquals(2, calc.divide(6, 3));
+    public void testDefaultStringWithDefault() {
+        assertEquals("default", StringUtils.defaultString(null, "default"));
+        assertEquals("", StringUtils.defaultString("", "default"));
+        assertEquals("test", StringUtils.defaultString("test", "default"));
     }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void testDivideByZero() {
-        Calculator calc = new Calculator();
-        calc.divide(5, 0);
+    @Test
+    public void testCapitalize() {
+        assertNull(StringUtils.capitalize(null));
+        assertEquals("", StringUtils.capitalize(""));
+        assertEquals("Test", StringUtils.capitalize("test"));
+        assertEquals("Test", StringUtils.capitalize("Test"));
+        assertEquals("TEST", StringUtils.capitalize("TEST"));
+    }
+    
+    @Test
+    public void testReverse() {
+        assertNull(StringUtils.reverse(null));
+        assertEquals("", StringUtils.reverse(""));
+        assertEquals("tset", StringUtils.reverse("test"));
+        assertEquals("GNtseT", StringUtils.reverse("TestNG"));
+    }
+    
+    @Test
+    public void testCountMatches() {
+        assertEquals(0, StringUtils.countMatches(null, 'a'));
+        assertEquals(0, StringUtils.countMatches("", 'a'));
+        assertEquals(2, StringUtils.countMatches("test", 't'));
+        assertEquals(2, StringUtils.countMatches("hello", 'l'));
+        assertEquals(0, StringUtils.countMatches("hello", 'x'));
     }
 }
 EOF
@@ -204,7 +261,7 @@ cat > pom.xml << 'EOF'
 <project xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
-    <artifactId>calculator</artifactId>
+    <artifactId>stringutils</artifactId>
     <version>1.0.0</version>
     
     <properties>
@@ -213,6 +270,12 @@ cat > pom.xml << 'EOF'
     </properties>
     
     <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.7.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -227,24 +290,252 @@ EOF
 mvn clean test-compile
 ```
 
-### Step 2: Run JAllele Mutation Testing
+#### Step 2: Run JAllele Mutation Testing
 
 ```bash
 java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
-  --count 10 \
-  --junit \
+  --count 20 \
+  --testng \
   --source-path target/classes \
-  --source-patterns 'com.example.**' \
+  --source-patterns 'com.example.utils.**' \
   --test-path target/test-classes \
-  --test-patterns 'com.example.**Test' \
+  --test-patterns 'com.example.utils.**Test' \
   --log-level INFO
 ```
 
 **Expected Output:**
-- JAllele will discover the Calculator class and CalculatorTest
-- It will introduce 10 mutations to the Calculator class
-- The tests should detect most or all of the mutations
-- You'll see a summary like `Results: 10/10 (1.0)` indicating all mutations were caught
+- JAllele will discover the StringUtils class and StringUtilsTest
+- It will introduce 20 mutations to the StringUtils methods
+- The TestNG tests should detect most mutations
+- You'll see detailed mutation testing results
+
+### Example 2: Math Utilities Library
+
+This example demonstrates a mathematical utility library similar to Apache Commons Math.
+
+#### Step 1: Create the MathUtils Project
+
+```bash
+# Create project structure
+mkdir -p mathutils-project/src/main/java/com/example/math
+mkdir -p mathutils-project/src/test/java/com/example/math
+cd mathutils-project
+
+# Create MathUtils.java
+cat > src/main/java/com/example/math/MathUtils.java << 'EOF'
+package com.example.math;
+
+public class MathUtils {
+    public static int gcd(int a, int b) {
+        a = Math.abs(a);
+        b = Math.abs(b);
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+    
+    public static int lcm(int a, int b) {
+        if (a == 0 || b == 0) {
+            return 0;
+        }
+        return Math.abs(a * b) / gcd(a, b);
+    }
+    
+    public static boolean isPrime(int n) {
+        if (n <= 1) {
+            return false;
+        }
+        if (n <= 3) {
+            return true;
+        }
+        if (n % 2 == 0 || n % 3 == 0) {
+            return false;
+        }
+        for (int i = 5; i * i <= n; i += 6) {
+            if (n % i == 0 || n % (i + 2) == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public static int factorial(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("Negative numbers not allowed");
+        }
+        if (n == 0 || n == 1) {
+            return 1;
+        }
+        int result = 1;
+        for (int i = 2; i <= n; i++) {
+            result *= i;
+        }
+        return result;
+    }
+    
+    public static double power(double base, int exponent) {
+        if (exponent == 0) {
+            return 1.0;
+        }
+        if (exponent < 0) {
+            return 1.0 / power(base, -exponent);
+        }
+        double result = 1.0;
+        for (int i = 0; i < exponent; i++) {
+            result *= base;
+        }
+        return result;
+    }
+}
+EOF
+
+# Create MathUtilsTest.java
+cat > src/test/java/com/example/math/MathUtilsTest.java << 'EOF'
+package com.example.math;
+
+import org.testng.annotations.Test;
+import org.testng.annotations.DataProvider;
+import static org.junit.Assert.*;
+
+public class MathUtilsTest {
+    
+    @DataProvider(name = "gcdData")
+    public Object[][] gcdData() {
+        return new Object[][] {
+            {12, 8, 4},
+            {54, 24, 6},
+            {100, 50, 50},
+            {7, 13, 1},
+            {0, 5, 5}
+        };
+    }
+    
+    @Test(dataProvider = "gcdData")
+    public void testGcd(int a, int b, int expected) {
+        assertEquals(expected, MathUtils.gcd(a, b));
+    }
+    
+    @DataProvider(name = "lcmData")
+    public Object[][] lcmData() {
+        return new Object[][] {
+            {12, 8, 24},
+            {3, 7, 21},
+            {10, 15, 30},
+            {0, 5, 0}
+        };
+    }
+    
+    @Test(dataProvider = "lcmData")
+    public void testLcm(int a, int b, int expected) {
+        assertEquals(expected, MathUtils.lcm(a, b));
+    }
+    
+    @DataProvider(name = "primeData")
+    public Object[][] primeData() {
+        return new Object[][] {
+            {2, true},
+            {3, true},
+            {4, false},
+            {17, true},
+            {20, false},
+            {1, false},
+            {0, false}
+        };
+    }
+    
+    @Test(dataProvider = "primeData")
+    public void testIsPrime(int n, boolean expected) {
+        assertEquals(expected, MathUtils.isPrime(n));
+    }
+    
+    @Test
+    public void testFactorial() {
+        assertEquals(1, MathUtils.factorial(0));
+        assertEquals(1, MathUtils.factorial(1));
+        assertEquals(120, MathUtils.factorial(5));
+        assertEquals(5040, MathUtils.factorial(7));
+    }
+    
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testFactorialNegative() {
+        MathUtils.factorial(-1);
+    }
+    
+    @Test
+    public void testPower() {
+        assertEquals(8.0, MathUtils.power(2.0, 3), 0.001);
+        assertEquals(25.0, MathUtils.power(5.0, 2), 0.001);
+        assertEquals(1.0, MathUtils.power(2.0, 0), 0.001);
+        assertEquals(0.25, MathUtils.power(2.0, -2), 0.001);
+    }
+}
+EOF
+
+# Create pom.xml
+cat > pom.xml << 'EOF'
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>mathutils</artifactId>
+    <version>1.0.0</version>
+    
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+EOF
+
+# Compile the project
+mvn clean test-compile
+```
+
+#### Step 2: Run JAllele Mutation Testing
+
+```bash
+java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
+  --count 25 \
+  --testng \
+  --source-path target/classes \
+  --source-patterns 'com.example.math.**' \
+  --test-path target/test-classes \
+  --test-patterns 'com.example.math.**Test' \
+  --log-level INFO
+```
+
+**Expected Output:**
+- JAllele will discover the MathUtils class and MathUtilsTest
+- It will introduce 25 mutations to the MathUtils methods
+- The TestNG tests (including data-driven tests) should detect most mutations
+- You'll see comprehensive mutation testing results
+
+### Key Features Demonstrated
+
+Both examples showcase:
+- **TestNG Integration**: Using `--testng` flag with JAllele
+- **Realistic Library Code**: Utility classes similar to popular open-source libraries
+- **Comprehensive Testing**: Multiple test methods covering edge cases
+- **Data-Driven Testing**: TestNG's `@DataProvider` feature (in MathUtils example)
+- **Pattern-Based Discovery**: Using `--source-patterns` and `--test-patterns`
+- **Public Test Classes**: Following JUnit/TestNG best practices for test visibility
 
 ## Real-World Example: Your Own Project
 
