@@ -1,6 +1,10 @@
 package com.github.gliptak.jallele;
 
+import java.io.File;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.Permission;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
@@ -33,6 +37,10 @@ public class Main {
 	    	return rc;
 	    }
 	    configureLogging(bean.getLogLevel());
+	    
+	    // Add classpath entries to the system classloader
+	    addToClasspath(bean.getSourcePath());
+	    addToClasspath(bean.getTestPath());
 	    
 	    // Discover source classes
 	    List<String> sourceClassNames = discoverSourceClasses(bean);
@@ -84,6 +92,50 @@ public class Main {
 		
 		// Otherwise, discover from classpath and patterns
 		return ClassDiscovery.discoverClasses(bean.getTestPath(), bean.getTestPatterns());
+	}
+	
+	/**
+	 * Add classpath entries to the system classloader
+	 * This is necessary so that discovered classes can be loaded by JUnit/TestNG
+	 * 
+	 * @param classpaths list of classpath entries (jar files or directories)
+	 */
+	protected void addToClasspath(List<String> classpaths) {
+		if (classpaths.isEmpty()) {
+			return;
+		}
+		
+		ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+		
+		// For Java 9+, we need to set the thread context classloader to a URLClassLoader
+		// that includes the additional classpath entries
+		try {
+			URL[] urls = new URL[classpaths.size()];
+			for (int i = 0; i < classpaths.size(); i++) {
+				File file = new File(classpaths.get(i));
+				if (!file.exists()) {
+					logger.warning("Classpath does not exist: " + classpaths.get(i));
+					continue;
+				}
+				urls[i] = file.toURI().toURL();
+				logger.fine("Added to classpath: " + classpaths.get(i));
+			}
+			
+			// Create a new URLClassLoader with the current context classloader as parent
+			ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
+			if (currentClassLoader == null) {
+				currentClassLoader = systemClassLoader;
+			}
+			URLClassLoader newClassLoader = new URLClassLoader(urls, currentClassLoader);
+			
+			// Set it as the thread context classloader
+			Thread.currentThread().setContextClassLoader(newClassLoader);
+			logger.fine("Set thread context classloader with " + classpaths.size() + " classpath entries");
+			
+		} catch (Exception e) {
+			logger.severe("Failed to add classpath entries: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	protected int runTestNGTests(int count, List<String> sources, List<String> tests) throws Exception {
