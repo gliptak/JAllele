@@ -162,28 +162,30 @@ Test a core class like `ParameterDescription.java` using explicit class names:
 
 ```bash
 java -Djdk.attach.allowAttachSelf=true \
-  -cp "slf4j-simple-2.0.16.jar:build/classes/java/main:build/classes/java/test:/path/to/jallele.jar" \
+  -cp "slf4j-simple-2.0.16.jar:/path/to/jallele.jar" \
   com.github.gliptak.jallele.Main \
   --count 50 \
   --testng \
+  --source-path build/classes/java/main \
   --source-classes com.beust.jcommander.ParameterDescription \
+  --test-path build/classes/java/test \
   --test-classes com.beust.jcommander.JCommanderTest \
   --log-level INFO
 ```
 
-**Critical**: The `-cp` flag MUST include:
+**Critical**: The `-cp` flag needs:
 1. `slf4j-simple-2.0.16.jar` (for TestNG logging)
-2. `build/classes/java/main` (compiled source classes)
-3. `build/classes/java/test` (compiled test classes)
-4. `/path/to/jallele.jar` (JAllele uber JAR)
+2. `/path/to/jallele.jar` (JAllele uber JAR)
+
+**Note on `-cp` vs `--source-path`**: JAllele dynamically loads classes from `--source-path` and `--test-path`, so you don't need to duplicate the compiled classes in `-cp`. Only SLF4J and JAllele JAR are needed in `-cp`.
 
 #### Step 4: Run JAllele With Pattern-Based Discovery
 
-If using `--source-path` and `--source-patterns`, you MUST still include the compiled classes in `-cp`:
+Test multiple Parameter classes using patterns:
 
 ```bash
 java -Djdk.attach.allowAttachSelf=true \
-  -cp "slf4j-simple-2.0.16.jar:build/classes/java/main:build/classes/java/test:/path/to/jallele.jar" \
+  -cp "slf4j-simple-2.0.16.jar:/path/to/jallele.jar" \
   com.github.gliptak.jallele.Main \
   --count 50 \
   --testng \
@@ -202,16 +204,16 @@ java -Djdk.attach.allowAttachSelf=true \
 
 **Important Notes:**
 - **SLF4J Required**: TestNG needs SLF4J. Always include `slf4j-simple-2.0.16.jar` in the classpath
-- **Use -cp flag**: Must use `-cp` flag (not `-jar`) to include all dependencies in classpath
+- **Use -cp flag**: Must use `-cp` flag (not `-jar`) to include SLF4J and JAllele JAR
 - **Main class**: Call `com.github.gliptak.jallele.Main` directly instead of using `-jar`
-- **Compiled classes in -cp**: ALWAYS include `build/classes/java/main` and `build/classes/java/test` in `-cp`, even when using `--source-path`
+- **No -cp duplication**: JAllele dynamically loads from `--source-path` and `--test-path`, so compiled classes don't need to be in `-cp`
 - **Explicit Class Names**: Use `--source-classes` and `--test-classes` for most reliable results
 
 **Troubleshooting "First run failed":**
 
 If you see `SEVERE: First run failed`, check:
 1. **Missing SLF4J**: Error mentions "No SLF4J providers" → Add `slf4j-simple-2.0.16.jar` to `-cp`
-2. **Missing compiled classes**: No other error but still fails → Add `build/classes/java/main:build/classes/java/test` to `-cp`
+2. **Missing --source-path**: Classes not found → Add `--source-path` and `--test-path` pointing to compiled classes
 3. **Test failures**: Some tests fail when run standalone → Try different source/test class combinations
 4. **Classpath order**: Put SLF4J first in `-cp` for best results
 
@@ -219,11 +221,13 @@ If you see `SEVERE: First run failed`, check:
 ```bash
 # This complete command should work:
 java -Djdk.attach.allowAttachSelf=true \
-  -cp "slf4j-simple-2.0.16.jar:build/classes/java/main:build/classes/java/test:/path/to/jallele.jar" \
+  -cp "slf4j-simple-2.0.16.jar:/path/to/jallele.jar" \
   com.github.gliptak.jallele.Main \
   --count 20 \
   --testng \
+  --source-path build/classes/java/main \
   --source-classes com.beust.jcommander.ParameterDescription \
+  --test-path build/classes/java/test \
   --test-classes com.beust.jcommander.JCommanderTest \
   --log-level INFO
 ```
@@ -233,16 +237,18 @@ java -Djdk.attach.allowAttachSelf=true \
 - `com.beust.jcommander.DefaultUsageFormatter` - Usage text formatting
 - `com.beust.jcommander.converters.*` - Type converters
 
-### Example 2: Testing Apache Commons Lang (Utility Library with JUnit)
+### Example 2: Testing jsoup (HTML Parser Library with JUnit)
 
-[Apache Commons Lang](https://github.com/apache/commons-lang) is one of the most widely-used Java utility libraries, providing highly reusable utility methods for String manipulation, number handling, reflection, and more. It uses JUnit for testing.
+[jsoup](https://github.com/jhy/jsoup) is a popular Java HTML parser library used for web scraping and HTML manipulation. It has 61 JUnit test classes covering comprehensive HTML parsing functionality.
 
-#### Step 1: Clone and Build Commons Lang
+**Note**: jsoup uses JUnit 5 (Jupiter). JAllele currently supports JUnit 4, so some test execution features may not work correctly. For best results with JAllele, use libraries with JUnit 4.
+
+#### Step 1: Clone and Build jsoup
 
 ```bash
 # Clone the repository
-git clone https://github.com/apache/commons-lang.git
-cd commons-lang
+git clone https://github.com/jhy/jsoup.git
+cd jsoup
 
 # Build the project (uses Maven)
 mvn clean test-compile -DskipTests
@@ -251,78 +257,84 @@ mvn clean test-compile -DskipTests
 **What gets built:**
 - Main classes: `target/classes/`
 - Test classes: `target/test-classes/`
-- 267 test classes covering comprehensive utility functionality
+- 61 public test classes covering HTML parsing, selection, and manipulation
 
-#### Step 2: Run JAllele Against String Utilities
+#### Step 2: Run JAllele Against HTML Parser
 
-Test the StringUtils class (one of the most used classes):
+Test the core Parser class:
 
 ```bash
 java -Djdk.attach.allowAttachSelf=true \
-  -cp "target/classes:target/test-classes:/path/to/jallele.jar" \
+  -cp "/path/to/jallele.jar" \
   com.github.gliptak.jallele.Main \
   --count 50 \
   --junit \
-  --source-classes org.apache.commons.lang3.StringUtils \
-  --test-classes org.apache.commons.lang3.StringUtilsTest \
+  --source-path target/classes \
+  --source-classes org.jsoup.parser.Parser \
+  --test-path target/test-classes \
+  --test-classes org.jsoup.parser.ParserTest \
   --log-level INFO
 ```
 
-**Critical**: The `-cp` flag MUST include:
-1. `target/classes` (compiled source classes)
-2. `target/test-classes` (compiled test classes)
-3. `/path/to/jallele.jar` (JAllele uber JAR)
+**Note on `-cp` vs `--source-path`**: JAllele dynamically loads classes from `--source-path` and `--test-path`, so you don't need to duplicate them in the `-cp` flag. The `-cp` only needs the JAllele JAR itself.
 
-#### Step 3: Run JAllele Against Array Utilities
+#### Step 3: Run JAllele Against HTML Cleaner
 
-Test array manipulation utilities:
+Test the Cleaner class (removes unsafe HTML):
 
 ```bash
 java -Djdk.attach.allowAttachSelf=true \
-  -cp "target/classes:target/test-classes:/path/to/jallele.jar" \
+  -cp "/path/to/jallele.jar" \
   com.github.gliptak.jallele.Main \
   --count 50 \
   --junit \
-  --source-classes org.apache.commons.lang3.ArrayUtils \
-  --test-classes org.apache.commons.lang3.ArrayUtilsTest \
+  --source-path target/classes \
+  --source-classes org.jsoup.safety.Cleaner \
+  --test-path target/test-classes \
+  --test-classes org.jsoup.safety.CleanerTest \
   --log-level INFO
 ```
 
-#### Step 4: Run JAllele Against Multiple Utility Classes
+#### Step 4: Run JAllele With Pattern-Based Discovery
 
-Test several related utility classes together:
+Test multiple parser-related classes:
 
 ```bash
 java -Djdk.attach.allowAttachSelf=true \
-  -cp "target/classes:target/test-classes:/path/to/jallele.jar" \
+  -cp "/path/to/jallele.jar" \
   com.github.gliptak.jallele.Main \
   --count 100 \
   --junit \
-  --source-classes org.apache.commons.lang3.StringUtils org.apache.commons.lang3.ArrayUtils org.apache.commons.lang3.ObjectUtils \
-  --test-classes org.apache.commons.lang3.StringUtilsTest org.apache.commons.lang3.ArrayUtilsTest org.apache.commons.lang3.ObjectUtilsTest \
+  --source-path target/classes \
+  --source-patterns 'org.jsoup.parser.*' \
+  --test-path target/test-classes \
+  --test-patterns 'org.jsoup.parser.*Test' \
   --log-level INFO
 ```
 
 **Expected Results:**
-- JAllele will test Apache Commons Lang's core utility methods
-- Mutations will target string operations, array manipulations, and object comparisons
-- High mutation detection rates expected due to comprehensive test coverage
-- Results reveal test coverage quality of one of Java's most popular libraries
-- Typical results: `Results: 78/100 (0.78)` or better
+- JAllele will test jsoup's HTML parsing and manipulation logic
+- Mutations will target HTML parsing, cleaning, and DOM traversal
+- Public test classes make discovery straightforward
+- **Note**: Due to JUnit 5 compatibility issues, some tests may fail. This is a known limitation.
 
 **Important Notes:**
-- **Package-Private Tests**: Apache Commons uses package-private test classes, so you must use `--source-classes` and `--test-classes` (explicit class names) instead of pattern-based discovery
-- **Use -cp flag**: Must use `-cp` flag (not `-jar`) to include compiled classes in classpath
-- **Main class**: Call `com.github.gliptak.jallele.Main` directly instead of using `-jar`
-- **Compiled classes in -cp**: Include `target/classes` and `target/test-classes` in `-cp`
-- **JUnit Framework**: Uses JUnit (not TestNG), so no SLF4J configuration needed
+- **JUnit 5 Limitation**: jsoup uses JUnit 5, but JAllele currently supports JUnit 4. Test execution may have issues.
+- **No -cp duplication needed**: JAllele dynamically loads from `--source-path` and `--test-path`, so you don't need to add them to `-cp`
+- **Public test classes**: jsoup uses public test classes, enabling pattern-based discovery
+- **Use -cp flag**: Still use `-cp` (not `-jar`) to call `com.github.gliptak.jallele.Main`
+
+**Why This Matters Despite JUnit 5 Issue:**
+- jsoup is one of the most popular Java HTML parsing libraries
+- Demonstrates JAllele with real-world, widely-used library
+- Shows limitations and compatibility considerations
+- Pattern-based discovery works well with jsoup's structure
 
 **Key Classes to Test:**
-- `org.apache.commons.lang3.StringUtils` - String manipulation utilities
-- `org.apache.commons.lang3.ArrayUtils` - Array operation utilities
-- `org.apache.commons.lang3.ObjectUtils` - Object comparison and null-safe operations
-- `org.apache.commons.lang3.math.NumberUtils` - Number parsing and comparison
-- `org.apache.commons.lang3.time.DateUtils` - Date/time utilities
+- `org.jsoup.parser.Parser` - Core HTML parsing
+- `org.jsoup.safety.Cleaner` - HTML sanitization
+- `org.jsoup.nodes.Document` - DOM document representation
+- `org.jsoup.select.Selector` - CSS selector engine
 
 ### Understanding the Results
 
