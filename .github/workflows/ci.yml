@@ -41,7 +41,7 @@ jobs:
       - name: Upload jallele-cmdline-test JAR
         id: UploadJAR
         if: matrix.java == '17'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jallele-cmdline-test-java-${{ matrix.java }}
           path: jallele-cmdline/build/libs/jallele-cmdline-test-*.jar
