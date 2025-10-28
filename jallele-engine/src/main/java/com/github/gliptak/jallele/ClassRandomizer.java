@@ -44,10 +44,24 @@ public class ClassRandomizer implements ClassFileTransformer {
 	
 	private Set<String> processedSources=new HashSet<String>();
 	
+	/**
+	 * Creates a ClassRandomizer with a random seed.
+	 * 
+	 * @param sources list of source class names to mutate
+	 * @param runner the test runner to use for validation
+	 */
 	public ClassRandomizer(List<String> sources, TestRunner runner){
 		this(sources, runner, null);
 	}
 	
+	/**
+	 * Creates a ClassRandomizer with an optional seed for reproducible mutations.
+	 * 
+	 * @param sources list of source class names to mutate
+	 * @param runner the test runner to use for validation
+	 * @param seed optional seed for the random generator. When null, a random seed is used.
+	 *             When non-null, the same seed will produce identical mutation sequences.
+	 */
 	public ClassRandomizer(List<String> sources, TestRunner runner, Long seed){
 		this.sources=sources;
 		this.runner=runner;
