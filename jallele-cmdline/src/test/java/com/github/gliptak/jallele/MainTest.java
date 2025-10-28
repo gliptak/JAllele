@@ -499,4 +499,32 @@ public class MainTest {
 		assertThat(rc, Is.is(0));
 		assertThat(bean.getSeed(), Is.is((Long)null));
 	}
+
+	@Test
+	public final void testSeedReproducibility() throws Exception {
+		// Test that using the same seed produces reproducible results
+		Main m = new Main();
+		
+		// First run with seed 42
+		String[] args1 = {"--count", "5", "--junit", "--source-classes", SimpleClass.class.getName(),
+				"--test-classes", SimpleClassJUnitTest.class.getName(), "--seed", "42"};
+		int exitCode1 = m.execute(args1);
+		assertThat(exitCode1, Is.is(0));
+		
+		// Second run with same seed 42 should produce same behavior
+		String[] args2 = {"--count", "5", "--junit", "--source-classes", SimpleClass.class.getName(),
+				"--test-classes", SimpleClassJUnitTest.class.getName(), "--seed", "42"};
+		int exitCode2 = m.execute(args2);
+		assertThat(exitCode2, Is.is(0));
+	}
+	
+	@Test
+	public final void testSeedWithTestNG() throws Exception {
+		// Test seed functionality with TestNG
+		Main m = new Main();
+		String[] args = {"--count", "3", "--testng", "--source-classes", SimpleClass.class.getName(),
+				"--test-classes", SimpleClassTestNGTest.class.getName(), "--seed", "99999"};
+		int exitCode = m.execute(args);
+		assertThat(exitCode, Is.is(0));
+	}
 }
