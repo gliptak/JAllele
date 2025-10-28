@@ -14,6 +14,36 @@ java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
   --test-classes com.example.MyClassTest
 ```
 
+## Reproducible Testing with Seed
+
+JAllele uses a random number generator to select which mutations to apply. By default, each run uses a different random seed, resulting in different mutations. To make mutation testing reproducible (useful for debugging or continuous integration), you can specify a seed value:
+
+```bash
+java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
+  --count 10 \
+  --junit \
+  --seed 12345 \
+  --source-classes com.example.MyClass \
+  --test-classes com.example.MyClassTest
+```
+
+Running with the same seed value will always produce the same sequence of mutations. This is particularly useful when:
+- **Debugging**: Reproduce a specific mutation that caused an issue
+- **CI/CD**: Ensure consistent behavior across test runs
+- **Research**: Compare results across different versions with identical mutations
+
+To see which mutations are being applied, use a higher log level:
+
+```bash
+java -Djdk.attach.allowAttachSelf=true -jar jallele.jar \
+  --count 10 \
+  --junit \
+  --seed 12345 \
+  --log-level FINE \
+  --source-classes com.example.MyClass \
+  --test-classes com.example.MyClassTest
+```
+
 ### Example 1: Testing a Single Module Project
 
 For a typical Maven or Gradle project with compiled classes:

@@ -51,13 +51,13 @@ public class Main {
 	    logger.fine("Test classes: " + testClassNames);
 	    
 	    if (bean.isRunJUnit()) {
-		    rc=runJUnitTests(bean.getCount(), sourceClassNames, testClassNames);
+		    rc=runJUnitTests(bean.getCount(), sourceClassNames, testClassNames, bean.getSeed());
 	    }
 	    if (rc!=0){
 	    	return rc;
 	    }
 	    if (bean.isRunTestNG()) {
-		    rc=runTestNGTests(bean.getCount(), sourceClassNames, testClassNames);
+		    rc=runTestNGTests(bean.getCount(), sourceClassNames, testClassNames, bean.getSeed());
 	    }
 	    return rc;
 	}
@@ -138,18 +138,18 @@ public class Main {
 		}
 	}
 
-	protected int runTestNGTests(int count, List<String> sources, List<String> tests) throws Exception {
+	protected int runTestNGTests(int count, List<String> sources, List<String> tests, Long seed) throws Exception {
 		TestRunner runner=new TestNGRunner(tests);
-		return runTests(count, runner, sources);
+		return runTests(count, runner, sources, seed);
 	}
 
-	protected int runJUnitTests(int count, List<String> sources, List<String> tests) throws Exception {
+	protected int runJUnitTests(int count, List<String> sources, List<String> tests, Long seed) throws Exception {
 		TestRunner runner=new JUnit4Runner(tests);
-		return runTests(count, runner, sources);
+		return runTests(count, runner, sources, seed);
 	}
 
 	@SuppressWarnings("removal")
-	protected int runTests(int count, TestRunner runner, List<String> sources) throws Exception {
+	protected int runTests(int count, TestRunner runner, List<String> sources, Long seed) throws Exception {
 		SecurityManager securityManager = null;
 		boolean useSecurityManager = true;
 		
@@ -176,7 +176,7 @@ public class Main {
 		
 	    logger.fine("Record matches start");
 		Agent.attach();
-		ClassRandomizer cr=new ClassRandomizer(sources, runner);
+		ClassRandomizer cr=new ClassRandomizer(sources, runner, seed);
 		cr.recordMatches();
 	    logger.fine("Record matches complete");
 

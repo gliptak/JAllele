@@ -439,4 +439,52 @@ public class ClassRandomizerEngineTest {
 			this.failureCount = count;
 		}
 	}
+
+	/**
+	 * Test ClassRandomizer constructor with a seed
+	 */
+	@Test
+	public final void testConstructorWithSeed() throws Exception {
+		List<String> sources = new ArrayList<String>();
+		sources.add("com.example.TestClass");
+		MockTestRunner runner = new MockTestRunner();
+		
+		// Create with non-null seed
+		ClassRandomizer cr = new ClassRandomizer(sources, runner, 12345L);
+		
+		// Verify it was created successfully
+		assertThat(cr, is(notNullValue()));
+	}
+
+	/**
+	 * Test ClassRandomizer constructor with null seed
+	 */
+	@Test
+	public final void testConstructorWithNullSeed() throws Exception {
+		List<String> sources = new ArrayList<String>();
+		sources.add("com.example.TestClass");
+		MockTestRunner runner = new MockTestRunner();
+		
+		// Create with null seed (should use non-deterministic Random)
+		ClassRandomizer cr = new ClassRandomizer(sources, runner, null);
+		
+		// Verify it was created successfully
+		assertThat(cr, is(notNullValue()));
+	}
+
+	/**
+	 * Test ClassRandomizer constructor without seed parameter
+	 */
+	@Test
+	public final void testConstructorWithoutSeedParameter() throws Exception {
+		List<String> sources = new ArrayList<String>();
+		sources.add("com.example.TestClass");
+		MockTestRunner runner = new MockTestRunner();
+		
+		// Create using the constructor that doesn't take a seed parameter
+		ClassRandomizer cr = new ClassRandomizer(sources, runner);
+		
+		// Verify it was created successfully
+		assertThat(cr, is(notNullValue()));
+	}
 }

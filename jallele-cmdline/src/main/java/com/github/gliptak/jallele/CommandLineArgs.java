@@ -50,6 +50,9 @@ public class CommandLineArgs {
 	@Option(name="-loglevel", aliases={"--log-level"}, usage="set log level (OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL)")
 	private String logLevel="WARNING";
 
+	@Option(name="-seed", aliases={"--seed"}, usage="set random generator seed for reproducible mutations")
+	private Long seed=null;
+
 	@Argument
     private List<String> arguments = new ArrayList<String>();
 
@@ -149,5 +152,12 @@ public class CommandLineArgs {
 	 */
 	public String getLogLevel() {
 		return logLevel;
+	}
+
+	/**
+	 * @return the seed
+	 */
+	public Long getSeed() {
+		return seed;
 	}
 }

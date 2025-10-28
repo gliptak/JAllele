@@ -57,4 +57,28 @@ public class ClassRandomizerTest {
 		assertThat(runner.getFailureCount(), Is.is(0));
 		Agent.removeTransformer(cr);
 	}
+	
+	@Test
+	public void testTransformWithSeed() throws IllegalClassFormatException, IOException {
+		byte[] in=Agent.getClassBytes(SimpleClass.class);
+		List<String> sources=new ArrayList<String>();
+		sources.add(SimpleClass.class.getName());
+		List<String> tests=new ArrayList<String>();
+		TestRunner runner=new JUnit4Runner(tests);
+		ClassRandomizer cr = new ClassRandomizer(sources, runner, 12345L);
+		byte[] out=cr.transform(null, SimpleClass.class.getName(), SimpleClass.class, null, in);
+		assertThat(out, IsNot.not(in));
+	}
+	
+	@Test
+	public void testConstructorWithNullSeed() throws Exception {
+		// Test the else branch when seed is null
+		List<String> sources=new ArrayList<String>();
+		sources.add("com.github.gliptak.jallele.SimpleClass");
+		List<String> tests=new ArrayList<String>();
+		TestRunner runner=new JUnit4Runner(tests);
+		ClassRandomizer cr = new ClassRandomizer(sources, runner, null);
+		// Just verify it constructs successfully
+		assertThat(cr, IsNot.not((ClassRandomizer)null));
+	}
 }
