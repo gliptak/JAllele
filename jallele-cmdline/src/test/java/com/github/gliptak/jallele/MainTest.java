@@ -477,4 +477,26 @@ public class MainTest {
 		assertThat(tests.size(), Is.is(1));
 		assertThat(tests.get(0), Is.is("MainTest"));
 	}
+
+	@Test
+	public final void testSeedArgument() throws Exception {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "5", "--junit", "--source-classes", SimpleClass.class.getName(),
+				"--test-classes", SimpleClassJUnitTest.class.getName(), "--seed", "12345"};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+		assertThat(bean.getSeed(), Is.is(12345L));
+	}
+
+	@Test
+	public final void testWithoutSeedArgument() throws Exception {
+		CommandLineArgs bean = new CommandLineArgs();
+		Main m=new Main();
+		String[] args={"--count", "5", "--junit", "--source-classes", SimpleClass.class.getName(),
+				"--test-classes", SimpleClassJUnitTest.class.getName()};
+		int rc=m.parseArguments(args, bean);
+		assertThat(rc, Is.is(0));
+		assertThat(bean.getSeed(), Is.is((Long)null));
+	}
 }

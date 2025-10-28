@@ -45,9 +45,18 @@ public class ClassRandomizer implements ClassFileTransformer {
 	private Set<String> processedSources=new HashSet<String>();
 	
 	public ClassRandomizer(List<String> sources, TestRunner runner){
+		this(sources, runner, null);
+	}
+	
+	public ClassRandomizer(List<String> sources, TestRunner runner, Long seed){
 		this.sources=sources;
 		this.runner=runner;
-		random = new Random();
+		if (seed != null) {
+			random = new Random(seed);
+			logger.fine("Initialized Random with seed: " + seed);
+		} else {
+			random = new Random();
+		}
 		initVisitors(random);
 	}
 

@@ -24,6 +24,12 @@ $ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele
 --source-classes com.github.gliptak.jallele.SimpleClass --test-classes com.github.gliptak.jallele.SimpleClassJUnitTest
 ```
 
+Run with a specific seed for reproducible mutations:
+```
+$ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --junit --count 10 \
+--seed 12345 --source-classes com.github.gliptak.jallele.SimpleClass --test-classes com.github.gliptak.jallele.SimpleClassJUnitTest
+```
+
 Run with classpath discovery:
 ```
 $ java -Djdk.attach.allowAttachSelf=true -jar jallele-cmdline/build/libs/jallele-cmdline-test-*.jar --junit --count 10 \
