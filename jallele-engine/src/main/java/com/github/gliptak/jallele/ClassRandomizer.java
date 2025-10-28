@@ -70,6 +70,7 @@ public class ClassRandomizer implements ClassFileTransformer {
 			logger.fine("Initialized Random with seed: " + seed);
 		} else {
 			random = new Random();
+			logger.fine("Initialized Random with random seed (non-deterministic)");
 		}
 		initVisitors(random);
 	}
