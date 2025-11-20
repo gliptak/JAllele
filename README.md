@@ -78,7 +78,7 @@ For projects with multiple modules, specify multiple paths:
 --test-path module1/target/test-classes module2/target/test-classes module3/target/test-classes
 ```
 
-See [CLI Examples](docs/cli-examples.md) for comprehensive examples including Apache Commons Lang and Google Guava.
+See [CLI Examples](docs/cli-examples.md) for comprehensive examples including testing JCommander (TestNG) and jsoup (JUnit).
 
 ## Contributing
 
