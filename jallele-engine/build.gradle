@@ -5,7 +5,7 @@ println("toolsJar ${toolsJar}")
 dependencies {
     implementation "org.ow2.asm:asm:9.11.1"
     implementation "org.ow2.asm:asm-util:9.11.1"
-    implementation "org.apache.commons:commons-lang3:3.21.0"
+    implementation "org.apache.commons:commons-lang3:3.22.0"
     testImplementation "junit:junit:4.13.2"
     if (toolsJar) {
         implementation files(toolsJar)
